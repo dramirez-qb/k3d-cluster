@@ -331,17 +331,17 @@ items:
           name: web
           targetPort: "web"
           protocol: "TCP"
-          # nodePort: 30080
+          nodePort: 30080
         - port: 443
           name: websecure
           targetPort: "websecure"
           protocol: "TCP"
-          # nodePort: 30443
+          nodePort: 30443
         - port: 7000
           name: udpep
           targetPort: "udpep"
           protocol: "TCP"
-          # nodePort: 32700
+          nodePort: 32700
   - apiVersion: v1
     kind: Service
     metadata:
@@ -365,41 +365,3 @@ items:
           name: metrics
           targetPort: "metrics"
           protocol: "TCP"
----
-# apiVersion: monitoring.coreos.com/v1
-# kind: ServiceMonitor
-# metadata:
-# labels:
-# k8s-app: traefik
-# name: monitoring-traefik
-# namespace: infrastructure
-# spec:
-# endpoints:
-# - honorLabels: true
-# port: metrics
-# jobLabel: app.kubernetes.io/name
-# selector:
-# matchLabels:
-# app.kubernetes.io/name: traefik
-# app.kubernetes.io/instance: traefik
-# app.kubernetes.io/usage: metrics
-# ---
-# apiVersion: monitoring.coreos.com/v1
-# kind: PrometheusRule
-# metadata:
-# labels:
-# app: traefik
-# name: monitoring-traefik
-# namespace: infrastructure
-# spec:
-# groups:
-# - name: traefik.rules
-# rules:
-# - alert: TraefikServiceDown
-# expr: count(traefik_service_server_up) by (service) == 0
-# for: 0m
-# labels:
-# severity: critical
-# annotations:
-# summary: Traefik service down (instance {{ $labels.instance }})
-# description: "All Traefik services are down\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"

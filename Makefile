@@ -57,13 +57,11 @@ install/loadbalancer: create/cluster
 install/metallb: create/cluster
 	$(call assert-set,KUBECTL)
 	@echo -e "\\033[1;32mInstalling metallb\\033[0;39m"
-	@$(KUBECTL) apply -f https://raw.githubusercontent.com/metallb/metallb/v0.9.6/manifests/namespace.yaml
-	@$(KUBECTL) apply -f https://raw.githubusercontent.com/metallb/metallb/v0.9.6/manifests/metallb.yaml
-	@$(KUBECTL) get secret -n metallb-system memberlist > /dev/null 2>&1 || $(KUBECTL) create secret generic -n metallb-system memberlist --from-literal=secretkey="$(shell openssl rand -base64 128)" > /dev/null 2>&1
 	@$(eval export CIDR_RANGE := $(shell $(DOCKER) network inspect k3d-${CLUSTER_NAME} | jq '.[0].IPAM.Config[0].Subnet'|sed 's/0/200/g'| tr -d '"'))
 	@$(eval export START_RANGE := $(shell echo ${CIDR_RANGE}  |sed 's/200\/24/200/g'))
 	@$(eval export END_RANGE := $(shell echo ${CIDR_RANGE}  |sed 's/200\/24/254/g'))
 	@$(ENVSUBST) < k8s/01_metallb.yaml | $(KUBECTL) apply -f -
+	@$(KUBECTL) get secret -n metallb-system memberlist > /dev/null 2>&1 || $(KUBECTL) create secret generic -n metallb-system memberlist --from-literal=secretkey="$(shell openssl rand -base64 128)" > /dev/null 2>&1
 
 install/monitoring: create/cluster install/storage
 	$(call assert-set,KUBECTL)
