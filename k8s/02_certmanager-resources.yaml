@@ -3,7 +3,7 @@ apiVersion: cert-manager.io/v1alpha2
 kind: ClusterIssuer
 metadata:
   name: letsencrypt-staging
-  namespace: infrastructure
+  namespace: cert-manager
 spec:
   acme:
     email: ${ISSUER_EMAIL}
@@ -19,7 +19,7 @@ apiVersion: cert-manager.io/v1alpha2
 kind: ClusterIssuer
 metadata:
   name: letsencrypt-prod
-  namespace: infrastructure
+  namespace: cert-manager
 spec:
   acme:
     email: ${ISSUER_EMAIL}

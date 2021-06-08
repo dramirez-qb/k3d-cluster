@@ -21,7 +21,6 @@ This repo is to create a full kubernetes cluster using [k3d](https://k3d.io/) wi
 You will need on your computer
 
 * [Docker](https://docs.docker.com/engine/install/ubuntu/)
-* [Helm](https://helm.sh/docs/intro/install/#from-script)
 * [Kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/#install-kubectl-on-linux)
 * [K3d](https://k3d.io/)
 * [Make](https://tldp.org/HOWTO/Software-Building-HOWTO-3.html)
@@ -35,9 +34,6 @@ sudo apt install make
 curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
 sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
 curl -s https://raw.githubusercontent.com/rancher/k3d/main/install.sh | bash
-curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3
-chmod 700 get_helm.sh
-./get_helm.sh
 ```
 
 ## Usage
