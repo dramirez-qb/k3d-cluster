@@ -1,0 +1,6 @@
+installCRDs: true
+
+ingressShim:
+  defaultIssuerName: "letsencrypt-staging"
+  defaultIssuerKind: "ClusterIssuer"
+  defaultIssuerGroup: "cert-manager.io"
