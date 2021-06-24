@@ -33,12 +33,13 @@ clean: delete/cluster
 create/cluster:
 	$(call assert-set,CLUSTER_NAME)
 	$(call assert-set,CURRENT_IP)
+	$(call assert-set,SHARED_PATH)
 	@echo -e "\\033[1;32mCreating cluster ${CLUSTER_NAME} with ${SHARED_PATH} as a shared path\\033[0;39m"
 	@$(MKDIR) -p ${SHARED_PATH}
 	@$(ENVSUBST) < k3d-config.yaml | cat > /tmp/k3d-config.yaml
 	@$(K3D) cluster list --no-headers | grep ${CLUSTER_NAME} > /dev/null 2>&1 || $(K3D) cluster create -c /tmp/k3d-config.yaml
 
-delete/cluster: 
+delete/cluster:
 	$(call assert-set,CLUSTER_NAME)
 	@echo -e "\\033[1;32mDeleting cluster ${CLUSTER_NAME}\\033[0;39m"
 	@$(K3D) cluster delete ${CLUSTER_NAME}
@@ -46,7 +47,7 @@ delete/cluster:
 install/certmanager: create/cluster
 	$(call assert-set,KUBECTL)
 	@echo -e "\\033[1;32mInstalling cert-manager\\033[0;39m"
-	@$(KUBECTL) apply -f https://github.com/jetstack/cert-manager/releases/download/v1.3.1/cert-manager.yaml --wait && sleep 20
+	@$(KUBECTL) apply -f https://github.com/jetstack/cert-manager/releases/download/v1.3.1/cert-manager.yaml --wait ; sleep 30
 	@$(ENVSUBST) < k8s/02_certmanager-resources.yaml | $(KUBECTL) apply -f -
 
 install/loadbalancer: create/cluster
@@ -77,4 +78,4 @@ install/storage: create/cluster
 	@$(KUBECTL) apply -f k8s/00_local-path-storage.yaml
 
 .PHONY: \
-	all 
+	all

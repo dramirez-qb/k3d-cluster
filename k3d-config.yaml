@@ -1,9 +1,11 @@
+# https://k3d.io/usage/configfile/
+---
 apiVersion: k3d.io/v1alpha2
 kind: Simple
 name: ${CLUSTER_NAME}
 servers: 1
 agents: 2
-image: docker.io/rancher/k3s:v1.20.7-k3s1
+image: docker.io/rancher/k3s:v1.20.8-k3s1
 kubeAPI:
   hostIP: "0.0.0.0"
   hostPort: "6443"
@@ -16,6 +18,10 @@ ports:
       - agent[0]
 volumes:
   - volume: ${SHARED_PATH}:/mnt/shared
+    nodeFilters:
+      - all
+env:
+  - envVar: SHARED_PATH=${SHARED_PATH}
     nodeFilters:
       - all
 labels:

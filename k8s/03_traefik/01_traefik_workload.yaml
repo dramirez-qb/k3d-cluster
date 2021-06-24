@@ -4,7 +4,7 @@ apiVersion: v1
 metadata:
   name: infrastructure
   labels:
-    env: infrastructure
+    purpose: infrastructure
 spec:
   finalizers:
     - kubernetes
@@ -34,7 +34,7 @@ metadata:
   labels:
     app.kubernetes.io/name: traefik
     app.kubernetes.io/instance: traefik
-  annotations:
+  annotations: {}
 ---
 # Source: traefik/templates/rbac/clusterrole.yaml
 kind: ClusterRole
@@ -168,7 +168,7 @@ metadata:
   labels:
     app.kubernetes.io/name: traefik
     app.kubernetes.io/instance: traefik
-  annotations:
+  annotations: {}
 spec:
   replicas: 2
   selector:
@@ -182,7 +182,7 @@ spec:
       maxUnavailable: 0
   template:
     metadata:
-      annotations:
+      annotations: {}
       labels:
         app.kubernetes.io/name: traefik
         app.kubernetes.io/instance: traefik

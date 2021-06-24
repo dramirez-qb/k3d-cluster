@@ -4,6 +4,7 @@ metadata:
   name: metallb-system
   labels:
     app: metallb
+    purpose: infrastructure
 ---
 apiVersion: policy/v1beta1
 kind: PodSecurityPolicy
