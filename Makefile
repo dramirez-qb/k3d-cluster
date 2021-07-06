@@ -26,7 +26,8 @@ k8s: create/cluster \
 	install/loadbalancer \
 	install/monitoring \
 	install/certmanager \
-	install/argocd
+	install/argocd \
+	install/loadbalancer-fix
 	@echo -e "\\033[1;32mCleanning cluster ${CLUSTER_NAME} events\\033[0;39m"
 	@$(KUBECTL) delete events --all --all-namespaces
 
@@ -56,6 +57,12 @@ install/loadbalancer: create/cluster
 	$(call assert-set,KUBECTL)
 	@echo -e "\\033[1;32mInstalling traefik\\033[0;39m"
 	@$(KUBECTL) apply -Rf k8s/03_traefik
+
+install/loadbalancer-fix: create/cluster
+	$(call assert-set,KUBECTL)
+	@echo -e "\\033[1;32mFixing traefik deployment\\033[0;39m"
+	@$(eval export INGRESSENDPOINT := $(shell $(KUBECTL) get service -n infrastructure traefik -o jsonpath='{.status.loadBalancer.ingress[0].ip}'))
+	@$(KUBECTL) patch deploy traefik -n infrastructure -p '[{"op": "add", "path": "/spec/template/spec/containers/0/args/-", "value": "--providers.kubernetesingress.ingressendpoint.ip=${INGRESSENDPOINT}"}]' --type json
 
 install/metallb: create/cluster
 	$(call assert-set,KUBECTL)
