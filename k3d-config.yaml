@@ -38,6 +38,7 @@ options:
     extraServerArgs:
       - --disable=traefik,servicelb,local-storage,metrics-server
       - --tls-san=${CURRENT_IP}
+      - --tls-san=smartsolutions.duckdns.org
     extraAgentArgs: []
   kubeconfig:
     updateDefaultKubeconfig: true

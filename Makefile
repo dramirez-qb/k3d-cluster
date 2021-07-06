@@ -11,7 +11,7 @@ RAND := $(shell date +%s | sha256sum | base64 | head -c 32 ; echo)
 export CLUSTER_NAME ?= k3s
 export ISSUER_EMAIL ?= yourname@gmail.com
 export CURRENT_IP := $(shell hostname -I|cut -d" " -f 1)
-export SHARED_PATH := ${HOME}/projects
+export SHARED_PATH := /mnt/shared/
 
 define assert-set
 	@[ -n "$($1)" ] || (echo "$(1) not defined in $(@)"; exit 1)
@@ -22,9 +22,11 @@ all: k8s
 k8s: create/cluster \
 	install/storage \
 	install/metallb \
+	install/external \
 	install/loadbalancer \
 	install/monitoring \
-	install/certmanager
+	install/certmanager \
+	install/argocd
 	@echo -e "\\033[1;32mCleanning cluster ${CLUSTER_NAME} events\\033[0;39m"
 	@$(KUBECTL) delete events --all --all-namespaces
 
@@ -76,6 +78,20 @@ install/storage: create/cluster
 	$(call assert-set,KUBECTL)
 	@echo -e "\\033[1;32mInstalling local-path-storage\\033[0;39m"
 	@$(KUBECTL) apply -f k8s/00_local-path-storage.yaml
+
+install/external: create/cluster
+	$(call assert-set,KUBECTL)
+	@echo -e "\\033[1;32mInstalling external stuff\\033[0;39m"
+	@$(KUBECTL) apply -f k8s/03_external.yaml
+
+install/argocd: create/cluster
+	$(call assert-set,KUBECTL)
+	@echo -e "\\033[1;32mInstalling argocd stuff\\033[0;39m"
+	@$(KUBECTL) create namespace argocd
+	@$(KUBECTL) apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/v2.0.4/manifests/install.yaml
+	@$(KUBECTL) apply -f k8s/04_argocd.yaml
+	@echo "\\033[1;32mkubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d\\033[0;39m"
+	@$(KUBECTL) patch deploy argocd-server -n argocd -p '[{"op": "add", "path": "/spec/template/spec/containers/0/command/-", "value": "--insecure"}]' --type json
 
 .PHONY: \
 	all

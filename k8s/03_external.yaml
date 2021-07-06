@@ -1,0 +1,155 @@
+---
+kind: Namespace
+apiVersion: v1
+metadata:
+  name: infra
+spec:
+  finalizers:
+    - kubernetes
+status:
+  phase: Active
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: drone-service
+  namespace: infra
+spec:
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+  type: ExternalName
+  sessionAffinity: None
+  externalName: 172.99.1.2
+status:
+  loadBalancer: {}
+---
+kind: Ingress
+apiVersion: extensions/v1beta1
+metadata:
+  name: drone-ingress
+  namespace: infra
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    ingress.kubernetes.io/proxy-body-size: "0"
+    ingress.kubernetes.io/ssl-redirect: "true"
+    kubernetes.io/ingress.class: traefik
+    kubernetes.io/tls-acme: "true"
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure
+    traefik.ingress.kubernetes.io/router.tls: "true"
+    nginx.ingress.kubernetes.io/proxy-body-size: "0"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+spec:
+  tls:
+    - hosts:
+        - drone.dxas90.xyz
+      secretName: drone-dxas90-xyz-prod
+  rules:
+    - host: drone.dxas90.xyz
+      http:
+        paths:
+          - path: /
+            pathType: ImplementationSpecific
+            backend:
+              serviceName: drone-service
+              servicePort: 80
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: gitea-pvc
+  namespace: infra
+  labels:
+    app: gitea
+spec:
+  storageClassName: standard
+  volumeName: gitea
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 50Gi
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: gitea
+  labels:
+    type: local
+    app: gitea
+spec:
+  storageClassName: standard
+  capacity:
+    storage: 50Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: /mnt/shared/gitea
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: gitea-postgresql-pvc
+  namespace: infra
+  labels:
+    app: gitea
+spec:
+  storageClassName: standard
+  volumeName: gitea-postgresql
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 50Gi
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: gitea-postgresql
+  labels:
+    type: local
+    app: gitea
+spec:
+  storageClassName: standard
+  capacity:
+    storage: 50Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: /mnt/shared/gitea-postgres
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: harbor-pvc
+  namespace: infra
+  labels:
+    app: harbor
+spec:
+  storageClassName: standard
+  volumeName: harbor
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 50Gi
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: harbor
+  labels:
+    type: local
+    app: harbor
+spec:
+  storageClassName: standard
+  capacity:
+    storage: 50Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: /mnt/shared/harbor
+  # claimRef:
+  # name: harbor-pvc
+  # namespace: infra
