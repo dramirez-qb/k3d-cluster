@@ -178,7 +178,7 @@ spec:
   strategy:
     type: RollingUpdate
     rollingUpdate:
-      maxSurge: 4
+      maxSurge: 2
       maxUnavailable: 0
   template:
     metadata:
@@ -194,6 +194,21 @@ spec:
         - image: "traefik:2.4.8"
           imagePullPolicy: IfNotPresent
           name: traefik
+          env:
+            - name: POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: POD_IP
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: status.hostIP
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: metadata.name
           resources:
             limits:
               cpu: 300m
@@ -267,6 +282,7 @@ spec:
             - "--providers.kubernetescrd=true"
             - "--providers.kubernetesingress=true"
             - "--providers.kubernetesingress.ingressclass=traefik"
+            - "--providers.kubernetesingress.ingressendpoint.ip=${POD_IP}"
             # - "--experimental.kubernetesgateway=true"
             # - "--providers.kubernetesgateway=true"
             - "--pilot.token=18a8b90f-ffa0-4bae-839f-def5227732b0"
