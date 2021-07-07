@@ -282,7 +282,7 @@ spec:
             - "--providers.kubernetescrd=true"
             - "--providers.kubernetesingress=true"
             - "--providers.kubernetesingress.ingressclass=traefik"
-            - "--providers.kubernetesingress.ingressendpoint.ip=${POD_IP}"
+            - "--providers.kubernetesingress.ingressendpoint.publishedservice=infrastructure/traefik"
             # - "--experimental.kubernetesgateway=true"
             # - "--providers.kubernetesgateway=true"
             - "--pilot.token=18a8b90f-ffa0-4bae-839f-def5227732b0"
