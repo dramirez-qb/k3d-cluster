@@ -63,12 +63,17 @@ install/loadbalancer-fix: create/cluster
 	@$(eval export INGRESSENDPOINT := $(shell $(KUBECTL) get service -n infrastructure traefik -o jsonpath='{.status.loadBalancer.ingress[0].ip}'))
 	@$(KUBECTL) patch deploy traefik -n infrastructure -p '[{"op": "add", "path": "/spec/template/spec/containers/0/args/-", "value": "--providers.kubernetesingress.ingressendpoint.ip=${INGRESSENDPOINT}"}]' --type json
 
+install/kong: create/cluster
+	$(call assert-set,KUBECTL)
+	@echo -e "\\033[1;32mInstalling kong\\033[0;39m"
+	@$(KUBECTL) apply -Rf k8s/03_kong
+
 install/metallb: create/cluster
 	$(call assert-set,KUBECTL)
 	@echo -e "\\033[1;32mInstalling metallb\\033[0;39m"
 	@$(eval export CIDR_RANGE := $(shell $(DOCKER) network inspect k3d-${CLUSTER_NAME} | jq '.[0].IPAM.Config[0].Subnet'|sed 's/0/200/g'| tr -d '"'))
-	@$(eval export START_RANGE := $(shell echo ${CIDR_RANGE}  |sed 's/200\/24/200/g'))
-	@$(eval export END_RANGE := $(shell echo ${CIDR_RANGE}  |sed 's/200\/24/254/g'))
+	@$(eval export START_RANGE := $(shell echo ${CIDR_RANGE}  |sed 's/200\/.*/240/g'))
+	@$(eval export END_RANGE := $(shell echo ${CIDR_RANGE}  |sed 's/200\/.*/254/g'))
 	@$(ENVSUBST) < k8s/01_metallb.yaml | $(KUBECTL) apply -f -
 	@$(KUBECTL) get secret -n metallb-system memberlist > /dev/null 2>&1 || $(KUBECTL) create secret generic -n metallb-system memberlist --from-literal=secretkey="$(shell openssl rand -base64 128)" > /dev/null 2>&1
 

@@ -2,13 +2,13 @@
 apiVersion: cert-manager.io/v1alpha2
 kind: ClusterIssuer
 metadata:
-  name: letsencrypt-staging
+  name: letsencrypt-staging-traefik
   namespace: cert-manager
 spec:
   acme:
     email: ${ISSUER_EMAIL}
     privateKeySecretRef:
-      name: letsencrypt-staging
+      name: letsencrypt-staging-traefik
     server: https://acme-staging-v02.api.letsencrypt.org/directory
     solvers:
       - http01:
@@ -18,15 +18,47 @@ spec:
 apiVersion: cert-manager.io/v1alpha2
 kind: ClusterIssuer
 metadata:
-  name: letsencrypt-prod
+  name: letsencrypt-prod-traefik
   namespace: cert-manager
 spec:
   acme:
     email: ${ISSUER_EMAIL}
     privateKeySecretRef:
-      name: letsencrypt-prod
+      name: letsencrypt-prod-traefik
     server: https://acme-v02.api.letsencrypt.org/directory
     solvers:
       - http01:
           ingress:
             class: traefik
+---
+apiVersion: cert-manager.io/v1alpha2
+kind: ClusterIssuer
+metadata:
+  name: letsencrypt-staging-kong
+  namespace: cert-manager
+spec:
+  acme:
+    email: ${ISSUER_EMAIL}
+    privateKeySecretRef:
+      name: letsencrypt-staging-kong
+    server: https://acme-staging-v02.api.letsencrypt.org/directory
+    solvers:
+      - http01:
+          ingress:
+            class: kong
+---
+apiVersion: cert-manager.io/v1alpha2
+kind: ClusterIssuer
+metadata:
+  name: letsencrypt-prod-kong
+  namespace: cert-manager
+spec:
+  acme:
+    email: ${ISSUER_EMAIL}
+    privateKeySecretRef:
+      name: letsencrypt-prod-kong
+    server: https://acme-v02.api.letsencrypt.org/directory
+    solvers:
+      - http01:
+          ingress:
+            class: kong
