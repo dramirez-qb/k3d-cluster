@@ -5,17 +5,17 @@ kind: Simple
 name: ${CLUSTER_NAME}
 servers: 1
 agents: 2
-image: docker.io/rancher/k3s:v1.20.8-k3s1
+image: docker.io/rancher/k3s:v1.20.11-k3s2
 kubeAPI:
   hostIP: "0.0.0.0"
   hostPort: "6443"
 ports:
   - port: 0.0.0.0:80:30080
     nodeFilters:
-      - agent[0]
+      - loadbalancer
   - port: 0.0.0.0:443:30443
     nodeFilters:
-      - agent[0]
+      - loadbalancer
 volumes:
   - volume: ${SHARED_PATH}:/mnt/shared
     nodeFilters:
@@ -25,7 +25,7 @@ env:
     nodeFilters:
       - all
 labels:
-  - label: "k3s.cluster=true"
+  - label: "my.k3s.cluster=true"
     nodeFilters:
       - all
 options:

@@ -48,7 +48,8 @@ delete/cluster:
 install/certmanager: create/cluster
 	$(call assert-set,KUBECTL)
 	@echo -e "\\033[1;32mInstalling cert-manager\\033[0;39m"
-	@$(KUBECTL) apply -f https://github.com/jetstack/cert-manager/releases/download/v1.3.1/cert-manager.yaml --wait ; sleep 30
+	@$(KUBECTL) apply -f https://github.com/jetstack/cert-manager/releases/download/v1.3.1/cert-manager.yaml
+	@$(KUBECTL) -n cert-manager wait --for condition=available --timeout=90s deploy -lapp.kubernetes.io/instance=cert-manager
 	@$(ENVSUBST) < k8s/02_certmanager-resources.yaml | $(KUBECTL) apply -f -
 
 install/loadbalancer: create/cluster
