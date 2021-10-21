@@ -52,18 +52,18 @@ install/certmanager: create/cluster
 	@$(KUBECTL) -n cert-manager wait --for condition=available --timeout=90s deploy -lapp.kubernetes.io/instance=cert-manager
 	@$(ENVSUBST) < k8s/02_certmanager-resources.yaml | $(KUBECTL) apply -f -
 
-install/loadbalancer: create/cluster
+install/loadbalancer: install/metallb
 	$(call assert-set,KUBECTL)
 	@echo -e "\\033[1;32mInstalling traefik\\033[0;39m"
 	@$(KUBECTL) apply -Rf k8s/03_traefik
 
-install/loadbalancer-fix: create/cluster
+install/loadbalancer-fix: install/loadbalancer
 	$(call assert-set,KUBECTL)
 	@echo -e "\\033[1;32mFixing traefik deployment\\033[0;39m"
 	@$(eval export INGRESSENDPOINT := $(shell $(KUBECTL) get service -n infrastructure traefik -o jsonpath='{.status.loadBalancer.ingress[0].ip}'))
 	@$(KUBECTL) patch deploy traefik -n infrastructure -p '[{"op": "add", "path": "/spec/template/spec/containers/0/args/-", "value": "--providers.kubernetesingress.ingressendpoint.ip=${INGRESSENDPOINT}"}]' --type json
 
-install/kong: create/cluster
+install/kong: install/metallb
 	$(call assert-set,KUBECTL)
 	@echo -e "\\033[1;32mInstalling kong\\033[0;39m"
 	@$(KUBECTL) apply -Rf k8s/03_kong
@@ -77,7 +77,7 @@ install/metallb: create/cluster
 	@$(ENVSUBST) < k8s/01_metallb.yaml | $(KUBECTL) apply -f -
 	@$(KUBECTL) get secret -n metallb-system memberlist > /dev/null 2>&1 || $(KUBECTL) create secret generic -n metallb-system memberlist --from-literal=secretkey="$(shell openssl rand -base64 128)" > /dev/null 2>&1
 
-install/monitoring: create/cluster install/storage
+install/monitoring: install/storage
 	$(call assert-set,KUBECTL)
 	@echo -e "\\033[1;32mInstalling Prometheus, metrics-server and kube-state-metrics\\033[0;39m"
 	@$(KUBECTL) apply -f k8s/monitoring/00_metrics-server.yaml
@@ -89,6 +89,14 @@ install/storage: create/cluster
 	$(call assert-set,KUBECTL)
 	@echo -e "\\033[1;32mInstalling local-path-storage\\033[0;39m"
 	@$(KUBECTL) apply -f k8s/00_local-path-storage.yaml
+
+install/cockroach: install/storage
+	$(call assert-set,KUBECTL)
+	@echo -e "\\033[1;32mInstalling cockroach\\033[0;39m"
+	@$(KUBECTL) apply -f https://raw.githubusercontent.com/cockroachdb/cockroach-operator/master/install/crds.yaml
+	@$(KUBECTL) apply -f https://raw.githubusercontent.com/cockroachdb/cockroach-operator/master/install/operator.yaml
+	@$(KUBECTL) wait --for condition=available --timeout=90s deploy -lapp=cockroach-operator
+	@$(KUBECTL) apply -f k8s/99_cockroach.yaml
 
 .PHONY: \
 	all

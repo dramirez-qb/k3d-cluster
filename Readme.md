@@ -18,7 +18,7 @@ This repo is to create a full kubernetes cluster using [k3d](https://k3d.io/) wi
 
 ## Requirements
 
-You will need on your computer
+You will need it on your computer
 
 * [Docker](https://docs.docker.com/engine/install/ubuntu/)
 * [Kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/#install-kubectl-on-linux)
