@@ -1,44 +1,55 @@
 # https://k3d.io/usage/configfile/
 ---
-apiVersion: k3d.io/v1alpha2
 kind: Simple
+apiVersion: k3d.io/v1alpha3
 name: ${CLUSTER_NAME}
 servers: 1
 agents: 2
-image: docker.io/rancher/k3s:v1.20.11-k3s2
 kubeAPI:
-  hostIP: "0.0.0.0"
+  hostIP: 0.0.0.0
   hostPort: "6443"
-ports:
-  - port: 0.0.0.0:80:30080
-    nodeFilters:
-      - loadbalancer
-  - port: 0.0.0.0:443:30443
-    nodeFilters:
-      - loadbalancer
+image: docker.io/rancher/k3s:v1.22.3-k3s1
 volumes:
-  - volume: ${SHARED_PATH}:/mnt/shared
-    nodeFilters:
-      - all
-env:
-  - envVar: SHARED_PATH=${SHARED_PATH}
-    nodeFilters:
-      - all
-labels:
-  - label: "my.k3s.cluster=true"
-    nodeFilters:
-      - all
+- volume: ${SHARED_PATH}:/mnt/shared
+  nodeFilters:
+  - all
+ports:
+- port: 0.0.0.0:80:30080
+  nodeFilters:
+  - loadbalancer
+- port: 0.0.0.0:443:30443
+  nodeFilters:
+  - loadbalancer
 options:
   k3d:
     wait: true
-    timeout: "90s"
+    timeout: 1m30s
     disableLoadbalancer: false
     disableImageVolume: false
+    disableRollback: false
+    loadbalancer:
+      configOverrides:
+        - settings.workerConnections=2048
   k3s:
-    extraServerArgs:
-      - --disable=traefik,servicelb,local-storage,metrics-server
-      - --tls-san=${CURRENT_IP}
-    extraAgentArgs: []
+    extraArgs:
+    - arg: --disable=traefik,servicelb,local-storage,metrics-server
+      nodeFilters:
+      - server:*
+    - arg: --tls-san=${CURRENT_IP}
+      nodeFilters:
+      - server:*
+    - arg: --tls-san=www.dxas90.xyz
+      nodeFilters:
+      - server:*
   kubeconfig:
     updateDefaultKubeconfig: true
     switchCurrentContext: true
+  runtime:
+    labels:
+    - label: my.k3s.cluster=true
+      nodeFilters:
+      - all
+env:
+- envVar: SHARED_PATH=${SHARED_PATH}
+  nodeFilters:
+  - all
