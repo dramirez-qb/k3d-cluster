@@ -1,14 +1,14 @@
 # https://k3d.io/usage/configfile/
 ---
 kind: Simple
-apiVersion: k3d.io/v1alpha3
-name: ${CLUSTER_NAME}
+apiVersion: k3d.io/v1alpha4
+metadata:
+  name: ${CLUSTER_NAME}
 servers: 1
 agents: 2
 kubeAPI:
   hostIP: 0.0.0.0
   hostPort: "6443"
-image: docker.io/rancher/k3s:v1.22.3-k3s1
 volumes:
 - volume: ${SHARED_PATH}:/mnt/shared
   nodeFilters:
