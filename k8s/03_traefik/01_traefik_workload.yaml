@@ -191,7 +191,7 @@ spec:
       terminationGracePeriodSeconds: 60
       hostNetwork: false
       containers:
-        - image: "traefik:2.4.8"
+        - image: "traefik:2.8"
           imagePullPolicy: IfNotPresent
           name: traefik
           env:
@@ -280,7 +280,11 @@ spec:
             - "--ping=true"
             - "--log.level=INFO"
             - "--providers.kubernetescrd=true"
+            - "--providers.kubernetescrd.allowexternalnameservices=true"
+            - "--providers.kubernetescrd.allowemptyservices=true"
             - "--providers.kubernetesingress=true"
+            - "--providers.kubernetesingress.allowemptyservices=true"
+            - "--providers.kubernetesingress.allowexternalnameservices=true"
             - "--providers.kubernetesingress.ingressclass=traefik"
             - "--providers.kubernetesingress.ingressendpoint.publishedservice=infrastructure/traefik"
             # - "--experimental.kubernetesgateway=true"
