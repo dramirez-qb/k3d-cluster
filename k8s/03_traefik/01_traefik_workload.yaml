@@ -79,6 +79,7 @@ rules:
       - ingressroutetcps
       - ingressrouteudps
       - middlewares
+      - middlewaretcps
       - tlsoptions
       - tlsstores
       - traefikservices
@@ -271,9 +272,11 @@ spec:
             - "--entryPoints.metrics.address=:8082"
             - "--entryPoints.traefik.address=:9000/tcp"
             - "--entryPoints.web.address=:8000/tcp"
-            - "--entryPoints.web.forwardedHeaders.insecure"
+            - "--entryPoints.web.forwardedHeaders.insecure=true"
+            - "--entryPoints.web.forwardedHeaders.trustedIPs=127.0.0.1/32,10.42.0.0/16,10.43.0.0/16,172.66.2.4/24,192.168.1.0/24"
             - "--entryPoints.websecure.address=:8443/tcp"
-            - "--entryPoints.websecure.forwardedHeaders.insecure"
+            - "--entryPoints.websecure.forwardedHeaders.insecure=true"
+            - "--entryPoints.websecure.forwardedHeaders.trustedIPs=127.0.0.1/32,10.42.0.0/16,10.43.0.0/16,172.66.2.4/24,192.168.1.0/24"
             - "--entryPoints.websecure.http.tls"
             - "--api.dashboard=true"
             - "--api.insecure=true"
