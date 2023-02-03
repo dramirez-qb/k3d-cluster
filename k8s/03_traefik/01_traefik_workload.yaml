@@ -192,7 +192,7 @@ spec:
       terminationGracePeriodSeconds: 60
       hostNetwork: false
       containers:
-        - image: "traefik:2.8"
+        - image: "traefik:2.9"
           imagePullPolicy: IfNotPresent
           name: traefik
           env:
@@ -273,10 +273,10 @@ spec:
             - "--entryPoints.traefik.address=:9000/tcp"
             - "--entryPoints.web.address=:8000/tcp"
             - "--entryPoints.web.forwardedHeaders.insecure=true"
-            - "--entryPoints.web.forwardedHeaders.trustedIPs=127.0.0.1/32,10.42.0.0/16,10.43.0.0/16,172.66.2.4/24,192.168.1.0/24"
+            - "--entryPoints.web.proxyProtocol.insecure=true"
             - "--entryPoints.websecure.address=:8443/tcp"
             - "--entryPoints.websecure.forwardedHeaders.insecure=true"
-            - "--entryPoints.websecure.forwardedHeaders.trustedIPs=127.0.0.1/32,10.42.0.0/16,10.43.0.0/16,172.66.2.4/24,192.168.1.0/24"
+            - "--entryPoints.websecure.proxyProtocol.insecure=true"
             - "--entryPoints.websecure.http.tls"
             - "--api.dashboard=true"
             - "--api.insecure=true"
@@ -292,7 +292,6 @@ spec:
             - "--providers.kubernetesingress.ingressendpoint.publishedservice=infrastructure/traefik"
             # - "--experimental.kubernetesgateway=true"
             # - "--providers.kubernetesgateway=true"
-            - "--pilot.token=18a8b90f-ffa0-4bae-839f-def5227732b0"
       volumes:
         - name: data
           emptyDir: {}
