@@ -249,8 +249,11 @@ spec:
               containerPort: 8082
               protocol: "TCP"
             - name: udpep
-              containerPort: 7002
-              protocol: "TCP"
+              containerPort: 7000
+              protocol: "UDP"
+            - name: tcpep
+              containerPort: 6000
+              protocol: "TCP"                
           securityContext:
             capabilities:
               drop:
@@ -269,6 +272,7 @@ spec:
             - "--global.sendAnonymousUsage=false"
             - "--metrics.prometheus.entryPoint=metrics"
             - "--entrypoints.udpep.address=:7000/udp"
+            - "--entrypoints.tcpep.address=:6000/udp"
             - "--entryPoints.metrics.address=:8082"
             - "--entryPoints.traefik.address=:9000/tcp"
             - "--entryPoints.web.address=:8000/tcp"
@@ -315,7 +319,7 @@ spec:
     kind: Deployment
     name: traefik
   minReplicas: 2
-  maxReplicas: 5
+  maxReplicas: 15
   metrics:
     - type: Resource
       resource:
@@ -362,8 +366,13 @@ items:
         - port: 7000
           name: udpep
           targetPort: "udpep"
-          protocol: "TCP"
+          protocol: "UDP"
           nodePort: 32700
+        - port: 6000
+          name: tcpep
+          targetPort: "tcpep"
+          protocol: "TCP"
+          nodePort: 32600            
   - apiVersion: v1
     kind: Service
     metadata:

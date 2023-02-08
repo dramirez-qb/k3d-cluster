@@ -76,6 +76,9 @@ install/metallb: create/cluster
 	@$(eval export END_RANGE := $(shell echo ${CIDR_RANGE}  |sed 's/200\/.*/254/g'))
 	@$(ENVSUBST) < k8s/01_metallb.yaml | $(KUBECTL) apply -f -
 	@$(KUBECTL) get secret -n metallb-system memberlist > /dev/null 2>&1 || $(KUBECTL) create secret generic -n metallb-system memberlist --from-literal=secretkey="$(shell openssl rand -base64 128)" > /dev/null 2>&1
+	@$(KUBECTL) -n metallb-system wait --for condition=available --timeout=120s deployment.apps/controller
+	@$(KUBECTL) -n metallb-system wait --for=jsonpath='{.status.numberMisscheduled}'=0 --timeout=120s daemonset.apps/speaker
+	@$(ENVSUBST) < k8s/01_metallb_resources.yaml | $(KUBECTL) apply -f -
 
 install/monitoring: install/storage
 	$(call assert-set,KUBECTL)
