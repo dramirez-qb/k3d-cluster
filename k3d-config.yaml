@@ -15,10 +15,10 @@ volumes:
   nodeFilters:
   - all
 ports:
-- port: 0.0.0.0:80:30080
+- port: 0.0.0.0:1080:30080
   nodeFilters:
   - loadbalancer
-- port: 0.0.0.0:443:30443
+- port: 0.0.0.0:1443:30443
   nodeFilters:
   - loadbalancer
 options:
@@ -39,7 +39,10 @@ options:
     - arg: --tls-san=${CURRENT_IP}
       nodeFilters:
       - server:*
-    - arg: --tls-san=www.dxas90.xyz
+    - arg: --tls-san=${CURRENT_EXTERNAL_IP}
+      nodeFilters:
+      - server:*
+    - arg: --tls-san=dxas90.duckdns.org
       nodeFilters:
       - server:*
   kubeconfig:

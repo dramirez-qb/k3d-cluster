@@ -24,13 +24,17 @@ You will need it on your computer
 * [Kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/#install-kubectl-on-linux)
 * [K3d](https://k3d.io/)
 * [Make](https://tldp.org/HOWTO/Software-Building-HOWTO-3.html)
+* [jq](https://stedolan.github.io/jq/download/)
 
 ## Install
 
 Here you should document any install steps required to use this module. You should consider documenting any pre-requisites in this section too.
 
 ```console
-sudo apt install make
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo tee /etc/apt/trusted.gpg.d/docker.asc
+sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+sudo apt-get update -qq -y
+sudo apt-get install docker-ce make jq -y
 curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
 sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
 curl -s https://raw.githubusercontent.com/rancher/k3d/main/install.sh | bash

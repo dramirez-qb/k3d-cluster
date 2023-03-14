@@ -11,6 +11,7 @@ RAND := $(shell date +%s | sha256sum | base64 | head -c 32 ; echo)
 export CLUSTER_NAME ?= k3s
 export ISSUER_EMAIL ?= yourname@gmail.com
 export CURRENT_IP := $(shell hostname -I|cut -d" " -f 1)
+export CURRENT_EXTERNAL_IP := $(shell curl -sS ipinfo.io | jq ".ip" | tr -d '\"')
 export SHARED_PATH := ${HOME}/projects
 
 define assert-set
@@ -55,7 +56,9 @@ install/certmanager: create/cluster
 install/loadbalancer: install/metallb
 	$(call assert-set,KUBECTL)
 	@echo -e "\\033[1;32mInstalling traefik\\033[0;39m"
-	@$(KUBECTL) apply -Rf k8s/03_traefik
+	@$(KUBECTL) apply -f k8s/03_traefik/00_traefik_crd.yml
+	@$(ENVSUBST) < k8s/03_traefik/01_traefik_workload.yaml | cat > /tmp/01_traefik_workload.yaml
+	@$(KUBECTL) apply -f /tmp/01_traefik_workload.yaml
 
 install/loadbalancer-fix: install/loadbalancer
 	$(call assert-set,KUBECTL)
