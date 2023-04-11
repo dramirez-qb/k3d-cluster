@@ -96,13 +96,59 @@ install/storage: create/cluster
 	@echo -e "\\033[1;32mInstalling local-path-storage\\033[0;39m"
 	@$(KUBECTL) apply -f k8s/00_local-path-storage.yaml
 
+install/external-secrets: install/storage
+	$(call assert-set,KUBECTL)
+	@echo -e "\\033[1;32mInstalling External Secrets operator\\033[0;39m"
+	@$(KUBECTL) apply -f k8s/10_external-secrets.yml
+
 install/cockroach: install/storage
 	$(call assert-set,KUBECTL)
 	@echo -e "\\033[1;32mInstalling cockroach\\033[0;39m"
-	@$(KUBECTL) apply -f https://raw.githubusercontent.com/cockroachdb/cockroach-operator/master/install/crds.yaml
-	@$(KUBECTL) apply -f https://raw.githubusercontent.com/cockroachdb/cockroach-operator/master/install/operator.yaml
-	@$(KUBECTL) wait --for condition=available --timeout=90s deploy -lapp=cockroach-operator
-	@$(KUBECTL) apply -f k8s/99_cockroach.yaml
+	@$(KUBECTL) -n cockroach-operator-system apply -f https://raw.githubusercontent.com/cockroachdb/cockroach-operator/v2.10.0/install/crds.yaml
+	@$(KUBECTL) -n cockroach-operator-system apply -f https://raw.githubusercontent.com/cockroachdb/cockroach-operator/v2.10.0/install/operator.yaml
+	@$(KUBECTL) -n cockroach-operator-system wait --for condition=available --timeout=90s deploy -lapp=cockroach-operator ; $(shell sleep 5)
+	@$(KUBECTL) -n infrastructure apply -f k8s/99_cockroach.yaml
+
+install/redis: install/storage
+	$(call assert-set,KUBECTL)
+	@echo -e "\\033[1;32mInstalling redis\\033[0;39m"
+	@$(KUBECTL) -n infrastructure apply -f k8s/04_redis.yml
+
+install/redis-cluster: install/storage
+	$(call assert-set,KUBECTL)
+	@echo -e "\033[1;32mInstalling redis (you might have to run this twice)\033[0;39m"
+	@$(KUBECTL) -n infrastructure apply -f k8s/04_full-redis-cluster.yml
+	@$(KUBECTL) -n infrastructure wait --for=jsonpath='{.status.availableReplicas}'=6 --timeout=120s statefulset.apps/redis-cluster
+	@echo -e "\033[1;32mChecking redis (you might have to run this twice)\033[0;39m"
+	@echo -e "\033[1;33mError 99 is that Redis cluster is up and running\033[0;39m"
+	@test "$(shell kubectl -n infrastructure exec -it redis-cluster-0 --container redis -- redis-cli cluster info|grep cluster_state:|cut -d ":" -f 2 |tr -d "\r")" = "ok" &&  exit 99 || exit 0
+	@echo "yes" | $(KUBECTL) -n infrastructure exec -it redis-cluster-0 -- redis-cli --cluster create --cluster-replicas 1 $(shell kubectl -n infrastructure get pods -l app=redis-cluster -o jsonpath='{range.items[*]}{.status.podIP}:6379 {end}')
+
+install/postgres: install/storage
+	$(call assert-set,KUBECTL)
+	@echo -e "\033[1;32mInstalling postgres\033[0;39m"
+	@$(eval export MASTER_PASSWORD := $(shell < /dev/urandom tr -dc A-Za-z0-9\- | head -c18; echo))
+	@$(eval export REPLICA_PASSWORD := $(shell < /dev/urandom tr -dc A-Za-z0-9\- | head -c18; echo))
+	@$(KUBECTL) -n infrastructure get secrets postgres > /dev/null 2>&1 || $(ENVSUBST) < k8s/00_postgres/00_secret.tmpl | $(KUBECTL) -n infrastructure apply -f -
+	@$(KUBECTL) -n infrastructure get configmaps postgres > /dev/null 2>&1 || $(KUBECTL) -n infrastructure create configmap postgres --from-file=k8s/00_postgres/config/postgres.conf --from-file=k8s/00_postgres/config/master.conf --from-file=k8s/00_postgres/config/replica.conf --from-file=k8s/00_postgres/config/pg_hba.conf --from-file=k8s/00_postgres/config/create-replica-user.sh
+	@$(KUBECTL) -n infrastructure apply -f k8s/00_postgres/00_config.yml -f k8s/00_postgres/00_master-statefulset.yml -f k8s/00_postgres/01_service-statefulset.yml
+	@$(KUBECTL) -n infrastructure wait --for=jsonpath='{.status.readyReplicas}'=1 --timeout=120s statefulsets.apps/postgres
+	@$(KUBECTL) -n infrastructure apply -f k8s/00_postgres
+
+install/mongodb: install/storage
+	$(call assert-set,KUBECTL)
+	@echo -e "\033[1;32mInstalling mongodb\033[0;39m"
+	@$(KUBECTL) -n infrastructure apply -f k8s/05_mongodb
+
+install/minio: install/storage
+	$(call assert-set,KUBECTL)
+	@echo -e "\033[1;32mInstalling MinIO\033[0;39m"
+	@$(KUBECTL) -n infrastructure apply -f k8s/09_minio
+
+install/nats: install/storage
+	$(call assert-set,KUBECTL)
+	@echo -e "\033[1;32mInstalling Nats\033[0;39m"
+	@$(KUBECTL) -n infrastructure apply -f k8s/01_nats
 
 .PHONY: \
 	all

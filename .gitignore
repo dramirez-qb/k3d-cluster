@@ -1,0 +1,4 @@
+loadbalancer/
+external-secret-*.yaml
+external-secret-*.yml
+home*

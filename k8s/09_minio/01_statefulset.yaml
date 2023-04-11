@@ -1,0 +1,63 @@
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: minio
+spec:
+  podManagementPolicy: OrderedReady
+  revisionHistoryLimit: 1
+  selector:
+    matchLabels:
+      app: minio
+  serviceName: minio
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: minio
+    spec:
+      volumes:
+      - name: minio-data
+        hostPath:
+          path: /mnt/shared/minio-data
+      containers:
+      - name: minio
+        env:
+        - name: MINIO_ACCESS_KEY
+          valueFrom:
+            secretKeyRef:
+              key: access-key
+              name: minio-keys
+        - name: MINIO_SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              key: secret-key
+              name: minio-keys
+        image: quay.io/minio/minio:latest
+        args:
+        - server
+        - /data
+        # - http://minio-{0...3}.minio.default.svc.cluster.local/data
+        ports:
+        - containerPort: 9000
+        resources:
+          limits:
+            cpu: 200m
+            memory: 512Mi
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        # These volume mounts are persistent. Each pod in the PetSet
+        # gets a volume mounted based on this field.
+        volumeMounts:
+        - name: minio-data
+          mountPath: /data
+      affinity: # Add affinity field to specify node affinity
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: node-role.kubernetes.io/master # Replace with the appropriate node label key
+                    operator: In
+                    values:
+                      - "true" # Replace with the appropriate node label value
+      restartPolicy: Always
