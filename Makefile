@@ -22,7 +22,7 @@ all: k8s
 
 k8s: create/cluster \
 	install/storage \
-	install/metallb \
+	install/kube-vip \
 	install/loadbalancer \
 	install/monitoring \
 	install/certmanager \
@@ -53,7 +53,7 @@ install/certmanager: create/cluster
 	@$(KUBECTL) -n cert-manager wait --for condition=available --timeout=90s deploy -lapp.kubernetes.io/instance=cert-manager
 	@$(ENVSUBST) < k8s/02_certmanager-resources.yaml | $(KUBECTL) apply -f -
 
-install/loadbalancer: install/metallb
+install/loadbalancer: install/kube-vip
 	$(call assert-set,KUBECTL)
 	@echo -e "\\033[1;32mInstalling traefik\\033[0;39m"
 	@$(KUBECTL) apply -f k8s/03_traefik/00_traefik_crd.yml
@@ -66,10 +66,19 @@ install/loadbalancer-fix: install/loadbalancer
 	@$(eval export INGRESSENDPOINT := $(shell $(KUBECTL) get service -n infrastructure traefik -o jsonpath='{.status.loadBalancer.ingress[0].ip}'))
 	@$(KUBECTL) patch deploy traefik -n infrastructure -p '[{"op": "add", "path": "/spec/template/spec/containers/0/args/-", "value": "--providers.kubernetesingress.ingressendpoint.ip=${INGRESSENDPOINT}"}]' --type json
 
-install/kong: install/metallb
+install/kong: install/kube-vip
 	$(call assert-set,KUBECTL)
 	@echo -e "\\033[1;32mInstalling kong\\033[0;39m"
 	@$(KUBECTL) apply -Rf k8s/03_kong
+
+install/kube-vip: create/cluster
+	$(call assert-set,KUBECTL)
+	@echo -e "\\033[1;32mInstalling kube-vip\\033[0;39m"
+	@$(eval export GLOBAL_CIDR_RANGE := $(shell $(DOCKER) network inspect k3d-${CLUSTER_NAME} | jq '.[0].IPAM.Config[0].Subnet'| tr -d '"'))
+	@$(eval export START_RANGE := $(shell echo ${GLOBAL_CIDR_RANGE} |sed 's/0\/.*/200/g'))
+	@$(eval export END_RANGE := $(shell echo ${GLOBAL_CIDR_RANGE}  |sed 's/0\/.*/254/g'))
+	@$(KUBECTL) apply -f https://raw.githubusercontent.com/kube-vip/kube-vip-cloud-provider/main/manifest/kube-vip-cloud-controller.yaml
+	@$(KUBECTL) create configmap --namespace kube-system kubevip --from-literal range-global=${START_RANGE}-${END_RANGE}
 
 install/metallb: create/cluster
 	$(call assert-set,KUBECTL)
