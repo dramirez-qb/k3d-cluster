@@ -12,7 +12,7 @@ spec:
       version: 23.1.0
       sourceRef:
         kind: HelmRepository
-        name: jetstack
+        name: traefik
         namespace: flux-system
   maxHistory: 2
   install:
