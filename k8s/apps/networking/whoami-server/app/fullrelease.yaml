@@ -1,0 +1,65 @@
+---
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: whoami
+  namespace: networking
+  labels:
+    app: whoami
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: whoami
+  template:
+    metadata:
+      labels:
+        app: whoami
+    spec:
+      containers:
+        - name: whoami
+          image: traefik/whoami
+#          image: kennethreitz/httpbin
+          ports:
+            - name: web
+              containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: whoami
+  namespace: networking
+spec:
+  ports:
+    - name: web
+      port: 80
+      targetPort: web
+
+  selector:
+    app: whoami
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: whoami-ingress
+  namespace: networking
+  annotations:
+    external-dns.alpha.kubernetes.io/target: "ingress.${SECRET_DOMAIN}"
+    hajimari.io/enable: "false"
+    # kubernetes.io/ingress.class: traefik
+spec:
+  ingressClassName: traefik
+  rules:
+    - host: &host "whoami.${SECRET_DOMAIN}"
+      http:
+        paths:
+          - path: /hook/
+            pathType: Prefix
+            backend:
+              service:
+                name: webhook-receiver
+                port:
+                  number: 80
+  tls:
+    - hosts:
+        - *host

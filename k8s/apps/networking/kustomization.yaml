@@ -7,3 +7,4 @@ resources:
   - ./external-dns/ks.yaml
   - ./k8s-gateway/ks.yaml
   - ./cloudflared/ks.yaml
+  - ./whoami-server/ks.yaml
