@@ -174,13 +174,8 @@ tasks:
       - task: install:age
       - task: install:sops
 
-  verify:
-    desc: Verify flux meets the prerequisites
-    cmd: flux check --pre
-
   all:
     desc: Install everything
-    deps: [verify]
     cmds:
       - task: install:tools
       - task: provision:all

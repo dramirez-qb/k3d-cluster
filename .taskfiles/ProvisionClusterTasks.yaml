@@ -267,6 +267,7 @@ tasks:
 
   install:flux:
     desc: Install Flux into your cluster
+    deps: [install:monitoring]
     cmds:
       - kubectl apply --kustomize {{.KUBERNETES_DIR}}/bootstrap
       - cat {{.SOPS_AGE_KEY_FILE}} | kubectl -n flux-system create secret generic sops-age --from-file=age.agekey=/dev/stdin || true
@@ -293,9 +294,10 @@ tasks:
     aliases: [r, all]
     deps: [create]
     cmds:
+      - flux check --pre
       - task: install:flux
       # - task: install:storage
-      - task: install:monitoring
+      # - task: install:monitoring
       # - task: install:loadbalancer-fix
       # - task: install:kube-vip
       - cmd: |

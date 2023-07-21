@@ -34,7 +34,7 @@ options:
         - settings.workerConnections=2048
   k3s:
     extraArgs:
-    - arg: --disable=traefik,coredns,servicelb,local-storage,metrics-server
+    - arg: --disable=traefik,servicelb,local-storage,metrics-server
       nodeFilters:
       - server:*
     - arg: --tls-san=${CURRENT_IP}
