@@ -9,7 +9,7 @@ metadata:
     hajimari.io/enable: "false"
     kubernetes.io/ingress.class: traefik
 spec:
-  ingressClassName: traefik
+  # ingressClassName: traefik
   rules:
     - host: &host "flux-webhook.${SECRET_DOMAIN}"
       http:
