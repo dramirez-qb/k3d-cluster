@@ -22,7 +22,7 @@ spec:
   upgrade:
     cleanupOnFail: true
     remediation:
-      retries: 3
+      retries: -1
   uninstall:
     keepHistory: false
   values:
@@ -32,6 +32,4 @@ spec:
     service:
       type: LoadBalancer
       port: 53
-      annotations:
-        io.cilium/lb-ipam-ips: "10.100.0.80"
       externalTrafficPolicy: Cluster

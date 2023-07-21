@@ -85,7 +85,7 @@ spec:
         # containerPort: 8000
         expose: true
         exposedPort: 80
-        nodePort: 30080
+        # nodePort: 30080
         ## -- Different target traefik port on the cluster, useful for IP type LB
         # targetPort: 80
         # The port protocol (TCP/UDP)
@@ -118,7 +118,7 @@ spec:
         # targetPort: 80
         ## -- The port protocol (TCP/UDP)
         protocol: TCP
-        nodePort: 30443
+        # nodePort: 30443
 
         # advertisedPort: 4443
         #
