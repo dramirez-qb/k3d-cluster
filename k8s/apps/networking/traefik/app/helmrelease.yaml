@@ -42,6 +42,7 @@ spec:
         allowExternalNameServices: true
         # -- Allows to return 503 when there is no endpoints available
         allowEmptyServices: true
+        ingressClass: traefik
       kubernetesIngress:
         # -- Load Kubernetes IngressRoute provider
         enabled: true
@@ -49,9 +50,7 @@ spec:
         allowExternalNameServices: true
         # -- Allows to return 503 when there is no endpoints available
         allowEmptyServices: true
-        # IP used for Kubernetes Ingress endpoints
-        publishedService:
-          enabled: true
+        ingressClass: traefik
     env:
       - name: POD_NAMESPACE
         valueFrom:
@@ -76,6 +75,13 @@ spec:
     globalArguments:
       - "--global.checknewversion"
       - "--global.sendanonymoususage=false"
+    experimental:
+      kubernetesGateway:
+        # -- Enable traefik experimental GatewayClass CRD
+        enabled: false
+        gateway:
+          # -- Enable traefik regular kubernetes gateway
+          enabled: true
     ports:
       web:
         ## -- Enable this entrypoint as a default entrypoint. When a service doesn't explicitly set an entrypoint it will only use this entrypoint.

@@ -298,8 +298,8 @@ spec:
             - "--providers.kubernetesingress.allowexternalnameservices=true"
             - "--providers.kubernetesingress.ingressclass=traefik"
             - "--providers.kubernetesingress.ingressendpoint.publishedservice=infrastructure/traefik"
-            - "--experimental.kubernetesgateway=true"
-            - "--providers.kubernetesgateway=true"
+            # - "--experimental.kubernetesgateway=true"
+            # - "--providers.kubernetesgateway=true"
       volumes:
         - name: data
           emptyDir: {}
