@@ -7,8 +7,9 @@ metadata:
   annotations:
     external-dns.alpha.kubernetes.io/target: "ingress.${SECRET_DOMAIN}"
     hajimari.io/enable: "false"
+    kubernetes.io/ingress.class: traefik
 spec:
-  ingressClassName: nginx
+  ingressClassName: traefik
   rules:
     - host: &host "flux-webhook.${SECRET_DOMAIN}"
       http:

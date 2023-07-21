@@ -253,7 +253,7 @@ spec:
               protocol: "UDP"
             - name: tcpep
               containerPort: 6000
-              protocol: "TCP"                
+              protocol: "TCP"
           securityContext:
             capabilities:
               drop:
@@ -298,8 +298,8 @@ spec:
             - "--providers.kubernetesingress.allowexternalnameservices=true"
             - "--providers.kubernetesingress.ingressclass=traefik"
             - "--providers.kubernetesingress.ingressendpoint.publishedservice=infrastructure/traefik"
-            # - "--experimental.kubernetesgateway=true"
-            # - "--providers.kubernetesgateway=true"
+            - "--experimental.kubernetesgateway=true"
+            - "--providers.kubernetesgateway=true"
       volumes:
         - name: data
           emptyDir: {}
@@ -376,7 +376,7 @@ items:
           name: tcpep
           targetPort: "tcpep"
           protocol: "TCP"
-          nodePort: 32600            
+          nodePort: 32600
   - apiVersion: v1
     kind: Service
     metadata:

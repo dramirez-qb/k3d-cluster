@@ -83,7 +83,7 @@ tasks:
           export START_RANGE=$(echo ${CIDR_RANGE}  |sed 's/200\/.*/240/g')
           export END_RANGE=$(echo ${CIDR_RANGE}  |sed 's/200\/.*/254/g')
           envsubst < {{.KUBERNETES_DIR}}/01_metallb.yaml | kubectl apply -f -
-          kubectl get secret -n metallb-system memberlist > /dev/null 2>&1 || kubectl create secret generic -n metallb-system memberlist --from-literal=secretkey="$(shell openssl rand -base64 128)" > /dev/null 2>&1
+          kubectl get secret -n metallb-system memberlist > /dev/null 2>&1 || kubectl create secret generic -n metallb-system memberlist --from-literal=secretkey="$(openssl rand -base64 128)" > /dev/null 2>&1
           kubectl -n metallb-system wait --for condition=available --timeout=120s deployment.apps/controller
           kubectl -n metallb-system wait --for=jsonpath='{.status.numberMisscheduled}'=0 --timeout=120s daemonset.apps/speaker
           envsubst < {{.KUBERNETES_DIR}}/01_metallb_resources.yaml | kubectl apply -f -
@@ -295,8 +295,8 @@ tasks:
     cmds:
       - task: install:flux
       # - task: install:storage
-      # - task: install:monitoring
-      - task: install:loadbalancer-fix
+      - task: install:monitoring
+      # - task: install:loadbalancer-fix
       # - task: install:kube-vip
       - cmd: |
           echo -e "\\033[1;32mCleanning cluster ${CLUSTER_NAME} events\\033[0;39m"
