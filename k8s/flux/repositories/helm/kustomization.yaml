@@ -8,6 +8,7 @@ resources:
   # - ./coredns.yaml
   - ./csi-driver-nfs.yaml
   - ./external-dns.yaml
+  - ./external-secrets.yaml
   - ./grafana.yaml
   - ./hajimari.yaml
   - ./ingress-nginx.yaml
@@ -15,7 +16,7 @@ resources:
   - ./k8s-gateway.yaml
   - ./kubernetes-dashboard.yaml
   - ./metrics-server.yaml
-  - ./traefik.yaml
   - ./prometheus-community.yaml
   - ./stakater.yaml
+  - ./traefik.yaml
   - ./weave-gitops.yaml

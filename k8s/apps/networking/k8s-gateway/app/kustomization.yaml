@@ -4,3 +4,14 @@ kind: Kustomization
 namespace: networking
 resources:
   - ./helmrelease.yaml
+
+patches:
+  - target:
+      version: v1
+      kind: Service
+      name: k8s-gateway
+      namespace: networking
+    patch: |-
+      - op: add
+        path: /spec/loadBalancerClass
+        value: "kube-vip.io/kube-vip-class"
