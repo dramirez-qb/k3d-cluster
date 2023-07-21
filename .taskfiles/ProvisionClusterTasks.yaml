@@ -295,6 +295,7 @@ tasks:
     deps: [create]
     cmds:
       - flux check --pre
+      - task: install:metallb
       - task: install:flux
       # - task: install:storage
       # - task: install:monitoring
