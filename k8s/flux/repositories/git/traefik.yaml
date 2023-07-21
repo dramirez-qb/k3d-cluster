@@ -1,0 +1,16 @@
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: GitRepository
+metadata:
+  name: traefik-helm-chart
+  namespace: flux-system
+spec:
+  interval: 30m
+  url: https://github.com/traefik/traefik-helm-chart.git
+  ref:
+    tag: v23.1.0
+  ignore: |
+    # exclude all
+    /*
+    # include kubernetes directory
+    !/traefik

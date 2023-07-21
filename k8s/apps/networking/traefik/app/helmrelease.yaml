@@ -11,8 +11,8 @@ spec:
       chart: traefik
       version: 23.1.0
       sourceRef:
-        kind: HelmRepository
-        name: traefik
+        kind: GitRepository
+        name: traefik-helm-chart
         namespace: flux-system
   maxHistory: 2
   install:
