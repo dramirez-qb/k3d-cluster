@@ -1,7 +1,7 @@
 # https://k3d.io/usage/configfile/
 ---
 kind: Simple
-apiVersion: k3d.io/v1alpha4
+apiVersion: k3d.io/v1alpha5
 metadata:
   name: ${CLUSTER_NAME}
 servers: 1
@@ -10,6 +10,7 @@ kubeAPI:
   hostIP: 0.0.0.0
   hostPort: "6443"
 image: rancher/k3s:v1.26.1-k3s1
+subnet: "172.28.0.0/16"
 volumes:
 - volume: ${SHARED_PATH}:/mnt/shared
   nodeFilters:

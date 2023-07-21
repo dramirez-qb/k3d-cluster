@@ -1,4 +1,5 @@
 loadbalancer/
+k3s-nodes-shared
 external-secret-*.yaml
 external-secret-*.yml
 home*

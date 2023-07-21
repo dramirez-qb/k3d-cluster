@@ -1,0 +1,132 @@
+---
+version: "3"
+
+vars:
+  PYTHON_BIN: python3
+  KUBERNETES_DIR: "{{.ROOT_DIR}}/k8s"
+
+env:
+  SOPS_AGE_KEY_FILE: "{{.ROOT_DIR}}/age.key"
+  PATH: "{{.ROOT_DIR}}/.venv/bin:$PATH"
+  VIRTUAL_ENV: "{{.ROOT_DIR}}/.venv"
+  SHARED_PATH: "{{.ROOT_DIR}}/k3s-nodes-shared"
+
+includes:
+  cluster:
+    taskfile: .taskfiles/ClusterTasks.yaml
+    aliases: [c]
+
+tasks:
+
+  default: task -l
+
+  init:
+    desc: Initialize configuration files
+    cmds:
+      - |
+        mkdir -p ~/.local/bin/
+        curl -sSLO  https://github.com/jqlang/jq/releases/download/jq-1.6/jq-linux64
+        install -m 0755 jq-linux64 ~/.local/bin/jq
+      - task: install-direnv
+      - ~/.local/bin/direnv allow .
+      - ~/.local/bin/direnv reload
+    status:
+      - test -d ~/.local/bin/
+      - test -f ~/.local/bin/jq
+      - test -f ~/.local/bin/direnv
+
+  install-python-virtual-env:
+    desc: Create a Python virtual env and install required packages
+    aliases: [venv]
+    cmds:
+      - "{{.PYTHON_BIN}} -m venv {{.ROOT_DIR}}/.venv"
+      - .venv/bin/python3 -m pip install --upgrade pip setuptools wheel
+
+  install-docker:
+    run: once
+    desc: Install docker-ce jq gettext
+    aliases: [docker]
+    dir: '/tmp/'
+    prompt: This is will add the docker repo to your system... Do you want to continue?
+    cmds:
+      - curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo tee /etc/apt/trusted.gpg.d/docker.asc
+      - sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" -y
+      - sudo apt-get update -qq -y
+      - sudo apt-get install docker-ce jq gettext wget curl -y
+      - sudo usermod -aG docker $(whoami)
+    status:
+      - test -f /etc/apt/trusted.gpg.d/docker.asc
+      - test -f /bin/jq
+      - test -f /bin/envsubst
+
+  install-direnv:
+    desc: Install direnv binary
+    aliases: [direnv]
+    dir: '/tmp/'
+    cmds:
+      - |
+        DIRENV_VERSION=$(curl -sL https://api.github.com/repos/direnv/direnv/releases/latest | ~/.local/bin/jq -r ".tag_name")
+        curl -sSLO https://github.com/direnv/direnv/releases/download/${DIRENV_VERSION}/direnv.linux-amd64
+        install -m 0755 direnv.linux-amd64 ~/.local/bin/direnv
+    preconditions:
+      - test -d ~/.local/bin/
+    status:
+      - test -f ~/.local/bin/direnv
+
+  install-kubectl:
+    desc: Install kubectl binary
+    aliases: [kubectl]
+    dir: '/tmp/'
+    cmds:
+      - |
+        curl -sSLO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+        install -m 0755 kubectl ~/.local/bin/kubectl
+    preconditions:
+      - test -d ~/.local/bin/
+    status:
+      - test -f ~/.local/bin/kubectl
+
+  install-k3d:
+    desc: Install k3d binary
+    aliases: [k3d]
+    dir: '/tmp/'
+    cmds:
+      - |
+        K3D_VERSION=$(curl -sL https://api.github.com/repos/k3d-io/k3d/releases/latest | jq -r ".tag_name")
+        curl -sSLO https://github.com/k3d-io/k3d/releases/download/${K3D_VERSION}/k3d-linux-amd64
+        install -m 0755 k3d-linux-amd64 ~/.local/bin/k3d
+    preconditions:
+      - test -d ~/.local/bin/
+    status:
+      - test -f ~/.local/bin/k3d
+
+  install-flux:
+    desc: Install flux binary
+    aliases: [flux]
+    dir: '/tmp/'
+    cmds:
+      - |
+        FLUX_VERSION=$(curl -sL https://api.github.com/repos/fluxcd/flux2/releases/latest | jq -r ".tag_name")
+        curl -sSLO https://github.com/fluxcd/flux2/releases/download/${FLUX_VERSION}/flux_${FLUX_VERSION/v/}_linux_amd64.tar.gz
+        tar xf flux_${FLUX_VERSION/v/}_linux_amd64.tar.gz
+        install -m 0755 flux ~/.local/bin/flux
+    preconditions:
+      - test -d ~/.local/bin/
+    status:
+      - test -f ~/.local/bin/flux
+
+  install-tools:
+    desc: Install all the tools
+    aliases: [tools]
+    cmds:
+      - task: install-direnv
+      - task: install-kubectl
+      - task: install-k3d
+      - task: install-flux
+
+  all:
+    desc: Install everything
+    deps: [init]
+    cmds:
+      - task: install-tools
+      - task: cluster:all
