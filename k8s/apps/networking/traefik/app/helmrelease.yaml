@@ -12,8 +12,11 @@ spec:
       version: 23.1.0
       sourceRef:
         kind: HelmRepository
-        name: traefik
+        name: traefik-charts
         namespace: flux-system
+  dependsOn:
+    - name: cert-manager
+      namespace: cert-manager
   maxHistory: 2
   install:
     createNamespace: true
@@ -142,7 +145,19 @@ spec:
         ## https://doc.traefik.io/traefik/routing/entrypoints/#tls
         tls:
           enabled: true
-
+    service:
+      enabled: true
+      single: true
+      type: LoadBalancer
+      # -- Additional annotations applied to both TCP and UDP services (e.g. for cloud provider specific config)
+      annotations: {}
+      labels: {}
+      # -- Additional entries here will be added to the service spec.
+      # -- Cannot contain type, selector or ports entries.
+      spec:
+        externalTrafficPolicy: Cluster
+      ## -- Class of the load balancer implementation https://kube-vip.io/docs/usage/kubernetes-services/#external-traffic-policy-kube-vip-v050
+      loadBalancerClass: kube-vip.io/kube-vip-class
     autoscaling:
       # -- Create HorizontalPodAutoscaler object.
       enabled: true
@@ -168,7 +183,6 @@ spec:
           - type: Pods
             value: 1
             periodSeconds: 60
-
     resources:
       limits:
         cpu: 300m
@@ -176,5 +190,4 @@ spec:
       requests:
         cpu: 100m
         memory: 200Mi
-
     domain: "${SECRET_DOMAIN}"

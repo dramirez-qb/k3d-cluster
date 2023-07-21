@@ -79,19 +79,36 @@ tasks:
       - cmd: echo -e "\\033[1;32mInstalling metallb\\033[0;39m"
         silent: true
       - cmd: |
-          export CIDR_RANGE=$(docker network inspect k3d-${CLUSTER_NAME} | jq '.[0].IPAM.Config[0].Subnet'|sed 's/0/200/g'| tr -d '"')
-          export START_RANGE=$(echo ${CIDR_RANGE}  |sed 's/200\/.*/240/g')
-          export END_RANGE=$(echo ${CIDR_RANGE}  |sed 's/200\/.*/254/g')
           envsubst < {{.KUBERNETES_DIR}}/01_metallb.yaml | kubectl apply -f -
           kubectl get secret -n metallb-system memberlist > /dev/null 2>&1 || kubectl create secret generic -n metallb-system memberlist --from-literal=secretkey="$(openssl rand -base64 128)" > /dev/null 2>&1
           kubectl -n metallb-system wait --for condition=available --timeout=120s deployment.apps/controller
           kubectl -n metallb-system wait --for=jsonpath='{.status.numberMisscheduled}'=0 --timeout=120s daemonset.apps/speaker
+
+          export CIDR_RANGE=$(docker network inspect k3d-${CLUSTER_NAME} | jq '.[0].IPAM.Config[0].Subnet'|sed 's/0/200/g'| tr -d '"')
+          export START_RANGE=$(echo ${CIDR_RANGE}  |sed 's/200\/.*/240/g')
+          export END_RANGE=$(echo ${CIDR_RANGE}  |sed 's/200\/.*/254/g')
           envsubst < {{.KUBERNETES_DIR}}/01_metallb_resources.yaml | kubectl apply -f -
         silent: true
     status:
       - "kubectl -n metallb-system wait --for=jsonpath='{.status.numberMisscheduled}'=0 --timeout=120s daemonset.apps/speaker"
     preconditions:
       - sh: 'k3d cluster list --no-headers | grep ${CLUSTER_NAME} > /dev/null 2>&1'
+
+  install:metallb-ip-ranges:
+    desc: Install metallb config into your cluster
+    aliases: [metallb-ip, mlb-ip]
+    cmds:
+      - cmd: echo -e "\\033[1;32mInstalling metallb ranges\\033[0;39m"
+        silent: true
+      - cmd: |
+          export CIDR_RANGE=$(docker network inspect k3d-${CLUSTER_NAME} | jq '.[0].IPAM.Config[0].Subnet'|sed 's/0/200/g'| tr -d '"')
+          export START_RANGE=$(echo ${CIDR_RANGE}  |sed 's/200\/.*/240/g')
+          export END_RANGE=$(echo ${CIDR_RANGE}  |sed 's/200\/.*/254/g')
+          envsubst < {{.KUBERNETES_DIR}}/01_metallb_resources.yaml | kubectl apply -f -
+        silent: true
+    preconditions:
+      - sh: 'k3d cluster list --no-headers | grep ${CLUSTER_NAME} > /dev/null 2>&1'
+      - "kubectl -n metallb-system wait --for=jsonpath='{.status.numberMisscheduled}'=0 --timeout=120s daemonset.apps/speaker"
 
   install:loadbalancer:
     desc: Install traefik into your cluster
@@ -295,12 +312,12 @@ tasks:
     deps: [create]
     cmds:
       - flux check --pre
-      - task: install:metallb
       - task: install:flux
       # - task: install:storage
       # - task: install:monitoring
       # - task: install:loadbalancer-fix
-      # - task: install:kube-vip
+      - task: install:kube-vip
+      - task: install:metallb-ip-ranges
       - cmd: |
           echo -e "\\033[1;32mCleanning cluster ${CLUSTER_NAME} events\\033[0;39m"
           kubectl delete events --all --all-namespaces
