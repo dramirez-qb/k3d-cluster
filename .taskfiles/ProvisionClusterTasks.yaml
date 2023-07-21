@@ -108,6 +108,7 @@ tasks:
         silent: true
     preconditions:
       - sh: 'k3d cluster list --no-headers | grep ${CLUSTER_NAME} > /dev/null 2>&1'
+      - "kubectl -n metallb-system wait --for condition=available --timeout=120s deployment.apps/controller"
       - "kubectl -n metallb-system wait --for=jsonpath='{.status.numberMisscheduled}'=0 --timeout=120s daemonset.apps/speaker"
 
   install:loadbalancer:
