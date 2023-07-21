@@ -140,7 +140,7 @@ tasks:
   install:monitoring:
     desc: Install Prometheus, metrics-server and kube-state-metrics into your cluster
     aliases: [monitoring, mnt]
-    deps: [install:storage]
+    # deps: [install:storage]
     cmds:
       - cmd: |
           echo -e "\\033[1;32mInstalling Installing Prometheus, metrics-server and kube-state-metrics\\033[0;39m"
@@ -170,7 +170,7 @@ tasks:
   install:cockroach:
     desc: Install cockroachDB into your cluster
     aliases: [cockroach]
-    deps: [install:storage]
+    # deps: [install:storage]
     cmds:
       - cmd: |
           echo -e "\\033[1;32mInstalling cockroach\\033[0;39m"
@@ -185,7 +185,7 @@ tasks:
   install:redis:
     desc: Install redis into your cluster
     aliases: [redis]
-    deps: [install:storage]
+    # deps: [install:storage]
     cmds:
       - cmd: |
           echo -e "\\033[1;32mInstalling redis\\033[0;39m"
@@ -197,7 +197,7 @@ tasks:
   install:redis-cluster:
     desc: Install redis-cluster into your cluster
     aliases: [redis-cluster]
-    deps: [install:storage]
+    # deps: [install:storage]
     cmds:
       - cmd: |
           echo -e "\\033[1;32mInstalling redis (you might have to run this twice)\\033[0;39m"
@@ -214,7 +214,7 @@ tasks:
   install:postgres:
     desc: Install postgres into your cluster
     aliases: [postgres]
-    deps: [install:storage]
+    # deps: [install:storage]
     cmds:
       - cmd: |
           echo -e "\\033[1;32mInstalling postgres\\033[0;39m"
@@ -232,7 +232,7 @@ tasks:
   install:mongodb:
     desc: Install mongodb into your cluster
     aliases: [mongodb]
-    deps: [install:storage]
+    # deps: [install:storage]
     cmds:
       - cmd: |
           echo -e "\\033[1;32mInstalling mongodb\\033[0;39m"
@@ -244,7 +244,7 @@ tasks:
   install:minio:
     desc: Install minio into your cluster
     aliases: [minio]
-    deps: [install:storage]
+    # deps: [install:storage]
     cmds:
       - cmd: |
           echo -e "\\033[1;32mInstalling minio\\033[0;39m"
@@ -256,7 +256,7 @@ tasks:
   install:nats:
     desc: Install nats into your cluster
     aliases: [nats]
-    deps: [install:storage]
+    # deps: [install:storage]
     cmds:
       - cmd: |
           echo -e "\\033[1;32mInstalling Nats\\033[0;39m"
@@ -286,19 +286,19 @@ tasks:
       - 'kubectl -n flux-system wait --for condition=available --timeout=90s deployment.apps/kustomize-controller'
       - 'kubectl -n flux-system wait --for condition=available --timeout=90s deployment.apps/notification-controller'
       - 'kubectl -n flux-system wait --for condition=available --timeout=90s deployment.apps/source-controller'
+      - 'kubectl -n flux-system get gitrepositories home-kubernetes -o jsonpath="{.status.artifact.revision}" | grep master'
 
   resources:
     desc: Gather common resources in your cluster, useful when asking for support
     aliases: [r, all]
     deps: [create]
     cmds:
-      - task: install:storage
-      - task: install:monitoring
-      - task: install:loadbalancer-fix
-      - task: install:cert-manager
       - task: install:flux
+      # - task: install:storage
+      # - task: install:monitoring
+      - task: install:loadbalancer-fix
       # - task: install:kube-vip
       - cmd: |
           echo -e "\\033[1;32mCleanning cluster ${CLUSTER_NAME} events\\033[0;39m"
-          kubectl  delete events --all --all-namespaces
+          kubectl delete events --all --all-namespaces
         silent: true

@@ -49,6 +49,7 @@ tasks:
 
   resources:
     desc: Gather common resources in your cluster, useful when asking for support
+    aliases: [r]
     cmds:
       - task: nodes
       - task: kustomizations
