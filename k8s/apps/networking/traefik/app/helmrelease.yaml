@@ -14,9 +14,9 @@ spec:
         kind: HelmRepository
         name: traefik-charts
         namespace: flux-system
-  # dependsOn:
-  #   - name: cert-manager
-  #     namespace: cert-manager
+  dependsOn:
+    - name: cert-manager
+      namespace: cert-manager
   maxHistory: 2
   install:
     createNamespace: true

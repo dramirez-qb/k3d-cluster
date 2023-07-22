@@ -1,22 +1,23 @@
-apiVersion: cert-manager.io/v1
-kind: ClusterIssuer
-metadata:
-  name: letsencrypt-production
-spec:
-  acme:
-    server: https://acme-v02.api.letsencrypt.org/directory
-    email: "${SECRET_ACME_EMAIL}"
-    privateKeySecretRef:
-      name: letsencrypt-production
-    solvers:
-      - dns01:
-          cloudflare:
-            apiTokenSecretRef:
-              name: cert-manager-secret
-              key: api-token
-        selector:
-          dnsZones:
-            - "${SECRET_DOMAIN}"
+---
+# apiVersion: cert-manager.io/v1
+# kind: ClusterIssuer
+# metadata:
+#   name: letsencrypt-production
+# spec:
+#   acme:
+#     server: https://acme-v02.api.letsencrypt.org/directory
+#     email: "${SECRET_ACME_EMAIL}"
+#     privateKeySecretRef:
+#       name: letsencrypt-production
+#     solvers:
+#       - dns01:
+#           cloudflare:
+#             apiTokenSecretRef:
+#               name: cert-manager-secret
+#               key: api-token
+#         selector:
+#           dnsZones:
+#             - "${SECRET_DOMAIN}"
 ---
 apiVersion: cert-manager.io/v1
 kind: ClusterIssuer
@@ -53,20 +54,20 @@ spec:
           ingress:
             class: traefik
 ---
-apiVersion: cert-manager.io/v1
-kind: ClusterIssuer
-metadata:
-  name: letsencrypt-prod-traefik
-spec:
-  acme:
-    email: ${SECRET_ACME_EMAIL}
-    privateKeySecretRef:
-      name: letsencrypt-prod-traefik
-    server: https://acme-v02.api.letsencrypt.org/directory
-    solvers:
-      - http01:
-          ingress:
-            class: traefik
+# apiVersion: cert-manager.io/v1
+# kind: ClusterIssuer
+# metadata:
+#   name: letsencrypt-prod-traefik
+# spec:
+#   acme:
+#     email: ${SECRET_ACME_EMAIL}
+#     privateKeySecretRef:
+#       name: letsencrypt-prod-traefik
+#     server: https://acme-v02.api.letsencrypt.org/directory
+#     solvers:
+#       - http01:
+#           ingress:
+#             class: traefik
 ---
 apiVersion: cert-manager.io/v1
 kind: ClusterIssuer
@@ -83,17 +84,17 @@ spec:
           ingress:
             class: kong
 ---
-apiVersion: cert-manager.io/v1
-kind: ClusterIssuer
-metadata:
-  name: letsencrypt-prod-kong
-spec:
-  acme:
-    email: ${SECRET_ACME_EMAIL}
-    privateKeySecretRef:
-      name: letsencrypt-prod-kong
-    server: https://acme-v02.api.letsencrypt.org/directory
-    solvers:
-      - http01:
-          ingress:
-            class: kong
+# apiVersion: cert-manager.io/v1
+# kind: ClusterIssuer
+# metadata:
+#   name: letsencrypt-prod-kong
+# spec:
+#   acme:
+#     email: ${SECRET_ACME_EMAIL}
+#     privateKeySecretRef:
+#       name: letsencrypt-prod-kong
+#     server: https://acme-v02.api.letsencrypt.org/directory
+#     solvers:
+#       - http01:
+#           ingress:
+#             class: kong

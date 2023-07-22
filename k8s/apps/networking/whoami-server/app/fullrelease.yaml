@@ -46,19 +46,14 @@ metadata:
   annotations:
     external-dns.alpha.kubernetes.io/target: "ingress.${SECRET_DOMAIN}"
     hajimari.io/enable: "false"
-    cert-manager.io/cluster-issuer: letsencrypt-production
-    ingress.kubernetes.io/proxy-body-size: '0'
-    ingress.kubernetes.io/ssl-redirect: 'true'
-    kubernetes.io/tls-acme: 'true'
-    traefik.ingress.kubernetes.io/router.entrypoints: websecure
-    traefik.ingress.kubernetes.io/router.tls: 'true'
+    traefik.ingress.kubernetes.io/router.entrypoints: web
 spec:
   ingressClassName: traefik
   rules:
     - host: &host "whoami.${SECRET_DOMAIN}"
       http:
         paths:
-          - path: /hook/
+          - path: /
             pathType: Prefix
             backend:
               service:
