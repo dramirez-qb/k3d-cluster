@@ -111,12 +111,17 @@ spec:
             - 192.168.0.0/16
             - 172.16.0.0/16
             - ${CURRENT_EXTERNAL_IP}
-        #   insecure: false
+          insecure: false
         #
         # Enable the Proxy Protocol header parsing for the entry point
-        # proxyProtocol:
-        #   trustedIPs: []
-        #   insecure: false
+        proxyProtocol:
+          trustedIPs:
+            - 127.0.0.1/32
+            - 10.0.0.0/8
+            - 192.168.0.0/16
+            - 172.16.0.0/16
+            - ${CURRENT_EXTERNAL_IP}
+          insecure: false
       websecure:
         ## -- Enable this entrypoint as a default entrypoint. When a service doesn't explicitly set an entrypoint it will only use this entrypoint.
         # asDefault: true
@@ -135,6 +140,14 @@ spec:
         #
         ## -- Trust forwarded  headers information (X-Forwarded-*).
         forwardedHeaders:
+          trustedIPs:
+            - 127.0.0.1/32
+            - 10.0.0.0/8
+            - 192.168.0.0/16
+            - 172.16.0.0/16
+            - ${CURRENT_EXTERNAL_IP}
+          insecure: false
+        proxyProtocol:
           trustedIPs:
             - 127.0.0.1/32
             - 10.0.0.0/8
