@@ -79,7 +79,7 @@ tasks:
       - cmd: echo -e "\\033[1;32mInstalling metallb\\033[0;39m"
         silent: true
       - cmd: |
-          envsubst < {{.KUBERNETES_DIR}}/01_metallb.yaml | kubectl apply -f -
+          kubectl apply -k github.com/metallb/metallb/config/native?ref=v0.13.10
           kubectl get secret -n metallb-system memberlist > /dev/null 2>&1 || kubectl create secret generic -n metallb-system memberlist --from-literal=secretkey="$(openssl rand -base64 128)" > /dev/null 2>&1
           kubectl -n metallb-system wait --for condition=available --timeout=120s deployment.apps/controller
           kubectl -n metallb-system wait --for=jsonpath='{.status.numberMisscheduled}'=0 --timeout=120s daemonset.apps/speaker
@@ -285,6 +285,7 @@ tasks:
 
   install:flux:
     desc: Install Flux into your cluster
+    aliases: [flux]
     deps: [install:monitoring]
     cmds:
       - kubectl apply --kustomize {{.KUBERNETES_DIR}}/bootstrap
@@ -312,13 +313,13 @@ tasks:
     aliases: [r, all]
     deps: [create]
     cmds:
-      - flux check --pre
-      - task: install:flux
-      # - task: install:storage
-      # - task: install:monitoring
-      # - task: install:loadbalancer-fix
-      - task: install:kube-vip
-      - task: install:metallb-ip-ranges
+      # - flux check --pre
+      # - task: install:flux
+      - task: install:storage
+      - task: install:monitoring
+      - task: install:loadbalancer-fix
+      # - task: install:kube-vip
+      # - task: install:metallb-ip-ranges
       - cmd: |
           echo -e "\\033[1;32mCleanning cluster ${CLUSTER_NAME} events\\033[0;39m"
           kubectl delete events --all --all-namespaces

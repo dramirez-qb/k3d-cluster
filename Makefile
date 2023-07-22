@@ -86,7 +86,7 @@ install/metallb: create/cluster
 	@$(eval export CIDR_RANGE := $(shell $(DOCKER) network inspect k3d-${CLUSTER_NAME} | jq '.[0].IPAM.Config[0].Subnet'|sed 's/0/200/g'| tr -d '"'))
 	@$(eval export START_RANGE := $(shell echo ${CIDR_RANGE}  |sed 's/200\/.*/240/g'))
 	@$(eval export END_RANGE := $(shell echo ${CIDR_RANGE}  |sed 's/200\/.*/254/g'))
-	@$(ENVSUBST) < k8s/01_metallb.yaml | $(KUBECTL) apply -f -
+	@$(KUBECTL) kubectl apply -k github.com/metallb/metallb/config/native?ref=v0.13.10
 	@$(KUBECTL) get secret -n metallb-system memberlist > /dev/null 2>&1 || $(KUBECTL) create secret generic -n metallb-system memberlist --from-literal=secretkey="$(shell openssl rand -base64 128)" > /dev/null 2>&1
 	@$(KUBECTL) -n metallb-system wait --for condition=available --timeout=120s deployment.apps/controller
 	@$(KUBECTL) -n metallb-system wait --for=jsonpath='{.status.numberMisscheduled}'=0 --timeout=120s daemonset.apps/speaker
