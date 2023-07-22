@@ -11,7 +11,7 @@ spec:
       chart: external-secrets
       version: v0.9.1
       sourceRef:
-        kind: GitRepository
+        kind: HelmRepository
         name: external-secrets
         namespace: flux-system
   maxHistory: 2
