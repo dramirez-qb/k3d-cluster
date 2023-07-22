@@ -9,7 +9,7 @@ spec:
   chart:
     spec:
       chart: external-secrets
-      version: 0.9.1
+      version: v0.9.1
       sourceRef:
         kind: GitRepository
         name: external-secrets
