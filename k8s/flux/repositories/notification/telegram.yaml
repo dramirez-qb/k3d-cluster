@@ -1,0 +1,30 @@
+---
+apiVersion: notification.toolkit.fluxcd.io/v1beta2
+kind: Provider
+metadata:
+  name: telegram
+  namespace: flux-system
+spec:
+  type: telegram
+  address: https://api.telegram.org
+  channel: "640630610" # or "-1557265138" (channel id)
+  secretRef:
+    name: telegram-token
+---
+apiVersion: notification.toolkit.fluxcd.io/v1beta2
+kind: Alert
+metadata:
+  name: telegram
+  namespace: flux-system
+spec:
+  summary: "Cluster notification"
+  providerRef:
+    name: telegram
+  eventSeverity: error
+  eventSources:
+    - kind: GitRepository
+      name: "*"
+    - kind: HelmRelease
+      name: "*"
+    - kind: Kustomization
+      name: "*"
