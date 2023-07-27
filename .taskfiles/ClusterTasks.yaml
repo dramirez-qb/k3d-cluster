@@ -2,7 +2,6 @@
 version: "3"
 
 tasks:
-
   reconcile:
     aliases: [rc]
     desc: Force update Flux to pull in changes from your Git repository

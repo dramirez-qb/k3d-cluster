@@ -11,6 +11,7 @@ env:
   VIRTUAL_ENV: "{{.ROOT_DIR}}/.venv"
   SHARED_PATH: "{{.ROOT_DIR}}/k3s-nodes-shared"
   TASK_TEMP_DIR: "{{.HOME}}/.task-temp"
+  USER_BIN_DIR: "{{.HOME}}/.local/bin"
 
 includes:
   cluster:
@@ -21,24 +22,23 @@ includes:
     aliases: [p]
 
 tasks:
-
   default: task -l
 
   init:
     desc: Initialize configuration files
-    dir: '{{.TASK_TEMP_DIR}}'
+    dir: "{{.TASK_TEMP_DIR}}"
     cmds:
       - |
-        mkdir -p ~/.local/bin/
+        mkdir -p {{.USER_BIN_DIR}} {{.TASK_TEMP_DIR}}
         curl -sSLO  https://github.com/jqlang/jq/releases/download/jq-1.6/jq-linux64
-        install -m 0755 jq-linux64 ~/.local/bin/jq && rm -f jq-linux64
+        install -m 0755 jq-linux64 {{.USER_BIN_DIR}}/jq && rm -f jq-linux64
       - task: install:direnv
-      - ~/.local/bin/direnv allow .
-      - ~/.local/bin/direnv reload
+      - "{{.USER_BIN_DIR}}/direnv allow ."
+      - "{{.USER_BIN_DIR}}/direnv reload"
     status:
-      - test -d ~/.local/bin/
-      - test -f ~/.local/bin/jq
-      - test -f ~/.local/bin/direnv
+      - test -d {{.USER_BIN_DIR}}/
+      - test -f {{.USER_BIN_DIR}}/jq
+      - test -f {{.USER_BIN_DIR}}/direnv
 
   install:python-virtual-env:
     desc: Create a Python virtual env and install required packages
@@ -51,7 +51,7 @@ tasks:
     run: once
     desc: Install docker-ce jq gettext
     aliases: [docker]
-    dir: '{{.TASK_TEMP_DIR}}'
+    dir: "{{.TASK_TEMP_DIR}}"
     prompt: This is will add the docker repo to your system... Do you want to continue?
     cmds:
       - curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo tee /etc/apt/trusted.gpg.d/docker.asc
@@ -67,102 +67,127 @@ tasks:
   install:direnv:
     desc: Install direnv binary
     aliases: [direnv]
-    dir: '{{.TASK_TEMP_DIR}}'
+    dir: "{{.TASK_TEMP_DIR}}"
     cmds:
       - |
-        DIRENV_VERSION=$(curl -sL https://api.github.com/repos/direnv/direnv/releases/latest | ~/.local/bin/jq -r ".tag_name")
+        DIRENV_VERSION=$(curl -sL https://api.github.com/repos/direnv/direnv/releases/latest | {{.USER_BIN_DIR}}/jq -r ".tag_name")
         curl -sSLO https://github.com/direnv/direnv/releases/download/${DIRENV_VERSION}/direnv.linux-amd64
-        install -m 0755 direnv.linux-amd64 ~/.local/bin/direnv && rm -f direnv.linux-amd64
+        install -m 0755 direnv.linux-amd64 {{.USER_BIN_DIR}}/direnv && rm -f direnv.linux-amd64
     preconditions:
-      - test -d ~/.local/bin/
+      - test -d {{.USER_BIN_DIR}}/
     status:
-      - test -f ~/.local/bin/direnv
+      - test -f {{.USER_BIN_DIR}}/direnv
 
   install:kubectl:
     desc: Install kubectl binary
     aliases: [kubectl]
-    dir: '{{.TASK_TEMP_DIR}}'
+    dir: "{{.TASK_TEMP_DIR}}"
     cmds:
       - |
         curl -sSLO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
-        install -m 0755 kubectl ~/.local/bin/kubectl && rm -f kubectl
+        install -m 0755 kubectl {{.USER_BIN_DIR}}/kubectl && rm -f kubectl
     preconditions:
-      - test -d ~/.local/bin/
+      - test -d {{.USER_BIN_DIR}}/
     status:
-      - test -f ~/.local/bin/kubectl
+      - test -f {{.USER_BIN_DIR}}/kubectl
 
   install:k3d:
     desc: Install k3d binary
     aliases: [k3d]
-    dir: '{{.TASK_TEMP_DIR}}'
+    dir: "{{.TASK_TEMP_DIR}}"
     cmds:
       - |
         K3D_VERSION=$(curl -sL https://api.github.com/repos/k3d-io/k3d/releases/latest | jq -r ".tag_name")
         curl -sSLO https://github.com/k3d-io/k3d/releases/download/${K3D_VERSION}/k3d-linux-amd64
-        install -m 0755 k3d-linux-amd64 ~/.local/bin/k3d && rm -f k3d-linux-amd64
+        install -m 0755 k3d-linux-amd64 {{.USER_BIN_DIR}}/k3d && rm -f k3d-linux-amd64
     preconditions:
-      - test -d ~/.local/bin/
+      - test -d {{.USER_BIN_DIR}}/
     status:
-      - test -f ~/.local/bin/k3d
+      - test -f {{.USER_BIN_DIR}}/k3d
 
   install:flux:
     desc: Install flux binary
     aliases: [flux]
-    dir: '{{.TASK_TEMP_DIR}}'
+    dir: "{{.TASK_TEMP_DIR}}"
     cmds:
       - |
         FLUX_VERSION=$(curl -sL https://api.github.com/repos/fluxcd/flux2/releases/latest | jq -r ".tag_name")
         curl -sSLO https://github.com/fluxcd/flux2/releases/download/${FLUX_VERSION}/flux_${FLUX_VERSION/v/}_linux_amd64.tar.gz
         tar xf flux_${FLUX_VERSION/v/}_linux_amd64.tar.gz
-        install -m 0755 flux ~/.local/bin/flux && rm -f flux flux_${FLUX_VERSION/v/}_linux_amd64.tar.gz
+        install -m 0755 flux {{.USER_BIN_DIR}}/flux && rm -f flux flux_${FLUX_VERSION/v/}_linux_amd64.tar.gz
     preconditions:
-      - test -d ~/.local/bin/
+      - test -d {{.USER_BIN_DIR}}/
     status:
-      - test -f ~/.local/bin/flux
+      - test -f {{.USER_BIN_DIR}}/flux
 
   install:age:
     desc: Install age binary
     aliases: [age]
-    dir: '{{.TASK_TEMP_DIR}}'
+    dir: "{{.TASK_TEMP_DIR}}"
     cmds:
       - |
         AGE_VERSION=$(curl -sL https://api.github.com/repos/FiloSottile/age/releases/latest | jq -r ".tag_name")
         curl -sSLO https://github.com/FiloSottile/age/releases/download/${AGE_VERSION}/age-${AGE_VERSION}-linux-amd64.tar.gz
         tar xf age-${AGE_VERSION}-linux-amd64.tar.gz
-        install -m 0755 age/age ~/.local/bin/age && rm -rf age*
+        install -m 0755 age/age {{.USER_BIN_DIR}}/age && rm -rf age*
     preconditions:
-      - test -d ~/.local/bin/
+      - test -d {{.USER_BIN_DIR}}/
     status:
-      - test -f ~/.local/bin/age
+      - test -f {{.USER_BIN_DIR}}/age
 
   install:sops:
     desc: Install sops binary
     aliases: [sops]
-    dir: '{{.TASK_TEMP_DIR}}'
+    dir: "{{.TASK_TEMP_DIR}}"
     cmds:
       - |
         SOPS_VERSION=$(curl -sL https://api.github.com/repos/getsops/sops/releases/latest | jq -r ".tag_name")
         curl -sSLO https://github.com/getsops/sops/releases/download/${SOPS_VERSION}/sops-${SOPS_VERSION}.linux.amd64
-        install -m 0755 sops-${SOPS_VERSION}.linux.amd64 ~/.local/bin/sops && rm -f sops-${SOPS_VERSION}.linux.amd64
+        install -m 0755 sops-${SOPS_VERSION}.linux.amd64 {{.USER_BIN_DIR}}/sops && rm -f sops-${SOPS_VERSION}.linux.amd64
     preconditions:
-      - test -d ~/.local/bin/
+      - test -d {{.USER_BIN_DIR}}/
     status:
-      - test -f ~/.local/bin/sops
+      - test -f {{.USER_BIN_DIR}}/sops
 
   install:cloudflared:
     desc: Install cloudflared binary
     aliases: [cloudflared]
-    dir: '{{.TASK_TEMP_DIR}}'
+    dir: "{{.TASK_TEMP_DIR}}"
     cmds:
       - |
         CLOUDFLARED_VERSION=$(curl -sL https://api.github.com/repos/cloudflare/cloudflared/releases/latest | jq -r ".tag_name")
         curl -sSLO https://github.com/cloudflare/cloudflared/releases/download/${CLOUDFLARED_VERSION}/cloudflared-linux-amd64
-        install -m 0755 cloudflared-linux-amd64 ~/.local/bin/cloudflared && rm -f cloudflared-linux-amd64
+        install -m 0755 cloudflared-linux-amd64 {{.USER_BIN_DIR}}/cloudflared && rm -f cloudflared-linux-amd64
     preconditions:
-      - test -d ~/.local/bin/
+      - test -d {{.USER_BIN_DIR}}/
     status:
-      - test -f ~/.local/bin/cloudflared
+      - test -f {{.USER_BIN_DIR}}/cloudflared
 
+  install:devspace:
+    desc: Install devspace binary
+    aliases: [devspace]
+    dir: "{{.TASK_TEMP_DIR}}"
+    cmds:
+      - |
+        curl -sSL -o devspace "https://github.com/loft-sh/devspace/releases/latest/download/devspace-linux-amd64"
+        install -c -m 0755 devspace {{.USER_BIN_DIR}}/devspace && rm -f devspace
+    preconditions:
+      - test -d {{.USER_BIN_DIR}}/
+    status:
+      - test -f {{.USER_BIN_DIR}}/devspace
+
+  install:vcluster:
+    desc: Install vcluster binary
+    aliases: [vcluster]
+    dir: "{{.TASK_TEMP_DIR}}"
+    cmds:
+      - |
+        curl -sSL -o vcluster "https://github.com/loft-sh/vcluster/releases/latest/download/vcluster-linux-amd64"
+        install -c -m 0755 vcluster {{.USER_BIN_DIR}}/vcluster && rm -f vcluster
+    preconditions:
+      - test -d {{.USER_BIN_DIR}}/
+    status:
+      - test -f {{.USER_BIN_DIR}}/vcluster
 
   install:tools:
     desc: Install all the tools
@@ -175,6 +200,15 @@ tasks:
       - task: install:flux
       - task: install:age
       - task: install:sops
+
+  install:devtools:
+    desc: Install all the dev tools
+    aliases: [devtools]
+    deps: [init]
+    cmds:
+      - task: install:tools
+      - task: install:devspace
+      - task: install:vcluster
 
   all:
     desc: Install everything

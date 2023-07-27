@@ -1,0 +1,28 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    # cert-manager.io/cluster-issuer: invalid-letsencrypt-prod-traefik
+    kubernetes.io/tls-acme: "true"
+    traefik.ingress.kubernetes.io/router.entrypoints: web,websecure
+    traefik.ingress.kubernetes.io/router.tls: "true"
+  name: ${VCLUSTER_NAME}-ingress
+  namespace: vcluster-${VCLUSTER_NAME}
+spec:
+  ingressClassName: traefik
+  tls:
+    - hosts:
+        - ${VCLUSTER_NAME}.${SECRET_DOMAIN}
+      secretName: ${VCLUSTER_NAME}-vcluster-ssl-cert
+  rules:
+    - host: ${VCLUSTER_NAME}.${SECRET_DOMAIN}
+      http:
+        paths:
+          - path: /
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: ${VCLUSTER_NAME}
+                port:
+                  number: 443

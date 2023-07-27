@@ -2,7 +2,6 @@
 version: "3"
 
 tasks:
-
   create:
     desc: Install a K3d cluster
     aliases: [c, init]
@@ -16,7 +15,7 @@ tasks:
       - cmd: k3d cluster create -c {{.TASK_TEMP_DIR}}/k3d-config.yaml
         silent: true
     status:
-      - 'k3d cluster list --no-headers | grep ${CLUSTER_NAME} > /dev/null 2>&1'
+      - "k3d cluster list --no-headers | grep ${CLUSTER_NAME} > /dev/null 2>&1"
 
   destroy:
     desc: Destroy the K3d cluster
@@ -36,9 +35,9 @@ tasks:
         silent: true
       - kubectl apply -f {{.KUBERNETES_DIR}}/00_local-path-storage.yaml
     status:
-      - 'kubectl -n local-path-storage wait --for condition=available --timeout=90s deploy local-path-provisioner'
+      - "kubectl -n local-path-storage wait --for condition=available --timeout=90s deploy local-path-provisioner"
     preconditions:
-      - sh: 'k3d cluster list --no-headers | grep ${CLUSTER_NAME} > /dev/null 2>&1'
+      - sh: "k3d cluster list --no-headers | grep ${CLUSTER_NAME} > /dev/null 2>&1"
 
   install:kube-vip:
     desc: Install kube-vip into your cluster
@@ -54,7 +53,7 @@ tasks:
           kubectl create configmap --namespace kube-system kubevip --from-literal range-global=${START_RANGE}-${END_RANGE} || exit 0
         silent: true
     preconditions:
-      - sh: 'k3d cluster list --no-headers | grep ${CLUSTER_NAME} > /dev/null 2>&1'
+      - sh: "k3d cluster list --no-headers | grep ${CLUSTER_NAME} > /dev/null 2>&1"
 
   install:cert-manager:
     desc: Install cert-manager into your cluster
@@ -68,9 +67,9 @@ tasks:
           envsubst < {{.KUBERNETES_DIR}}/02_certmanager-resources.yaml | kubectl apply -f -
         silent: true
     status:
-      - 'kubectl -n cert-manager wait --for condition=available --timeout=90s deploy -lapp.kubernetes.io/instance=cert-manager'
+      - "kubectl -n cert-manager wait --for condition=available --timeout=90s deploy -lapp.kubernetes.io/instance=cert-manager"
     preconditions:
-      - sh: 'k3d cluster list --no-headers | grep ${CLUSTER_NAME} > /dev/null 2>&1'
+      - sh: "k3d cluster list --no-headers | grep ${CLUSTER_NAME} > /dev/null 2>&1"
 
   install:metallb:
     desc: Install metallb into your cluster
@@ -92,7 +91,7 @@ tasks:
     status:
       - "kubectl -n metallb-system wait --for=jsonpath='{.status.numberMisscheduled}'=0 --timeout=120s daemonset.apps/speaker"
     preconditions:
-      - sh: 'k3d cluster list --no-headers | grep ${CLUSTER_NAME} > /dev/null 2>&1'
+      - sh: "k3d cluster list --no-headers | grep ${CLUSTER_NAME} > /dev/null 2>&1"
 
   install:metallb-ip-ranges:
     desc: Install metallb config into your cluster
@@ -107,7 +106,7 @@ tasks:
           envsubst < {{.KUBERNETES_DIR}}/01_metallb_resources.yaml | kubectl apply -f -
         silent: true
     preconditions:
-      - sh: 'k3d cluster list --no-headers | grep ${CLUSTER_NAME} > /dev/null 2>&1'
+      - sh: "k3d cluster list --no-headers | grep ${CLUSTER_NAME} > /dev/null 2>&1"
       - "kubectl -n metallb-system wait --for condition=available --timeout=120s deployment.apps/controller"
       - "kubectl -n metallb-system wait --for=jsonpath='{.status.numberMisscheduled}'=0 --timeout=120s daemonset.apps/speaker"
 
@@ -124,9 +123,9 @@ tasks:
           kubectl apply -f {{.TASK_TEMP_DIR}}/01_traefik_workload.yaml
         silent: true
     status:
-      - 'kubectl -n infrastructure wait --for condition=available --timeout=90s deploy -lapp.kubernetes.io/instance=traefik'
+      - "kubectl -n infrastructure wait --for condition=available --timeout=90s deploy -lapp.kubernetes.io/instance=traefik"
     preconditions:
-      - sh: 'k3d cluster list --no-headers | grep ${CLUSTER_NAME} > /dev/null 2>&1'
+      - sh: "k3d cluster list --no-headers | grep ${CLUSTER_NAME} > /dev/null 2>&1"
 
   install:loadbalancer-fix:
     desc: Install traefik into your cluster
@@ -141,7 +140,7 @@ tasks:
     status:
       - 'kubectl get deployments.apps -n infrastructure traefik -o yaml | grep "providers.kubernetesingress.ingressendpoint.ip"'
     preconditions:
-      - sh: 'k3d cluster list --no-headers | grep ${CLUSTER_NAME} > /dev/null 2>&1'
+      - sh: "k3d cluster list --no-headers | grep ${CLUSTER_NAME} > /dev/null 2>&1"
 
   install:kong:
     desc: Install kong into your cluster
@@ -153,7 +152,7 @@ tasks:
           kubectl apply -Rf {{.KUBERNETES_DIR}}/03_kong
         silent: true
     preconditions:
-      - sh: 'k3d cluster list --no-headers | grep ${CLUSTER_NAME} > /dev/null 2>&1'
+      - sh: "k3d cluster list --no-headers | grep ${CLUSTER_NAME} > /dev/null 2>&1"
 
   install:monitoring:
     desc: Install Prometheus, metrics-server and kube-state-metrics into your cluster
@@ -168,11 +167,11 @@ tasks:
           kubectl apply -f {{.KUBERNETES_DIR}}/monitoring/02_monitoring_prometheus_alertmanager.yaml
         silent: true
     status:
-      - 'kubectl -n kube-system wait --for condition=available --timeout=90s deploy metrics-server'
-      - 'kubectl -n monitoring wait --for condition=available --timeout=90s deploy -lapp.kubernetes.io/name=prometheus-operator'
-      - 'kubectl -n monitoring wait --for condition=available --timeout=90s deploy -lapp.kubernetes.io/name=kube-state-metrics'
+      - "kubectl -n kube-system wait --for condition=available --timeout=90s deploy metrics-server"
+      - "kubectl -n monitoring wait --for condition=available --timeout=90s deploy -lapp.kubernetes.io/name=prometheus-operator"
+      - "kubectl -n monitoring wait --for condition=available --timeout=90s deploy -lapp.kubernetes.io/name=kube-state-metrics"
     preconditions:
-      - sh: 'k3d cluster list --no-headers | grep ${CLUSTER_NAME} > /dev/null 2>&1'
+      - sh: "k3d cluster list --no-headers | grep ${CLUSTER_NAME} > /dev/null 2>&1"
 
   install:external-secrets:
     desc: Install External Secrets operator into your cluster
@@ -183,7 +182,7 @@ tasks:
           kubectl apply -f {{.KUBERNETES_DIR}}/10_external-secrets.yml
         silent: true
     preconditions:
-      - sh: 'k3d cluster list --no-headers | grep ${CLUSTER_NAME} > /dev/null 2>&1'
+      - sh: "k3d cluster list --no-headers | grep ${CLUSTER_NAME} > /dev/null 2>&1"
 
   install:cockroach:
     desc: Install cockroachDB into your cluster
@@ -198,7 +197,7 @@ tasks:
           kubectl -n infrastructure apply -f {{.KUBERNETES_DIR}}/99_cockroach.yaml
         silent: true
     preconditions:
-      - sh: 'k3d cluster list --no-headers | grep ${CLUSTER_NAME} > /dev/null 2>&1'
+      - sh: "k3d cluster list --no-headers | grep ${CLUSTER_NAME} > /dev/null 2>&1"
 
   install:redis:
     desc: Install redis into your cluster
@@ -210,7 +209,7 @@ tasks:
           kubectl -n infrastructure apply -f {{.KUBERNETES_DIR}}/04_redis.yml
         silent: true
     preconditions:
-      - sh: 'k3d cluster list --no-headers | grep ${CLUSTER_NAME} > /dev/null 2>&1'
+      - sh: "k3d cluster list --no-headers | grep ${CLUSTER_NAME} > /dev/null 2>&1"
 
   install:redis-cluster:
     desc: Install redis-cluster into your cluster
@@ -227,7 +226,7 @@ tasks:
           echo "yes" | kubectl -n infrastructure exec -it redis-cluster-0 -- redis-cli --cluster create --cluster-replicas 1 $(kubectl -n infrastructure get pods -l app=redis-cluster -o jsonpath='{range.items[*]}{.status.podIP}:6379 {end}')
         silent: true
     preconditions:
-      - sh: 'k3d cluster list --no-headers | grep ${CLUSTER_NAME} > /dev/null 2>&1'
+      - sh: "k3d cluster list --no-headers | grep ${CLUSTER_NAME} > /dev/null 2>&1"
 
   install:postgres:
     desc: Install postgres into your cluster
@@ -245,7 +244,7 @@ tasks:
           kubectl -n infrastructure apply -f {{.KUBERNETES_DIR}}/00_postgres
         silent: true
     preconditions:
-      - sh: 'k3d cluster list --no-headers | grep ${CLUSTER_NAME} > /dev/null 2>&1'
+      - sh: "k3d cluster list --no-headers | grep ${CLUSTER_NAME} > /dev/null 2>&1"
 
   install:mongodb:
     desc: Install mongodb into your cluster
@@ -257,7 +256,7 @@ tasks:
           kubectl -n infrastructure apply -f {{.KUBERNETES_DIR}}/05_mongodb
         silent: true
     preconditions:
-      - sh: 'k3d cluster list --no-headers | grep ${CLUSTER_NAME} > /dev/null 2>&1'
+      - sh: "k3d cluster list --no-headers | grep ${CLUSTER_NAME} > /dev/null 2>&1"
 
   install:minio:
     desc: Install minio into your cluster
@@ -269,7 +268,7 @@ tasks:
           kubectl -n infrastructure apply -f {{.KUBERNETES_DIR}}/09_minio
         silent: true
     preconditions:
-      - sh: 'k3d cluster list --no-headers | grep ${CLUSTER_NAME} > /dev/null 2>&1'
+      - sh: "k3d cluster list --no-headers | grep ${CLUSTER_NAME} > /dev/null 2>&1"
 
   install:nats:
     desc: Install nats into your cluster
@@ -281,7 +280,7 @@ tasks:
           kubectl -n infrastructure apply -f {{.KUBERNETES_DIR}}/01_nats
         silent: true
     preconditions:
-      - sh: 'k3d cluster list --no-headers | grep ${CLUSTER_NAME} > /dev/null 2>&1'
+      - sh: "k3d cluster list --no-headers | grep ${CLUSTER_NAME} > /dev/null 2>&1"
 
   install:flux:
     desc: Install Flux into your cluster
@@ -300,13 +299,32 @@ tasks:
     vars:
       SOPS_AGE_KEY_FILE: "{{.ROOT_DIR}}/age.key"
     status:
-      - 'kubectl -n flux-system wait --for condition=available --timeout=90s deployment.apps/helm-controller'
-      - 'kubectl -n flux-system wait --for condition=available --timeout=90s deployment.apps/image-automation-controller'
-      - 'kubectl -n flux-system wait --for condition=available --timeout=90s deployment.apps/image-reflector-controller'
-      - 'kubectl -n flux-system wait --for condition=available --timeout=90s deployment.apps/kustomize-controller'
-      - 'kubectl -n flux-system wait --for condition=available --timeout=90s deployment.apps/notification-controller'
-      - 'kubectl -n flux-system wait --for condition=available --timeout=90s deployment.apps/source-controller'
+      - "kubectl -n flux-system wait --for condition=available --timeout=90s deployment.apps/helm-controller"
+      - "kubectl -n flux-system wait --for condition=available --timeout=90s deployment.apps/image-automation-controller"
+      - "kubectl -n flux-system wait --for condition=available --timeout=90s deployment.apps/image-reflector-controller"
+      - "kubectl -n flux-system wait --for condition=available --timeout=90s deployment.apps/kustomize-controller"
+      - "kubectl -n flux-system wait --for condition=available --timeout=90s deployment.apps/notification-controller"
+      - "kubectl -n flux-system wait --for condition=available --timeout=90s deployment.apps/source-controller"
       - 'kubectl -n flux-system get gitrepositories home-kubernetes -o jsonpath="{.status.artifact.revision}" | grep master'
+
+  create:vcluster:
+    desc: Create a vcluster into your cluster
+    aliases: [cvcluster, vc]
+    deps: [create]
+    cmds:
+      - cmd: echo -e "\\033[1;32mCreating a vcluster\\033[0;39m"
+        silent: true
+      - cmd: |
+          export VCLUSTER_NAME={{(split " " .CLI_ARGS)._0}}
+          (vcluster list | grep $VCLUSTER_NAME > /dev/null 2>&1) || vcluster create $VCLUSTER_NAME -n vcluster-$VCLUSTER_NAME --connect=false
+          envsubst < {{.KUBERNETES_DIR}}/vcluster-ingress.yaml | kubectl apply -f -
+          vcluster connect $VCLUSTER_NAME --namespace vcluster-$VCLUSTER_NAME
+        silent: true
+    status:
+      - vcluster disconnect
+    preconditions:
+      - sh: "k3d cluster list --no-headers | grep ${CLUSTER_NAME} > /dev/null 2>&1"
+      - test -f {{.USER_BIN_DIR}}/vcluster
 
   resources:
     desc: Gather common resources in your cluster, useful when asking for support
