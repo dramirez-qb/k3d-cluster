@@ -129,7 +129,7 @@ tasks:
         AGE_VERSION=$(curl -sL https://api.github.com/repos/FiloSottile/age/releases/latest | jq -r ".tag_name")
         curl -sSLO https://github.com/FiloSottile/age/releases/download/${AGE_VERSION}/age-${AGE_VERSION}-linux-amd64.tar.gz
         tar xf age-${AGE_VERSION}-linux-amd64.tar.gz
-        install -m 0755 age/age ~/.local/bin/age && rm -rf age
+        install -m 0755 age/age ~/.local/bin/age && rm -rf age*
     preconditions:
       - test -d ~/.local/bin/
     status:

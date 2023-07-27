@@ -11,9 +11,9 @@ tasks:
         silent: true
       - cmd: mkdir -p ${SHARED_PATH}
         silent: true
-      - cmd: envsubst < k3d-config.yaml | cat > /tmp/k3d-config.yaml
+      - cmd: envsubst < k3d-config.yaml | cat > {{.TASK_TEMP_DIR}}/k3d-config.yaml
         silent: true
-      - cmd: k3d cluster create -c /tmp/k3d-config.yaml
+      - cmd: k3d cluster create -c {{.TASK_TEMP_DIR}}/k3d-config.yaml
         silent: true
     status:
       - 'k3d cluster list --no-headers | grep ${CLUSTER_NAME} > /dev/null 2>&1'
@@ -120,8 +120,8 @@ tasks:
         silent: true
       - cmd: |
           kubectl apply -f {{.KUBERNETES_DIR}}/03_traefik/00_traefik_crd.yml
-          envsubst < {{.KUBERNETES_DIR}}/03_traefik/01_traefik_workload.yaml | cat > /tmp/01_traefik_workload.yaml
-          kubectl apply -f /tmp/01_traefik_workload.yaml
+          envsubst < {{.KUBERNETES_DIR}}/03_traefik/01_traefik_workload.yaml | cat > {{.TASK_TEMP_DIR}}/01_traefik_workload.yaml
+          kubectl apply -f {{.TASK_TEMP_DIR}}/01_traefik_workload.yaml
         silent: true
     status:
       - 'kubectl -n infrastructure wait --for condition=available --timeout=90s deploy -lapp.kubernetes.io/instance=traefik'
