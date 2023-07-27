@@ -9,10 +9,13 @@ agents: 2
 kubeAPI:
   hostIP: 0.0.0.0
   hostPort: "6443"
-image: rancher/k3s:v1.26.1-k3s1
+image: rancher/k3s:v1.27.3-k3s1
 subnet: "172.28.0.0/16"
 volumes:
 - volume: ${SHARED_PATH}:/mnt/shared
+  nodeFilters:
+  - all
+- volume: ${SHARED_PATH}:/opt/local-path-provisioner
   nodeFilters:
   - all
 ports:

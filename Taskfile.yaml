@@ -10,6 +10,7 @@ env:
   PATH: "{{.ROOT_DIR}}/.venv/bin:$PATH"
   VIRTUAL_ENV: "{{.ROOT_DIR}}/.venv"
   SHARED_PATH: "{{.ROOT_DIR}}/k3s-nodes-shared"
+  TASK_TEMP_DIR: "{{.HOME}}/.task-temp"
 
 includes:
   cluster:
@@ -25,11 +26,12 @@ tasks:
 
   init:
     desc: Initialize configuration files
+    dir: '{{.TASK_TEMP_DIR}}'
     cmds:
       - |
         mkdir -p ~/.local/bin/
         curl -sSLO  https://github.com/jqlang/jq/releases/download/jq-1.6/jq-linux64
-        install -m 0755 jq-linux64 ~/.local/bin/jq
+        install -m 0755 jq-linux64 ~/.local/bin/jq && rm -f jq-linux64
       - task: install:direnv
       - ~/.local/bin/direnv allow .
       - ~/.local/bin/direnv reload
@@ -49,7 +51,7 @@ tasks:
     run: once
     desc: Install docker-ce jq gettext
     aliases: [docker]
-    dir: '/tmp/'
+    dir: '{{.TASK_TEMP_DIR}}'
     prompt: This is will add the docker repo to your system... Do you want to continue?
     cmds:
       - curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo tee /etc/apt/trusted.gpg.d/docker.asc
@@ -65,12 +67,12 @@ tasks:
   install:direnv:
     desc: Install direnv binary
     aliases: [direnv]
-    dir: '/tmp/'
+    dir: '{{.TASK_TEMP_DIR}}'
     cmds:
       - |
         DIRENV_VERSION=$(curl -sL https://api.github.com/repos/direnv/direnv/releases/latest | ~/.local/bin/jq -r ".tag_name")
         curl -sSLO https://github.com/direnv/direnv/releases/download/${DIRENV_VERSION}/direnv.linux-amd64
-        install -m 0755 direnv.linux-amd64 ~/.local/bin/direnv
+        install -m 0755 direnv.linux-amd64 ~/.local/bin/direnv && rm -f direnv.linux-amd64
     preconditions:
       - test -d ~/.local/bin/
     status:
@@ -79,11 +81,11 @@ tasks:
   install:kubectl:
     desc: Install kubectl binary
     aliases: [kubectl]
-    dir: '/tmp/'
+    dir: '{{.TASK_TEMP_DIR}}'
     cmds:
       - |
         curl -sSLO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
-        install -m 0755 kubectl ~/.local/bin/kubectl
+        install -m 0755 kubectl ~/.local/bin/kubectl && rm -f kubectl
     preconditions:
       - test -d ~/.local/bin/
     status:
@@ -92,12 +94,12 @@ tasks:
   install:k3d:
     desc: Install k3d binary
     aliases: [k3d]
-    dir: '/tmp/'
+    dir: '{{.TASK_TEMP_DIR}}'
     cmds:
       - |
         K3D_VERSION=$(curl -sL https://api.github.com/repos/k3d-io/k3d/releases/latest | jq -r ".tag_name")
         curl -sSLO https://github.com/k3d-io/k3d/releases/download/${K3D_VERSION}/k3d-linux-amd64
-        install -m 0755 k3d-linux-amd64 ~/.local/bin/k3d
+        install -m 0755 k3d-linux-amd64 ~/.local/bin/k3d && rm -f k3d-linux-amd64
     preconditions:
       - test -d ~/.local/bin/
     status:
@@ -106,13 +108,13 @@ tasks:
   install:flux:
     desc: Install flux binary
     aliases: [flux]
-    dir: '/tmp/'
+    dir: '{{.TASK_TEMP_DIR}}'
     cmds:
       - |
         FLUX_VERSION=$(curl -sL https://api.github.com/repos/fluxcd/flux2/releases/latest | jq -r ".tag_name")
         curl -sSLO https://github.com/fluxcd/flux2/releases/download/${FLUX_VERSION}/flux_${FLUX_VERSION/v/}_linux_amd64.tar.gz
         tar xf flux_${FLUX_VERSION/v/}_linux_amd64.tar.gz
-        install -m 0755 flux ~/.local/bin/flux
+        install -m 0755 flux ~/.local/bin/flux && rm -f flux flux_${FLUX_VERSION/v/}_linux_amd64.tar.gz
     preconditions:
       - test -d ~/.local/bin/
     status:
@@ -121,13 +123,13 @@ tasks:
   install:age:
     desc: Install age binary
     aliases: [age]
-    dir: '/tmp/'
+    dir: '{{.TASK_TEMP_DIR}}'
     cmds:
       - |
         AGE_VERSION=$(curl -sL https://api.github.com/repos/FiloSottile/age/releases/latest | jq -r ".tag_name")
         curl -sSLO https://github.com/FiloSottile/age/releases/download/${AGE_VERSION}/age-${AGE_VERSION}-linux-amd64.tar.gz
         tar xf age-${AGE_VERSION}-linux-amd64.tar.gz
-        install -m 0755 age/age ~/.local/bin/age
+        install -m 0755 age/age ~/.local/bin/age && rm -rf age
     preconditions:
       - test -d ~/.local/bin/
     status:
@@ -136,12 +138,12 @@ tasks:
   install:sops:
     desc: Install sops binary
     aliases: [sops]
-    dir: '/tmp/'
+    dir: '{{.TASK_TEMP_DIR}}'
     cmds:
       - |
         SOPS_VERSION=$(curl -sL https://api.github.com/repos/getsops/sops/releases/latest | jq -r ".tag_name")
         curl -sSLO https://github.com/getsops/sops/releases/download/${SOPS_VERSION}/sops-${SOPS_VERSION}.linux.amd64
-        install -m 0755 sops-${SOPS_VERSION}.linux.amd64 ~/.local/bin/sops
+        install -m 0755 sops-${SOPS_VERSION}.linux.amd64 ~/.local/bin/sops && rm -f sops-${SOPS_VERSION}.linux.amd64
     preconditions:
       - test -d ~/.local/bin/
     status:
@@ -150,12 +152,12 @@ tasks:
   install:cloudflared:
     desc: Install cloudflared binary
     aliases: [cloudflared]
-    dir: '/tmp/'
+    dir: '{{.TASK_TEMP_DIR}}'
     cmds:
       - |
         CLOUDFLARED_VERSION=$(curl -sL https://api.github.com/repos/cloudflare/cloudflared/releases/latest | jq -r ".tag_name")
         curl -sSLO https://github.com/cloudflare/cloudflared/releases/download/${CLOUDFLARED_VERSION}/cloudflared-linux-amd64
-        install -m 0755 cloudflared-linux-amd64 ~/.local/bin/cloudflared
+        install -m 0755 cloudflared-linux-amd64 ~/.local/bin/cloudflared && rm -f cloudflared-linux-amd64
     preconditions:
       - test -d ~/.local/bin/
     status:
