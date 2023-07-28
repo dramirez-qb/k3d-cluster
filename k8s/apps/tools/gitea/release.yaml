@@ -103,7 +103,7 @@ spec:
           PASSWD: ${SENDGRID_API_KEY}
         CACHE:
           ENABLED: true
-          ADAPTER: twoqueue
+          ADAPTER: memory
 
   valuesFrom:
   - kind: Secret
