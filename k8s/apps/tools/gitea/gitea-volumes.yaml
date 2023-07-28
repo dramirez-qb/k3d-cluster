@@ -1,0 +1,32 @@
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: gitea-pvc
+  namespace: tools
+  labels:
+    app.kubernetes.io/name: gitea
+spec:
+  storageClassName: standard
+  volumeName: gitea
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 50Gi
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: gitea
+  labels:
+    type: local
+    app.kubernetes.io/name: gitea
+spec:
+  storageClassName: standard
+  capacity:
+    storage: 50Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: /mnt/shared/gitea

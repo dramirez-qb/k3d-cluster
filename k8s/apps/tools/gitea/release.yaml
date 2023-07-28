@@ -1,0 +1,104 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: gitea
+spec:
+  interval: 5m
+  chart:
+    spec:
+      # renovate: registryUrl=https://dl.gitea.io/charts/
+      chart: gitea
+      version: 9.0.4
+      sourceRef:
+        kind: HelmRepository
+        name: gitea
+        namespace: flux-system
+      interval: 5m
+  # All values at https://gitea.com/gitea/helm-chart
+  values:
+    image:
+      repository: codeberg.org/forgejo/forgejo
+      tag: 1.20.1-0
+      pullPolicy: IfNotPresent
+    ingress:
+      enabled: true
+      annotations:
+        hajimari.io/enable: "true"
+        hajimari.io/icon: simple-icons:gitea
+        hajimari.io/info: Home Source Repository
+        hajimari.io/group: tools
+        kong.ingress.kubernetes.io/force-ssl-redirect: "true"
+        # cert-manager.io/cluster-issuer: letsencrypt-prod
+        kubernetes.io/tls-acme: "true"
+        external-dns.alpha.kubernetes.io/target: "ingress.${SECRET_DOMAIN}"
+        traefik.ingress.kubernetes.io/router.entrypoints: websecure
+        traefik.ingress.kubernetes.io/router.tls: "true"
+      hosts:
+        - host: &host gitea.${SECRET_DOMAIN}
+          paths:
+            - path: /
+              pathType: Prefix
+      tls:
+        - hosts:
+            - *host
+          secretName: gitea-ssl-cert
+
+    persistence:
+      enabled: true
+      existingClaim: gitea-pvc
+
+    # databases
+    postgresql:
+      enabled: false
+    mysql:
+      enabled: false
+    mariadb:
+      enabled: false
+
+    gitea:
+      admin:
+        username: gitea_admin
+        password: ${GITEA_SECRET_PASSWORD}
+        email: "${SECRET_ACME_EMAIL}"
+      # See https://docs.gitea.io/en-us/config-cheat-sheet/
+      config:
+        APP_NAME: "Gitea for ${SECRET_DOMAIN}: Git with a cup of tea"
+        #RUN_MODE: dev
+        server:
+          DISABLE_SSH: true
+          ENABLE_GZIP: true
+          PROTOCOL: http
+          ROOT_URL: https://gitea.${SECRET_DOMAIN}
+        database:
+          DB_TYPE: sqlite3
+          PATH: /data/gitea.db
+        service:
+          ALLOW_ONLY_EXTERNAL_REGISTRATION: false
+          DEFAULT_ALLOW_CREATE_ORGANIZATION: true
+          DEFAULT_ENABLE_TIMETRACKING: true
+          DEFAULT_KEEP_EMAIL_PRIVATE: false
+          DISABLE_REGISTRATION: true
+          ENABLE_CAPTCHA: false
+          ENABLE_NOTIFY_MAIL: false
+          NO_REPLY_ADDRESS: noreply@${SECRET_DOMAIN}
+          REGISTER_EMAIL_CONFIRM: false
+          REQUIRE_SIGNIN_VIEW: true
+        openid:
+          ENABLE_OPENID_SIGNIN: false
+        actions:
+          ENABLED: true
+        mailer:
+          ENABLED: true
+          FROM: "gitea@${SECRET_DOMAIN}"
+          PROTOCOL: smtp
+          SMTP_ADDR: smtp.sendgrid.net
+          SMTP_PORT: 25
+          USER: apikey
+          PASSWD: ${SENDGRID_API_KEY}
+
+  valuesFrom:
+  - kind: Secret
+    name: "gitea-helm-values"
+    valuesKey: gitea.yaml
+    optional: false
