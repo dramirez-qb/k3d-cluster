@@ -56,6 +56,10 @@ spec:
       enabled: false
     mariadb:
       enabled: false
+    postgresql-ha:
+      enabled: false
+    redis-cluster:
+      enabled: false
 
     gitea:
       admin:
