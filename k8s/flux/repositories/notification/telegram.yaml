@@ -11,20 +11,20 @@ spec:
   secretRef:
     name: telegram-token
 ---
-apiVersion: notification.toolkit.fluxcd.io/v1beta2
-kind: Alert
-metadata:
-  name: telegram
-  namespace: flux-system
-spec:
-  summary: "Cluster notification"
-  providerRef:
-    name: telegram
-  eventSeverity: error
-  eventSources:
-    - kind: GitRepository
-      name: "*"
-    - kind: HelmRelease
-      name: "*"
-    - kind: Kustomization
-      name: "*"
+# apiVersion: notification.toolkit.fluxcd.io/v1beta2
+# kind: Alert
+# metadata:
+#   name: telegram
+#   namespace: flux-system
+# spec:
+#   summary: "Cluster notification"
+#   providerRef:
+#     name: telegram
+#   eventSeverity: error
+#   eventSources:
+#     - kind: GitRepository
+#       name: "*"
+#     - kind: HelmRelease
+#       name: "*"
+#     - kind: Kustomization
+#       name: "*"

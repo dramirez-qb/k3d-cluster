@@ -13,7 +13,7 @@ spec:
   dependsOn:
     - name: cluster-apps-traefik
       namespace: flux-system
-  wait: true
+  wait: false # no flux ks dependents
   interval: 30m
-  retryInterval: 1m
-  timeout: 5m
+  retryInterval: 2m
+  timeout: 10m
