@@ -3,7 +3,7 @@ kind: Kustomization
 namespace: argocd
 resources:
   - github.com/argoproj/argo-cd/manifests/crds?ref=stable
-  - github.com/argoproj/argo-cd/manifests/base?ref=stable
+  - github.com/argoproj/argo-cd/manifests/cluster-install?ref=stable
   - ./ingress.yaml
 commonAnnotations:
   oncallPager: 800-555-1212
