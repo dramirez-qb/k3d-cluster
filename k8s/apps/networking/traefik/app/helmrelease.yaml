@@ -163,6 +163,10 @@ spec:
         ## https://doc.traefik.io/traefik/routing/entrypoints/#tls
         tls:
           enabled: true
+    # tlsStore:
+    #   default:
+    #     defaultCertificate:
+    #       secretName: ${SECRET_DOMAIN/./-}-staging-tls
     service:
       enabled: true
       single: true
@@ -175,7 +179,7 @@ spec:
       spec:
         externalTrafficPolicy: Cluster
       ## -- Class of the load balancer implementation https://kube-vip.io/docs/usage/kubernetes-services/#external-traffic-policy-kube-vip-v050
-      loadBalancerClass: kube-vip.io/kube-vip-class
+      # loadBalancerClass: kube-vip.io/kube-vip-class
     autoscaling:
       # -- Create HorizontalPodAutoscaler object.
       enabled: true
