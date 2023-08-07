@@ -33,7 +33,7 @@ spec:
         namespace: flux-system
   patches:
     - patch: |-
-        - op: replace
+        - op: add
           path: /spec/type
           value: LoadBalancer
       target:
