@@ -35,7 +35,7 @@ spec:
     - websecure
   routes:
     - kind: Rule
-      match: Host(`argocd.example.com`) && Headers(`Content-Type`, `application/grpc`)
+      match: Host(`argocd.${SECRET_DOMAIN}`) && Headers(`Content-Type`, `application/grpc`)
       priority: 11
       services:
         - name: argocd-server
