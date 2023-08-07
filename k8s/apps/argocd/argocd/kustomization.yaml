@@ -5,6 +5,5 @@ resources:
   - github.com/argoproj/argo-cd/manifests/crds?ref=stable
   - github.com/argoproj/argo-cd/manifests/base?ref=stable
   - ./ingress.yaml
-patchesStrategicMerge:
   - ./patch-argocd-cmd-params-cm.yaml
-#   - ./patch-argocd-server.yaml
+  - ./patch-argocd-server.yaml
