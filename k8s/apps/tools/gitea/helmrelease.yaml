@@ -64,7 +64,7 @@ spec:
     postgresql-ha:
       enabled: false
     redis-cluster:
-      enabled: true
+      enabled: false
       usePassword: false
 
     gitea:
@@ -107,6 +107,12 @@ spec:
           SMTP_PORT: 25
           USER: apikey
           PASSWD: ${SENDGRID_API_KEY}
+        session:
+          PROVIDER: file
+          PROVIDER_CONFIG: /data/sessions
+        cache:
+          ENABLED: true
+          ADAPTER: memory
 
   valuesFrom:
   - kind: Secret
