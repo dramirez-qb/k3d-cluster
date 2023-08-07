@@ -18,13 +18,15 @@ spec:
         selector:
           dnsZones:
             - "${SECRET_DOMAIN}"
+          matchLabels:
+            use-cloudflare-solver: "true"
       - http01:
           ingress:
             ingressClassName: traefik
             class: traefik
         selector:
           matchLabels:
-            "use-http01-solver": "true"
+            use-http01-solver: "true"
 ---
 apiVersion: cert-manager.io/v1
 kind: ClusterIssuer
@@ -45,10 +47,12 @@ spec:
         selector:
           dnsZones:
             - "${SECRET_DOMAIN}"
+          matchLabels:
+            use-cloudflare-solver: "true"
       - http01:
           ingress:
             ingressClassName: traefik
             class: traefik
         selector:
           matchLabels:
-            "use-http01-solver": "true"
+            use-http01-solver: "true"
