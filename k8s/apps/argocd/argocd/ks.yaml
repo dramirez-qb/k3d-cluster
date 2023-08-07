@@ -18,3 +18,16 @@ spec:
   interval: 30m
   retryInterval: 2m
   timeout: 10m
+  decryption:
+    provider: sops
+    secretRef:
+      name: sops-age
+      namespace: flux-system
+  postBuild:
+    substituteFrom:
+      - kind: ConfigMap
+        name: cluster-settings
+        namespace: flux-system
+      - kind: Secret
+        name: cluster-secrets
+        namespace: flux-system
