@@ -1,5 +1,3 @@
-# IMPORTANT: This file is not tracked by flux and should never be. Its
-# purpose is to only install the Flux components and CRDs into your cluster.
 ---
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
@@ -7,7 +5,6 @@ resources:
   - github.com/metallb/metallb/config/native?ref=v0.13.10
   - github.com/fluxcd/flux2/manifests/install?ref=v2.0.1
 patches:
-  # Remove the default network policies
   - patch: |-
       $patch: delete
       apiVersion: networking.k8s.io/v1

@@ -31,29 +31,3 @@ spec:
       - kind: Secret
         name: cluster-secrets
         namespace: flux-system
-  # patches:
-  #   - patch: |-
-  #       - op: add
-  #         path: /spec/type
-  #         value: "LoadBalancer"
-  #     target:
-  #       kind: Service
-  #       group: apps
-  #       version: v1
-  #       name: argocd-server
-  #       namespace: argocd
-  #   - patch: |-
-  #       - op: add
-  #         path: /data/server.insecure
-  #         value: "true"
-  #       - op: add
-  #         path: /data/server.repo.server.strict.tls
-  #         value: "false"
-  #       - op: add
-  #         path: /data/server.repo.server.plaintext
-  #         value: "true"
-  #     target:
-  #       kind: ConfigMap
-  #       version: v1
-  #       name: argocd-cmd-params-cm
-  #       namespace: argocd
