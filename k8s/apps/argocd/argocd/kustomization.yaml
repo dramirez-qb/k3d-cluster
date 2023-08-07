@@ -5,12 +5,12 @@ resources:
   - github.com/argoproj/argo-cd/manifests/crds?ref=stable
   - github.com/argoproj/argo-cd/manifests/base?ref=stable
   - ./ingress.yaml
-commonLabels:
-  system: argocd-k3d-cluster
+# commonLabels:
+#   system: argocd-k3d-cluster
 commonAnnotations:
   oncallPager: 800-555-1212
-transformers:
-  - labels.yaml
+# transformers:
+  # - labels.yaml
 patchesStrategicMerge:
 #   - ./patch-argocd-server.yaml
   - ./patch-argocd-cmd-params-cm.yaml
