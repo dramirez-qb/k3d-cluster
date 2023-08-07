@@ -15,4 +15,4 @@ ingress:
   - service: http://traefik.networking.svc.cluster.local:80
     originRequest:
       connectTimeout: 10s
-  - service: http_status:404
+  # - service: http_status:404
