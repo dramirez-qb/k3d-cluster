@@ -84,6 +84,10 @@ spec:
         database:
           DB_TYPE: sqlite3
           PATH: /data/gitea.db
+        repository:
+          ROOT: /data/repositories
+        lfs:
+          PATH: /data/lfs
         service:
           ALLOW_ONLY_EXTERNAL_REGISTRATION: false
           DEFAULT_ALLOW_CREATE_ORGANIZATION: true
@@ -97,8 +101,13 @@ spec:
           REQUIRE_SIGNIN_VIEW: true
         openid:
           ENABLE_OPENID_SIGNIN: false
+          ENABLE_OPENID_SIGNUP: false
         actions:
           ENABLED: true
+          DEFAULT_ACTIONS_URL: https://github.com
+        picture:
+          DISABLE_GRAVATAR: false
+          ENABLE_FEDERATED_AVATAR: true
         mailer:
           ENABLED: true
           FROM: "gitea@${SECRET_DOMAIN}"
@@ -119,6 +128,8 @@ spec:
           MODE: console, file
           LEVEL: Info
           ROOT_PATH: /data/log
+        security:
+          SECRET_KEY: ${GITEA_SECURITY_SECRET_KEY}
 
   valuesFrom:
   - kind: Secret
