@@ -8,10 +8,11 @@ resources:
 configMapGenerator:
 - behavior: merge
   name: argocd-cmd-params-cm
+  namespace: argocd
   literals:
   - 'server.insecure=true'
   - 'server.repo.server.strict.tls=false'
   - 'server.repo.server.plaintext=true'
-patchesStrategicMerge:
-  - ./patch-argocd-server.yaml
-  - ./patch-argocd-cmd-params-cm.yaml
+# patchesStrategicMerge:
+#   - ./patch-argocd-cmd-params-cm.yaml
+#   - ./patch-argocd-server.yaml

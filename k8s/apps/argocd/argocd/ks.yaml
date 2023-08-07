@@ -31,3 +31,14 @@ spec:
       - kind: Secret
         name: cluster-secrets
         namespace: flux-system
+  patches:
+    - patch: |-
+        - op: replace
+          path: /spec/type
+          value: LoadBalancer
+      target:
+        kind: Service
+        group: apps
+        version: v1
+        name: argocd-server
+        namespace: argocd
