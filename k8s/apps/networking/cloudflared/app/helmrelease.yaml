@@ -45,6 +45,7 @@ spec:
             name: cloudflared-secret
             key: TUNNEL_ID
     args:
+      - "--protocol http2"
       - tunnel
       - --config
       - /etc/cloudflared/config/config.yaml
