@@ -113,6 +113,8 @@ spec:
         cache:
           ENABLED: true
           ADAPTER: memory
+        queue:
+          TYPE: persistable-channel
         log:
           MODE: console, file
           LEVEL: Info
