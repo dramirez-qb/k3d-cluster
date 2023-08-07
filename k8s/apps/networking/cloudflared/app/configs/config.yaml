@@ -6,14 +6,14 @@ originRequest:
 # https://developers.cloudflare.com/cloudflare-one/connections/connect-apps/configuration/ingress
 ingress:
   - hostname: "${SECRET_DOMAIN}"
-    service: https://traefik.networking.svc.cluster.local:443
+    service: http://traefik.networking.svc.cluster.local:80
     originRequest:
       originServerName: "ingress.${SECRET_DOMAIN}"
   - hostname: "*.${SECRET_DOMAIN}"
-    service: https://traefik.networking.svc.cluster.local:443
+    service: http://traefik.networking.svc.cluster.local:80
     originRequest:
       originServerName: "ingress.${SECRET_DOMAIN}"
-  - service: http://traefik.networking.svc.cluster.local:80
-    originRequest:
-      connectTimeout: 10s
-  # - service: http_status:404
+  # - service: http://traefik.networking.svc.cluster.local:80
+  #   originRequest:
+  #     connectTimeout: 10s
+  - service: http_status:404
