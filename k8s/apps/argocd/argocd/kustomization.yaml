@@ -5,14 +5,11 @@ resources:
   - github.com/argoproj/argo-cd/manifests/crds?ref=stable
   - github.com/argoproj/argo-cd/manifests/base?ref=stable
   - ./ingress.yaml
-# commonLabels:
-#   system: argocd-k3d-cluster
 commonAnnotations:
   oncallPager: 800-555-1212
-# transformers:
-  # - labels.yaml
+transformers:
+  - labels.yaml
 patchesStrategicMerge:
-#   - ./patch-argocd-server.yaml
   - ./patch-argocd-cmd-params-cm.yaml
 patchesJson6902:
     - patch: |-
@@ -23,17 +20,3 @@ patchesJson6902:
         kind: Service
         version: v1
         name: argocd-server
-    # - patch: |-
-    #     - op: add
-    #       path: /data/server.insecure
-    #       value: "true"
-    #     - op: add
-    #       path: /data/server.repo.server.strict.tls
-    #       value: "false"
-    #     - op: add
-    #       path: /data/server.repo.server.plaintext
-    #       value: "true"
-    #   target:
-    #     kind: ConfigMap
-    #     version: v1
-    #     name: argocd-cmd-params-cm
