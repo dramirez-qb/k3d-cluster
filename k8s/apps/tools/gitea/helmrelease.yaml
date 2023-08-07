@@ -42,7 +42,17 @@ spec:
 
     persistence:
       enabled: true
-      existingClaim: gitea-pvc
+      create: false
+      mount: true
+      claimName: gitea-pvc
+      size: 10Gi
+      accessModes:
+        - ReadWriteOnce
+      labels:
+        type: local
+        app.kubernetes.io/name: gitea
+      annotations:
+        helm.sh/resource-policy: keep
 
     # databases
     postgresql:
