@@ -29,10 +29,8 @@ spec:
         hajimari.io/icon: simple-icons:gitea
         hajimari.io/info: Home Source Repository
         hajimari.io/group: tools
-        # cert-manager.io/cluster-issuer: letsencrypt-prod
         external-dns.alpha.kubernetes.io/target: "ingress.${SECRET_DOMAIN}"
         traefik.ingress.kubernetes.io/router.entrypoints: web
-        # traefik.ingress.kubernetes.io/router.tls: "true"
       hosts:
         - host: &host gitea.${SECRET_DOMAIN}
           paths:

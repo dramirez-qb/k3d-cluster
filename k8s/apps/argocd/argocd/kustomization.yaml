@@ -5,21 +5,27 @@ resources:
   - github.com/argoproj/argo-cd/manifests/base?ref=stable
   - ./ingress.yaml
 patches:
-  - target:
-      version: v1
+  - patch: |-
+      apiVersion: v1
       kind: Service
+      metadata:
+        labels:
+          app.kubernetes.io/component: server
+          app.kubernetes.io/name: argocd-server
+          app.kubernetes.io/part-of: argocd
       name: argocd-server
       namespace: argocd
-    patch: |-
-      - op: replace
-        path: /spec/type
-        value: "LoadBalancer"
-  - target:
-      version: v1
+      spec:
+        type: LoadBalancer
+  - patch: |-
+      apiVersion: v1
       kind: ConfigMap
-      name: argocd-cmd-params-cm
-      namespace: argocd
-    patch: |-
-      - op: add
-        path: /data/server/insecure
-        value: "true"
+      metadata:
+        labels:
+          app.kubernetes.io/name: argocd-cmd-params-cm
+          app.kubernetes.io/part-of: argocd
+        name: argocd-cmd-params-cm
+        namespace: argocd
+      data:
+        server:
+          insecure: true

@@ -32,19 +32,27 @@ spec:
         name: cluster-secrets
         namespace: flux-system
   patches:
-    - patch: |
-        - op: add
-          path: /data/server/insecure
-          value: true
-      target:
-        kind: ConfigMap
-        name: argocd-cmd-params-cm
-        namespace: argocd
-    - patch: |
-        - op: replace
-          path: /spec/type
-          value: LoadBalancer
-      target:
+    - patch: |-
+        apiVersion: v1
         kind: Service
+        metadata:
+          labels:
+            app.kubernetes.io/component: server
+            app.kubernetes.io/name: argocd-server
+            app.kubernetes.io/part-of: argocd
         name: argocd-server
         namespace: argocd
+        spec:
+          type: LoadBalancer
+    - patch: |-
+        apiVersion: v1
+        kind: ConfigMap
+        metadata:
+          labels:
+            app.kubernetes.io/name: argocd-cmd-params-cm
+            app.kubernetes.io/part-of: argocd
+          name: argocd-cmd-params-cm
+          namespace: argocd
+        data:
+          server:
+            insecure: true
