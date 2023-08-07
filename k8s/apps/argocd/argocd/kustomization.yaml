@@ -1,9 +1,17 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
+namespace: argocd
 resources:
   - github.com/argoproj/argo-cd/manifests/crds?ref=stable
   - github.com/argoproj/argo-cd/manifests/base?ref=stable
   - ./ingress.yaml
-patches:
-  - path: ./patch-argocd-server.yaml
-  - path: ./patch-argocd-cmd-params-cm.yaml
+configMapGenerator:
+- behavior: merge
+  name: argocd-cmd-params-cm
+  literals:
+  - 'server.insecure=true'
+  - 'server.repo.server.strict.tls=false'
+  - 'server.repo.server.plaintext=true'
+patchesStrategicMerge:
+  - ./patch-argocd-server.yaml
+  - ./patch-argocd-cmd-params-cm.yaml
