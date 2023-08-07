@@ -31,28 +31,28 @@ spec:
       - kind: Secret
         name: cluster-secrets
         namespace: flux-system
-  # patches:
-  #   - patch: |-
-  #       apiVersion: v1
-  #       kind: Service
-  #       metadata:
-  #         name: argocd-server
-  #         namespace: argocd
-  #       spec:
-  #         type: LoadBalancer
-  #     target:
-  #       kind: Service
-  #       name: argocd-server
-  #       namespace: argocd
-  #   - patch: |-
-  #       apiVersion: v1
-  #       kind: ConfigMap
-  #       metadata:
-  #         name: argocd-cmd-params-cm
-  #         namespace: argocd
-  #       data:
-  #         server.insecure: true
-  #     target:
-  #       kind: ConfigMap
-  #       name: argocd-cmd-params-cm
-  #       namespace: argocd
+  patches:
+    - patch: |-
+        apiVersion: v1
+        kind: Service
+        metadata:
+          name: argocd-server
+          namespace: argocd
+        spec:
+          type: LoadBalancer
+      target:
+        kind: Service
+        name: argocd-server
+        namespace: argocd
+    - patch: |-
+        apiVersion: v1
+        kind: ConfigMap
+        metadata:
+          name: argocd-cmd-params-cm
+          namespace: argocd
+        data:
+          server.insecure: true
+      target:
+        kind: ConfigMap
+        name: argocd-cmd-params-cm
+        namespace: argocd
