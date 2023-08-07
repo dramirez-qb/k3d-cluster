@@ -40,10 +40,15 @@ spec:
             app.kubernetes.io/component: server
             app.kubernetes.io/name: argocd-server
             app.kubernetes.io/part-of: argocd
-        name: argocd-server
-        namespace: argocd
+          name: argocd-server
+          namespace: argocd
         spec:
           type: LoadBalancer
+      target:
+        kind: Service
+        name: argocd-server
+        namespace: argocd
+        labelSelector: "app.kubernetes.io/name=argocd-server"
     - patch: |-
         apiVersion: v1
         kind: ConfigMap
@@ -54,5 +59,9 @@ spec:
           name: argocd-cmd-params-cm
           namespace: argocd
         data:
-          server:
-            insecure: true
+          server.insecure: true
+      target:
+        kind: ConfigMap
+        name: argocd-cmd-params-cm
+        namespace: argocd
+        labelSelector: "app.kubernetes.io/name=argocd-cmd-params-cm"
