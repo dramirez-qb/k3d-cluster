@@ -189,16 +189,30 @@ tasks:
     status:
       - test -f {{.USER_BIN_DIR}}/vcluster
 
+  install:argocd:
+    desc: Install argocd binary
+    aliases: [argocd]
+    dir: "{{.TASK_TEMP_DIR}}"
+    cmds:
+      - |
+        curl -sSL -o argocd "https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64"
+        install -c -m 0755 argocd {{.USER_BIN_DIR}}/argocd && rm -f argocd
+    preconditions:
+      - test -d {{.USER_BIN_DIR}}/
+    status:
+      - test -f {{.USER_BIN_DIR}}/argocd
+
   install:tools:
     desc: Install all the tools
     aliases: [tools]
     deps: [init]
     cmds:
-      - task: install:direnv
-      - task: install:kubectl
-      - task: install:k3d
-      - task: install:flux
       - task: install:age
+      - task: install:argocd
+      - task: install:direnv
+      - task: install:flux
+      - task: install:k3d
+      - task: install:kubectl
       - task: install:sops
 
   install:devtools:
