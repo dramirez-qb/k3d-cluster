@@ -11,29 +11,29 @@ commonAnnotations:
   oncallPager: 800-555-1212
 transformers:
   - labels.yaml
-# patchesStrategicMerge:
+patchesStrategicMerge:
 #   - ./patch-argocd-server.yaml
-#   - ./patch-argocd-cmd-params-cm.yaml
+  - ./patch-argocd-cmd-params-cm.yaml
 patchesJson6902:
     - patch: |-
-        - op: add
+        - op: replace
           path: /spec/type
           value: "LoadBalancer"
       target:
         kind: Service
         version: v1
         name: argocd-server
-    - patch: |-
-        - op: add
-          path: /data/server.insecure
-          value: "true"
-        - op: add
-          path: /data/server.repo.server.strict.tls
-          value: "false"
-        - op: add
-          path: /data/server.repo.server.plaintext
-          value: "true"
-      target:
-        kind: ConfigMap
-        version: v1
-        name: argocd-cmd-params-cm
+    # - patch: |-
+    #     - op: add
+    #       path: /data/server.insecure
+    #       value: "true"
+    #     - op: add
+    #       path: /data/server.repo.server.strict.tls
+    #       value: "false"
+    #     - op: add
+    #       path: /data/server.repo.server.plaintext
+    #       value: "true"
+    #   target:
+    #     kind: ConfigMap
+    #     version: v1
+    #     name: argocd-cmd-params-cm
