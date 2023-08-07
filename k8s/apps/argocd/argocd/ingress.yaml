@@ -1,28 +1,26 @@
 ---
-apiVersion: traefik.io/v1alpha1
-kind: IngressRoute
+apiVersion: networking.k8s.io/v1
+kind: Ingress
 metadata:
-  name: argocd-server
+  name: argocd-server-ingress
   namespace: argocd
   annotations:
-    kubernetes.io/ingress.class: traefik
     external-dns.alpha.kubernetes.io/target: "ingress.${SECRET_DOMAIN}"
+    hajimari.io/enable: "true"
+    traefik.ingress.kubernetes.io/router.entrypoints: web
 spec:
-  entryPoints:
-    - websecure
-  routes:
-    - kind: Rule
-      match: Host(`argocd.${SECRET_DOMAIN}`)
-      priority: 10
-      services:
-        - name: argocd-server
-          port: 80
-    - kind: Rule
-      match: Host(`argocd.${SECRET_DOMAIN}`) && Headers(`Content-Type`, `application/grpc`)
-      priority: 11
-      services:
-        - name: argocd-server
-          port: 80
-          scheme: h2c
+  ingressClassName: traefik
+  rules:
+    - host: &host "argocd.${SECRET_DOMAIN}"
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: argocd-server
+                port:
+                  number: 80
   tls:
-    certResolver: default
+    - hosts:
+        - *host
