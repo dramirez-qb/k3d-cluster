@@ -1,0 +1,8 @@
+---
+apiVersion: apps/v1
+kind: Service
+metadata:
+  name: argocd-server
+  namespace: argocd
+spec:
+  type: LoadBalancer

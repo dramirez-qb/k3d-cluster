@@ -14,4 +14,4 @@ patches:
     patch: |-
       - op: add
         path: /spec/loadBalancerClass
-        value: "kube-vip.io/kube-vip-class"
+        value: "traefik"

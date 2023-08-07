@@ -4,20 +4,6 @@ resources:
   - github.com/argoproj/argo-cd/manifests/crds?ref=stable
   - github.com/argoproj/argo-cd/manifests/base?ref=stable
   - ./ingress.yaml
-# patches:
-#   - patch: |-
-#       apiVersion: v1
-#       kind: Service
-#       metadata:
-#         name: argocd-server
-#         namespace: argocd
-#       spec:
-#         type: LoadBalancer
-#   - patch: |-
-#       apiVersion: v1
-#       kind: ConfigMap
-#       metadata:
-#         name: argocd-cmd-params-cm
-#         namespace: argocd
-#       data:
-#         server.insecure: true
+patches:
+  - path: ./patch-argocd-server.yaml
+  - path: ./patch-argocd-cmd-params-cm.yaml
