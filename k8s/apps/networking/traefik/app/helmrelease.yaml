@@ -56,6 +56,8 @@ spec:
         # -- Allows to return 503 when there is no endpoints available
         allowEmptyServices: true
         ingressClass: traefik
+        publishedService:
+          enabled: true
     env:
       - name: POD_NAMESPACE
         valueFrom:
@@ -77,6 +79,7 @@ spec:
       - "--api.insecure=true"
       - "--ping=true"
       - "--log.level=INFO"
+      - "--providers.kubernetesingress.ingressendpoint.publishedservice=networking/traefik"
     globalArguments:
       - "--global.checknewversion"
       - "--global.sendanonymoususage=false"

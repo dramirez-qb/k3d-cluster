@@ -14,3 +14,12 @@ patches:
       - op: replace
         path: /spec/type
         value: "LoadBalancer"
+  - target:
+      version: v1
+      kind: ConfigMap
+      name: argocd-cmd-params-cm
+      namespace: argocd
+    patch: |-
+      - op: add
+        path: /data/server/insecure
+        value: "true"

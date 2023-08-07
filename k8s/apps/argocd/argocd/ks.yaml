@@ -31,3 +31,20 @@ spec:
       - kind: Secret
         name: cluster-secrets
         namespace: flux-system
+  patches:
+    - patch: |
+        - op: add
+          path: /data/server/insecure
+          value: true
+      target:
+        kind: ConfigMap
+        name: argocd-cmd-params-cm
+        namespace: argocd
+    - patch: |
+        - op: replace
+          path: /spec/type
+          value: LoadBalancer
+      target:
+        kind: Service
+        name: argocd-server
+        namespace: argocd
