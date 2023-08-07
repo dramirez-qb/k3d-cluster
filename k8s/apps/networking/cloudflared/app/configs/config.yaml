@@ -1,6 +1,7 @@
 ---
 originRequest:
   http2Origin: true
+  noTLSVerify: true
 
 # https://developers.cloudflare.com/cloudflare-one/connections/connect-apps/configuration/ingress
 ingress:
