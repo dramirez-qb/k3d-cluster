@@ -4,6 +4,7 @@ kind: Kustomization
 resources:
   - github.com/metallb/metallb/config/native?ref=v0.13.10
   - github.com/fluxcd/flux2/manifests/install?ref=v2.0.1
+  - metallb_ipaddresspool.yaml
 patches:
   - patch: |-
       $patch: delete
