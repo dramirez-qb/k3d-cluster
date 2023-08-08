@@ -7,8 +7,10 @@ metadata:
   annotations:
     external-dns.alpha.kubernetes.io/target: "ingress.${SECRET_DOMAIN}"
     hajimari.io/enable: "true"
-    kubernetes.io/tls-acme: 'true'
+    kubernetes.io/tls-acme: "true"
+    traefik.ingress.kubernetes.io/router.tls: true
     traefik.ingress.kubernetes.io/router.entrypoints: web,websecure
+    traefik.ingress.kubernetes.io/router.tls.options: networking-default@kubernetescrd
     cert-manager.io/cluster-issuer: letsencrypt-production
   labels:
     use-cloudflare-solver: "true"
@@ -46,4 +48,7 @@ spec:
           port: 80
           scheme: h2c
   tls:
-    certResolver: default
+    secretName: argocd-server-tls
+    options:
+      name: default
+      namespace: networking

@@ -5,4 +5,5 @@ resources:
   - ./cloudflare-only.yaml
   - ./internal-only.yaml
   - ./servers-transport.yaml
-  # - ./tlsstore.yaml
+  - ./tlsstore.yaml
+  - ./tlsoptions.yaml

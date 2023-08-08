@@ -23,6 +23,11 @@ spec:
       - http01:
           ingress:
             ingressClassName: traefik
+        selector:
+          matchLabels:
+            use-http01-solver: "true"
+      - http01:
+          ingress:
             class: traefik
         selector:
           matchLabels:
@@ -42,6 +47,8 @@ spec:
       - http01:
           ingress:
             ingressClassName: traefik
+      - http01:
+          ingress:
             class: traefik
 ---
 apiVersion: cert-manager.io/v1
@@ -68,6 +75,11 @@ spec:
       - http01:
           ingress:
             ingressClassName: traefik
+        selector:
+          matchLabels:
+            use-http01-solver: "true"
+      - http01:
+          ingress:
             class: traefik
         selector:
           matchLabels:
@@ -87,4 +99,6 @@ spec:
       - http01:
           ingress:
             ingressClassName: traefik
+      - http01:
+          ingress:
             class: traefik
