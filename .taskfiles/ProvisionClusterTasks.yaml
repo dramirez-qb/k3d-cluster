@@ -8,7 +8,7 @@ tasks:
     cmds:
       - cmd: echo -e "\\033[1;32mCreating cluster ${CLUSTER_NAME} with ${SHARED_PATH} as a shared path\\033[0;39m"
         silent: true
-      - cmd: mkdir -p ${SHARED_PATH}
+      - cmd: mkdir -p ${SHARED_PATH}/default-local-pv
         silent: true
       - cmd: envsubst < k3d-config.yaml | cat > {{.TASK_TEMP_DIR}}/k3d-config.yaml
         silent: true
