@@ -7,7 +7,7 @@ metadata:
 spec:
   path: ./k8s/apps/argocd/extras
   prune: true
-  targetNamespace: networking
+  targetNamespace: argocd
   sourceRef:
     kind: GitRepository
     name: home-kubernetes

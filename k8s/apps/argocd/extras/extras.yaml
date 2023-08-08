@@ -38,8 +38,14 @@ metadata:
   namespace: argocd
 spec:
   entryPoints:
-    - web
+    - websecure
   routes:
+    - kind: Rule
+      match: Host(`argocd.${SECRET_DOMAIN}`)
+      priority: 10
+      services:
+        - name: argocd-server
+          port: 80
     - kind: Rule
       match: Host(`argocd.${SECRET_DOMAIN}`) && Headers(`Content-Type`, `application/grpc`)
       priority: 11
@@ -49,6 +55,7 @@ spec:
           namespace: argocd
           port: 80
           scheme: h2c
+  tls: {}
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
