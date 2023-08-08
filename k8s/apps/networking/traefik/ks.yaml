@@ -24,8 +24,6 @@ metadata:
   name: cluster-apps-traefik
   namespace: flux-system
 spec:
-  dependsOn:
-    - name: cluster-apps-traefik-certificates
   path: ./k8s/apps/networking/traefik/app
   prune: true
   sourceRef:
@@ -44,6 +42,7 @@ metadata:
 spec:
   dependsOn:
     - name: cluster-apps-traefik
+    - name: cluster-apps-traefik-certificates
   path: ./k8s/apps/networking/traefik/extras
   prune: true
   sourceRef:

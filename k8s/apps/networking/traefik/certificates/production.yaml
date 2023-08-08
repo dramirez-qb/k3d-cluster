@@ -8,6 +8,9 @@ metadata:
     use-cloudflare-solver: "true"
 spec:
   secretName: "${SECRET_DOMAIN/./-}-production-tls"
+  secretTemplate:
+    labels:
+      use-cloudflare-solver: "true"
   issuerRef:
     name: letsencrypt-production
     kind: ClusterIssuer
