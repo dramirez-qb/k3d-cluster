@@ -3,7 +3,7 @@ kind: Kustomization
 namespace: argocd
 resources:
   - github.com/argoproj/argo-cd/manifests/cluster-install?ref=stable
-  - ./ingress.yaml
+  - ./extras.yaml
 commonAnnotations:
   oncallPager: 800-555-1212
 transformers:
