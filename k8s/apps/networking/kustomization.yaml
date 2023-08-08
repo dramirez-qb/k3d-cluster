@@ -8,3 +8,4 @@ resources:
   - ./k8s-gateway/ks.yaml
   - ./cloudflared/ks.yaml
   - ./whoami-server/ks.yaml
+  - ./services-home/ks.yaml
