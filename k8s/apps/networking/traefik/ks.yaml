@@ -6,6 +6,7 @@ metadata:
   namespace: flux-system
 spec:
   dependsOn:
+    - name: cluster-apps-external-dns
     - name: cluster-apps-cert-manager-issuers
   path: ./k8s/apps/networking/traefik/certificates
   prune: true
