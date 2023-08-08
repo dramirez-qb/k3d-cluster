@@ -44,7 +44,8 @@ metadata:
   annotations:
     external-dns.alpha.kubernetes.io/target: "ingress.${SECRET_DOMAIN}"
     hajimari.io/enable: "false"
-    traefik.ingress.kubernetes.io/router.entrypoints: web
+    traefik.ingress.kubernetes.io/router.entrypoints: web,websecure
+    cert-manager.io/cluster-issuer: letsencrypt-http-production
   labels:
     use-http01-solver: "true"
 spec:
