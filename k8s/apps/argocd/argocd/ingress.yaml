@@ -40,13 +40,14 @@ spec:
   weighted:
     services:
       - name: argocd-server
+        namespace: argocd
         port: 80
 ---
 apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
   name: argocd-server-ingressroute
-  namespace: argocd
+  namespace: networking
 spec:
   entryPoints:
     - websecure
@@ -63,6 +64,7 @@ spec:
       priority: 11
       services:
         - name: argocd-server
+          namespace: argocd
           port: 80
           scheme: h2c
   tls:
