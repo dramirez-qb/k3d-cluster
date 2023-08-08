@@ -5,7 +5,7 @@ metadata:
   name: home-kubernetes
   namespace: flux-system
 spec:
-  interval: 30m
+  interval: 5m
   ref:
     branch: master
   url: "https://github.com/dramirez-qb/k3d-cluster.git"
