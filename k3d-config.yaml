@@ -15,7 +15,7 @@ volumes:
 - volume: ${SHARED_PATH}:/mnt/shared
   nodeFilters:
   - all
-- volume: ${SHARED_PATH}:/opt/local-path-provisioner
+- volume: ${SHARED_PATH}/default-local-pv:/opt/local-path-provisioner
   nodeFilters:
   - all
 ports:
