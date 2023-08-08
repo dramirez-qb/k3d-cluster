@@ -3,11 +3,8 @@ kind: Kustomization
 namespace: argocd
 resources:
   - github.com/argoproj/argo-cd/manifests/cluster-install?ref=stable
-  - ./extras.yaml
 commonAnnotations:
-  oncallPager: 800-555-1212
-transformers:
-  - labels.yaml
+  customAnnotation: MyCustomAnnotation
 patchesStrategicMerge:
   - ./patch-argocd-cmd-params-cm.yaml
 patchesJson6902:
