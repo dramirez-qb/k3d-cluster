@@ -10,6 +10,7 @@ metadata:
     kubernetes.io/tls-acme: 'true'
     traefik.ingress.kubernetes.io/router.entrypoints: web,websecure
     cert-manager.io/cluster-issuer: letsencrypt-production
+  labels:
     use-cloudflare-solver: "true"
 spec:
   ingressClassName: traefik

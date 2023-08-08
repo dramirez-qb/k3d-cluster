@@ -45,6 +45,7 @@ metadata:
     external-dns.alpha.kubernetes.io/target: "ingress.${SECRET_DOMAIN}"
     hajimari.io/enable: "false"
     traefik.ingress.kubernetes.io/router.entrypoints: web
+  labels:
     use-http01-solver: "true"
 spec:
   ingressClassName: traefik

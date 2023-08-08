@@ -31,6 +31,7 @@ spec:
         hajimari.io/group: tools
         external-dns.alpha.kubernetes.io/target: "ingress.${SECRET_DOMAIN}"
         traefik.ingress.kubernetes.io/router.entrypoints: web,websecure
+      labels:
         use-cloudflare-solver: "true"
       hosts:
         - host: &host gitea.${SECRET_DOMAIN}
