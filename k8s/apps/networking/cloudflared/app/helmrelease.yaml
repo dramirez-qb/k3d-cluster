@@ -55,6 +55,9 @@ spec:
         ports:
           http:
             port: 8080
+          http2:
+            port: 7844
+            nodePort: 32766
     serviceMonitor:
       main:
         enabled: true
