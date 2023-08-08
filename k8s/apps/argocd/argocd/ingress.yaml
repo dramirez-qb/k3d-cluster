@@ -1,33 +1,22 @@
 ---
-apiVersion: networking.k8s.io/v1
-kind: Ingress
+apiVersion: cert-manager.io/v1
+kind: Certificate
 metadata:
-  name: argocd-server-ingress
-  namespace: argocd
-  annotations:
-    external-dns.alpha.kubernetes.io/target: "ingress.${SECRET_DOMAIN}"
-    hajimari.io/enable: "true"
-    kubernetes.io/tls-acme: "true"
-    traefik.ingress.kubernetes.io/router.entrypoints: web,websecure
-    cert-manager.io/cluster-issuer: letsencrypt-production
+  name: "argocd-server-tls"
+  namespace: networking
   labels:
     use-cloudflare-solver: "true"
 spec:
-  ingressClassName: traefik
-  rules:
-    - host: &host "argocd.${SECRET_DOMAIN}"
-      http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: argocd-server
-                port:
-                  number: 80
-  tls:
-    - hosts:
-        - *host
+  secretName: "argocd-server-tls"
+  secretTemplate:
+    labels:
+      use-cloudflare-solver: "true"
+  issuerRef:
+    name: letsencrypt-production
+    kind: ClusterIssuer
+  commonName: "argocd.${SECRET_DOMAIN}"
+  dnsNames:
+    - "argocd.${SECRET_DOMAIN}"
 ---
 apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
@@ -39,6 +28,12 @@ spec:
     - websecure
   routes:
     - kind: Rule
+      match: Host(`argocd.${SECRET_DOMAIN}`)
+      priority: 10
+      services:
+        - name: argocd-server
+          port: 80
+    - kind: Rule
       match: Host(`argocd.${SECRET_DOMAIN}`) && Headers(`Content-Type`, `application/grpc`)
       priority: 11
       services:
@@ -47,6 +42,3 @@ spec:
           scheme: h2c
   tls:
     secretName: argocd-server-tls
-    options:
-      name: default
-      namespace: networking
