@@ -3,7 +3,7 @@ apiVersion: externaldns.k8s.io/v1alpha1
 kind: DNSEndpoint
 metadata:
   name: argocd-server-dns
-  namespace: networking
+  namespace: argocd
   annotations:
     external-dns.alpha.kubernetes.io/target: "argocd.${SECRET_DOMAIN}"
 spec:
@@ -16,7 +16,7 @@ apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
   name: "argocd-server-tls"
-  namespace: networking
+  namespace: argocd
   labels:
     use-cloudflare-solver: "true"
 spec:
@@ -31,41 +31,50 @@ spec:
   dnsNames:
     - "argocd.${SECRET_DOMAIN}"
 ---
-apiVersion: traefik.containo.us/v1alpha1
-kind: TraefikService
-metadata:
-  name: argocd-server-ts
-  namespace: networking
-spec:
-  weighted:
-    services:
-      - name: argocd-server
-        namespace: argocd
-        port: 80
----
 apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
   name: argocd-server-ingressroute
-  namespace: networking
+  namespace: argocd
 spec:
   entryPoints:
-    - websecure
+    - web
   routes:
-    - kind: Rule
-      match: Host(`argocd.${SECRET_DOMAIN}`)
-      priority: 10
-      services:
-        - name: argocd-server-ts
-          kind: TraefikService
-          port: 80
     - kind: Rule
       match: Host(`argocd.${SECRET_DOMAIN}`) && Headers(`Content-Type`, `application/grpc`)
       priority: 11
       services:
         - name: argocd-server
+          kind: Service
           namespace: argocd
           port: 80
           scheme: h2c
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: argocd-server-ingress
+  namespace: argocd
+  annotations:
+    traefik.ingress.kubernetes.io/router.tls: "true"
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure
+    ingress.kubernetes.io/proxy-body-size: "0"
+    ingress.kubernetes.io/ssl-redirect: "true"
+    kubernetes.io/tls-acme: "true"
+spec:
+  ingressClassName: traefik
+  rules:
+    - host: &host "argocd.${SECRET_DOMAIN}"
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: argocd-server
+                port:
+                  number: 80
   tls:
-    secretName: argocd-server-tls
+    - hosts:
+        - *host
+      secretName: argocd-server-tls
