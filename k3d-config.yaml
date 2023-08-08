@@ -28,7 +28,7 @@ ports:
 - port: 0.0.0.0:7844:32766 # Cloudflared quick
   nodeFilters:
   - loadbalancer
-- port: 0.0.0.0:30366:30366 # DNS k8s-gateway
+- port: 0.0.0.0:30053:30053 # DNS k8s-gateway
   nodeFilters:
   - loadbalancer
 options:

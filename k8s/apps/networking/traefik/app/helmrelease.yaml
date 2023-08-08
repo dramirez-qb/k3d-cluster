@@ -114,7 +114,7 @@ spec:
             - 192.168.0.0/16
             - 172.16.0.0/16
             - ${CURRENT_EXTERNAL_IP}
-          insecure: false
+          insecure: true
         #
         # Enable the Proxy Protocol header parsing for the entry point
         proxyProtocol:
@@ -124,7 +124,7 @@ spec:
             - 192.168.0.0/16
             - 172.16.0.0/16
             - ${CURRENT_EXTERNAL_IP}
-          insecure: false
+          insecure: true
       websecure:
         ## -- Enable this entrypoint as a default entrypoint. When a service doesn't explicitly set an entrypoint it will only use this entrypoint.
         # asDefault: true

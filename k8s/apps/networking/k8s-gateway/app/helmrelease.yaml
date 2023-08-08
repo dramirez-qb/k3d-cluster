@@ -32,4 +32,5 @@ spec:
     service:
       type: LoadBalancer
       port: 53
+      nodePort: 30053
       externalTrafficPolicy: Cluster
