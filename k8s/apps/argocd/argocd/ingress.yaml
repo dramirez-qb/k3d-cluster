@@ -36,7 +36,7 @@ metadata:
   namespace: argocd
 spec:
   entryPoints:
-    - web
+    - websecure
   routes:
     - kind: Rule
       match: Host(`argocd.${SECRET_DOMAIN}`) && Headers(`Content-Type`, `application/grpc`)
