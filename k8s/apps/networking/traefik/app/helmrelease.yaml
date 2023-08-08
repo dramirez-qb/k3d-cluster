@@ -91,6 +91,10 @@ spec:
           # -- Enable traefik regular kubernetes gateway
           enabled: true
     ports:
+      traefik:
+        port: 9000
+        expose: false
+        exposedPort: 9000
       web:
         ## -- Enable this entrypoint as a default entrypoint. When a service doesn't explicitly set an entrypoint it will only use this entrypoint.
         # asDefault: true
