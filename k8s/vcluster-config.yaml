@@ -1,0 +1,9 @@
+# kubectl get secret ${VCLUSTER_NAME} -n vcluster-${VCLUSTER_NAME} --template={{.data.config}} | base64 -D
+syncer:
+  extraArgs:
+  - --tls-san=${VCLUSTER_NAME}.${SECRET_DOMAIN},${CURRENT_IP}
+  - --out-kube-config-server=https://${VCLUSTER_NAME}.${SECRET_DOMAIN}
+fallbackHostDns: true
+sync:
+  ingresses:
+    enabled: true
