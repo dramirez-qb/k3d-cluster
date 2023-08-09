@@ -32,3 +32,5 @@ spec:
   valuesFrom:
     - kind: Secret
       name: gitlab-agent-home-agent-secrets
+      valuesKey: values.yaml
+      targetPath: config
