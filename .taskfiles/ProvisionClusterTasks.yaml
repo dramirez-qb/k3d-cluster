@@ -296,8 +296,6 @@ tasks:
       - sh: test -f {{.SOPS_AGE_KEY_FILE}}
         msg: |
           Age key file is not found. Did you forget to create it?
-    vars:
-      SOPS_AGE_KEY_FILE: "{{.ROOT_DIR}}/age.key"
     status:
       - "kubectl -n flux-system wait --for condition=available --timeout=90s deployment.apps/helm-controller"
       - "kubectl -n flux-system wait --for condition=available --timeout=90s deployment.apps/image-automation-controller"
