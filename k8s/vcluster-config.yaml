@@ -1,6 +1,6 @@
 # kubectl -n vcluster-${VCLUSTER_NAME} wait --for=jsonpath='{.status.readyReplicas}'=1 --timeout=120s statefulsets.apps/${VCLUSTER_NAME}
-# kubectl -n vcluster-${VCLUSTER_NAME} get secret vc-${VCLUSTER_NAME} -o template --template={{.data.config}} | base64 --decode
-# kubectl -n vcluster-${VCLUSTER_NAME} get secrets/sh.helm.release.v1.${VCLUSTER_NAME}.v1   -o json | jq .data.release | tr -d '"' | base64 -d | base64 -d | gzip -d | jq .
+# kubectl -n vcluster-${VCLUSTER_NAME} get secret vc-${VCLUSTER_NAME} -ojsonpath={{.data.config}} | base64 --decode
+# kubectl -n vcluster-${VCLUSTER_NAME} get secrets/sh.helm.release.v1.${VCLUSTER_NAME}.v1 -o json | jq .data.release | tr -d '"' | base64 -d | base64 -d | gzip -d | jq .
 syncer:
   extraArgs:
     - --tls-san=${VCLUSTER_NAME}.${SECRET_DOMAIN},${CURRENT_IP}
