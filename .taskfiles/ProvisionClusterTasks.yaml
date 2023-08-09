@@ -317,7 +317,7 @@ tasks:
       - cmd: |
           export VCLUSTER_NAME={{(split " " .CLI_ARGS)._0}}
           export SECRET_DOMAIN=$(sops --decrypt {{.KUBERNETES_DIR}}/flux/vars/cluster-secrets.sops.yaml | kubectl apply --dry-run=client -o json -f - | jq -r '.data.SECRET_DOMAIN' | base64 -d)
-          envsubst < {{.KUBERNETES_DIR}}/vcluster-${VCLUSTER_NAME}-config.yaml | cat > {{.TASK_TEMP_DIR}}/vcluster-${VCLUSTER_NAME}-config.yaml
+          envsubst < {{.KUBERNETES_DIR}}/vcluster-config.yaml | cat > {{.TASK_TEMP_DIR}}/vcluster-${VCLUSTER_NAME}-config.yaml
           (vcluster list | grep $VCLUSTER_NAME > /dev/null 2>&1) || vcluster create $VCLUSTER_NAME -n vcluster-$VCLUSTER_NAME --connect=false  -f {{.TASK_TEMP_DIR}}/vcluster-${VCLUSTER_NAME}-config.yaml
           envsubst < {{.KUBERNETES_DIR}}/vcluster-ingress.yaml | kubectl apply -f -
           kubectl get secret ${VCLUSTER_NAME} -n vcluster-${VCLUSTER_NAME} --template={{.data.config}} | base64 -D > vcluster-${VCLUSTER_NAME}.kubeconfig
