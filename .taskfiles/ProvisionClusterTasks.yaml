@@ -10,7 +10,7 @@ tasks:
         silent: true
       - cmd: mkdir -p ${SHARED_PATH}/default-local-pv
         silent: true
-      - cmd: envsubst < k3d-config.yaml | cat >| {{.TASK_TEMP_DIR}}/k3d-config.yaml
+      - cmd: envsubst < k3d-config.yaml | cat > {{.TASK_TEMP_DIR}}/k3d-config.yaml
         silent: true
       - cmd: k3d cluster create -c {{.TASK_TEMP_DIR}}/k3d-config.yaml
         silent: true
@@ -119,7 +119,7 @@ tasks:
         silent: true
       - cmd: |
           kubectl apply -f {{.KUBERNETES_DIR}}/03_traefik/00_traefik_crd.yml
-          envsubst < {{.KUBERNETES_DIR}}/03_traefik/01_traefik_workload.yaml | cat >| {{.TASK_TEMP_DIR}}/01_traefik_workload.yaml
+          envsubst < {{.KUBERNETES_DIR}}/03_traefik/01_traefik_workload.yaml | cat > {{.TASK_TEMP_DIR}}/01_traefik_workload.yaml
           kubectl apply -f {{.TASK_TEMP_DIR}}/01_traefik_workload.yaml
         silent: true
     status:
@@ -317,11 +317,11 @@ tasks:
       - cmd: |
           export VCLUSTER_NAME={{(split " " .CLI_ARGS)._0}}
           export SECRET_DOMAIN=$(sops --decrypt --extract '["stringData"]["SECRET_DOMAIN"]' {{.KUBERNETES_DIR}}/flux/vars/cluster-secrets.sops.yaml)
-          envsubst < {{.KUBERNETES_DIR}}/vcluster-config.yaml | cat >| {{.TASK_TEMP_DIR}}/vcluster-${VCLUSTER_NAME}-config.yaml
+          envsubst < {{.KUBERNETES_DIR}}/vcluster-config.yaml | cat > {{.TASK_TEMP_DIR}}/vcluster-${VCLUSTER_NAME}-config.yaml
           (vcluster list | grep $VCLUSTER_NAME > /dev/null 2>&1) || vcluster create $VCLUSTER_NAME -n vcluster-$VCLUSTER_NAME --connect=false -f {{.TASK_TEMP_DIR}}/vcluster-${VCLUSTER_NAME}-config.yaml
           kubectl -n vcluster-${VCLUSTER_NAME} wait --for=jsonpath='{.status.readyReplicas}'=1 --timeout=120s statefulsets.apps/${VCLUSTER_NAME} && \
           echo "Waiting 5s" && sleep 5s && \
-          kubectl -n vcluster-${VCLUSTER_NAME} get secret vc-${VCLUSTER_NAME} -ojsonpath="{.data.config}" | base64 --decode  >| vcluster-${VCLUSTER_NAME}.kubeconfig
+          kubectl -n vcluster-${VCLUSTER_NAME} get secret vc-${VCLUSTER_NAME} -ojsonpath="{.data.config}" | base64 --decode  > vcluster-${VCLUSTER_NAME}.kubeconfig
           envsubst < {{.KUBERNETES_DIR}}/vcluster-ingress.yaml | kubectl apply -f -
           vcluster connect $VCLUSTER_NAME --namespace vcluster-$VCLUSTER_NAME
         silent: true
