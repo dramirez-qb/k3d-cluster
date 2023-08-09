@@ -3,16 +3,8 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   annotations:
-    cert-manager.io/cluster-issuer: letsencrypt-production
-    kubernetes.io/tls-acme: "true"
-    traefik.ingress.kubernetes.io/router.entrypoints: web,websecure
-    hajimari.io/enable: "true"
-    traefik.ingress.kubernetes.io/router.tls: "true"
-    ingress.kubernetes.io/proxy-body-size: "0"
-    ingress.kubernetes.io/ssl-redirect: "true"
+    traefik.ingress.kubernetes.io/router.entrypoints: web
     external-dns.alpha.kubernetes.io/target: "ingress.${SECRET_DOMAIN}"
-  labels:
-    use-http01-solver: "true"
   name: ${VCLUSTER_NAME}-ingress
   namespace: vcluster-${VCLUSTER_NAME}
 spec:
@@ -32,3 +24,22 @@ spec:
     - hosts:
         - *host
       secretName: ${VCLUSTER_NAME}-vcluster-ssl-cert
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRouteTCP
+metadata:
+  name: ${VCLUSTER_NAME}-ingres
+  namespace: vcluster-${VCLUSTER_NAME}
+  annotations:
+    ingress.kubernetes.io/ssl-passthrough: "true"
+spec:
+  entryPoints:
+    - tcpep
+  routes:
+    - kind: Rule
+      match: HostSNI(`${VCLUSTER_NAME}.${SECRET_DOMAIN}`)
+      services:
+        - name: ${VCLUSTER_NAME}
+          port: 443
+  tls:
+    passthrough: true

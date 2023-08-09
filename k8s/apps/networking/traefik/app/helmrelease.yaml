@@ -80,6 +80,8 @@ spec:
       - "--ping=true"
       - "--log.level=INFO"
       - "--providers.kubernetesingress.ingressendpoint.publishedservice=networking/traefik"
+      - "--entrypoints.udpep.address=:7000/udp"
+      - "--entrypoints.tcpep.address=:6000/tcp"
     globalArguments:
       - "--global.checknewversion"
       - "--global.sendanonymoususage=false"
@@ -167,6 +169,19 @@ spec:
         ## https://doc.traefik.io/traefik/routing/entrypoints/#tls
         tls:
           enabled: true
+      udpep:
+        port: 7000
+        expose: true
+        exposedPort: 7000
+        nodePort: 32700
+        protocol: UDP
+      tcpep:
+        port: 6000
+        expose: true
+        exposedPort: 6000
+        nodePort: 32600
+        protocol: TCP
+    # 30000-32767 is the default NodePort range
     # tlsStore:
     #   default:
     #     defaultCertificate:
@@ -190,25 +205,25 @@ spec:
       minReplicas: 2
       maxReplicas: 15
       metrics:
-      - type: Resource
-        resource:
-          name: cpu
-          target:
-            type: Utilization
-            averageUtilization: 60
-      - type: Resource
-        resource:
-          name: memory
-          target:
-            type: Utilization
-            averageUtilization: 60
+        - type: Resource
+          resource:
+            name: cpu
+            target:
+              type: Utilization
+              averageUtilization: 60
+        - type: Resource
+          resource:
+            name: memory
+            target:
+              type: Utilization
+              averageUtilization: 60
       behavior:
         scaleDown:
           stabilizationWindowSeconds: 300
           policies:
-          - type: Pods
-            value: 1
-            periodSeconds: 60
+            - type: Pods
+              value: 1
+              periodSeconds: 60
     resources:
       limits:
         cpu: 300m

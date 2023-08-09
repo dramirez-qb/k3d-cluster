@@ -19,10 +19,16 @@ volumes:
   nodeFilters:
   - all
 ports:
-- port: 0.0.0.0:1080:30080 # Traefik http
+- port: 0.0.0.0:1080:30080 # Traefik http endpoint
   nodeFilters:
   - loadbalancer
-- port: 0.0.0.0:1443:30443 # Traefik https
+- port: 0.0.0.0:1443:30443 # Traefik https endpoint
+  nodeFilters:
+  - loadbalancer
+- port: 0.0.0.0:32600:32600 # Traefik TCP endpoint
+  nodeFilters:
+  - loadbalancer
+- port: 0.0.0.0:32700:32700 # Traefik UDP endpoint
   nodeFilters:
   - loadbalancer
 - port: 0.0.0.0:7844:32766 # Cloudflared quick
