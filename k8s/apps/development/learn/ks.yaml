@@ -6,11 +6,15 @@ metadata:
   namespace: flux-system
 spec:
   targetNamespace: development
-  path: ./k8s/apps/development/learn
+  path: ./k8s
   prune: true
   sourceRef:
     kind: GitRepository
+    namespace: flux-system
     name: learn
+  dependsOn:
+    - name: cluster-apps-traefik
+      namespace: flux-system
   wait: false
   interval: 40m
   retryInterval: 1m
