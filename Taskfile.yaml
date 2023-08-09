@@ -6,7 +6,6 @@ vars:
   KUBERNETES_DIR: "{{.ROOT_DIR}}/k8s"
 
 env:
-  SOPS_AGE_KEY_FILE: "{{.ROOT_DIR}}/age.key"
   PATH: "{{.ROOT_DIR}}/.venv/bin:$PATH"
   VIRTUAL_ENV: "{{.ROOT_DIR}}/.venv"
   SHARED_PATH: "{{.ROOT_DIR}}/k3s-nodes-shared"
