@@ -1,17 +1,16 @@
 ---
-
 apiVersion: source.toolkit.fluxcd.io/v1
 kind: GitRepository
 metadata:
-  name: external-secrets
+  name: learn
   namespace: flux-system
 spec:
-  interval: 30m
-  url: https://github.com/external-secrets/external-secrets
+  interval: 5m
   ref:
-    tag: 0.9.1
+    branch: master
+  url: "https://github.com/dramirez-qb/learn.git"
   ignore: |
     # exclude all
     /*
     # include kubernetes directory
-    !/deploy/charts/external-secrets
+    !/k8s
