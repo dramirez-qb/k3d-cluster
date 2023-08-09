@@ -320,7 +320,7 @@ tasks:
           kubectl -n vcluster-${VCLUSTER_NAME} wait --for=jsonpath='{.status.readyReplicas}'=1 --timeout=120s statefulsets.apps/${VCLUSTER_NAME} && \
           echo "Waiting 5s" && sleep 5s && \
           kubectl -n vcluster-${VCLUSTER_NAME} get secret vc-${VCLUSTER_NAME} -ojsonpath="{.data.config}" | base64 --decode  > vcluster-${VCLUSTER_NAME}.kubeconfig
-          envsubst < {{.KUBERNETES_DIR}}/vcluster-ingress.yaml | kubectl apply -f -
+          # envsubst < {{.KUBERNETES_DIR}}/vcluster-ingress.yaml | kubectl apply -f -
           vcluster connect $VCLUSTER_NAME --namespace vcluster-$VCLUSTER_NAME
         silent: true
     status:

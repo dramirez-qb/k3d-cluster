@@ -36,8 +36,7 @@ spec:
   entryPoints:
     - tcpep
   routes:
-    - kind: Rule
-      match: HostSNI(`${VCLUSTER_NAME}.${SECRET_DOMAIN}`)
+    - match: HostSNI(`${VCLUSTER_NAME}.${SECRET_DOMAIN}`)
       services:
         - name: ${VCLUSTER_NAME}
           port: 443

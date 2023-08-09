@@ -1,0 +1,34 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: gitlab-agent
+  namespace: gitlab-agent-home-agent
+spec:
+  interval: 30m
+  targetNamespace: gitlab-agent-home-agent
+  chart:
+    spec:
+      chart: gitlab-agent
+      version: 1.17.2
+      sourceRef:
+        kind: HelmRepository
+        name: gitlab
+        namespace: flux-system
+  maxHistory: 2
+  install:
+    createNamespace: true
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  uninstall:
+    keepHistory: false
+  values: # https://gitlab.dxas90.xyz/help/user/clusters/agent/install/index#advanced-installation-method
+    image:
+      tag: v16.1.3
+  valuesFrom:
+    - kind: Secret
+      name: gitlab-agent-home-agent-secrets
