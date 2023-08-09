@@ -319,14 +319,10 @@ tasks:
           export SECRET_DOMAIN=$(sops --decrypt {{.KUBERNETES_DIR}}/flux/vars/cluster-secrets.sops.yaml | kubectl apply --dry-run=client -o json -f - | jq -r '.data.SECRET_DOMAIN' | base64 -d)
           envsubst < {{.KUBERNETES_DIR}}/vcluster-config.yaml | cat > {{.TASK_TEMP_DIR}}/vcluster-${VCLUSTER_NAME}-config.yaml
           (vcluster list | grep $VCLUSTER_NAME > /dev/null 2>&1) || vcluster create $VCLUSTER_NAME -n vcluster-$VCLUSTER_NAME --connect=false  -f {{.TASK_TEMP_DIR}}/vcluster-${VCLUSTER_NAME}-config.yaml
+          kubectl -n vcluster-${VCLUSTER_NAME} wait --for=jsonpath='{.status.readyReplicas}'=1 --timeout=120s statefulsets.apps/${VCLUSTER_NAME} && \
+          echo "Waiting 10s" && sleep 10s && \
+          kubectl -n vcluster-${VCLUSTER_NAME} get secret vc-${VCLUSTER_NAME} -ojsonpath="{.data.config}" | base64 --decode  > vcluster-${VCLUSTER_NAME}.kubeconfig
           envsubst < {{.KUBERNETES_DIR}}/vcluster-ingress.yaml | kubectl apply -f -
-          until kubectl -n vcluster-${VCLUSTER_NAME} get secrets/vc-${VCLUSTER_NAME} --template={{.data.config}} -o yaml > {{.TASK_TEMP_DIR}}/vcluster-${VCLUSTER_NAME}-kubeconfig-raw 2>&1; do
-              echo "Waiting for secret"
-              sleep 5
-          done
-          sleep 2
-          kubectl get secret vc-${VCLUSTER_NAME} -n vcluster-${VCLUSTER_NAME} --template={{.data.config}} -o yaml > {{.TASK_TEMP_DIR}}/vcluster-${VCLUSTER_NAME}-kubeconfig-raw
-          cat {{.TASK_TEMP_DIR}}/vcluster-${VCLUSTER_NAME}-kubeconfig-raw > vcluster-${VCLUSTER_NAME}.kubeconfig
           vcluster connect $VCLUSTER_NAME --namespace vcluster-$VCLUSTER_NAME
         silent: true
     status:

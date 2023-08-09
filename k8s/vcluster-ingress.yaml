@@ -3,20 +3,22 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   annotations:
-    # cert-manager.io/cluster-issuer: invalid-letsencrypt-prod-traefik
+    cert-manager.io/cluster-issuer: letsencrypt-production
     kubernetes.io/tls-acme: "true"
     traefik.ingress.kubernetes.io/router.entrypoints: web,websecure
+    hajimari.io/enable: "true"
     traefik.ingress.kubernetes.io/router.tls: "true"
+    ingress.kubernetes.io/proxy-body-size: "0"
+    ingress.kubernetes.io/ssl-redirect: "true"
+    external-dns.alpha.kubernetes.io/target: "ingress.${SECRET_DOMAIN}"
+  labels:
+    use-http01-solver: "true"
   name: ${VCLUSTER_NAME}-ingress
   namespace: vcluster-${VCLUSTER_NAME}
 spec:
   ingressClassName: traefik
-  tls:
-    - hosts:
-        - ${VCLUSTER_NAME}.${SECRET_DOMAIN}
-      secretName: ${VCLUSTER_NAME}-vcluster-ssl-cert
   rules:
-    - host: ${VCLUSTER_NAME}.${SECRET_DOMAIN}
+    - host: &host ${VCLUSTER_NAME}.${SECRET_DOMAIN}
       http:
         paths:
           - path: /
@@ -26,3 +28,7 @@ spec:
                 name: ${VCLUSTER_NAME}
                 port:
                   number: 443
+  tls:
+    - hosts:
+        - *host
+      secretName: ${VCLUSTER_NAME}-vcluster-ssl-cert
