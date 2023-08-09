@@ -8,7 +8,6 @@ vars:
 env:
   PATH: "{{.ROOT_DIR}}/.venv/bin:$PATH"
   VIRTUAL_ENV: "{{.ROOT_DIR}}/.venv"
-  SHARED_PATH: "{{.ROOT_DIR}}/k3s-nodes-shared"
   TASK_TEMP_DIR: "{{.HOME}}/.task-temp"
   USER_BIN_DIR: "{{.HOME}}/.local/bin"
 
