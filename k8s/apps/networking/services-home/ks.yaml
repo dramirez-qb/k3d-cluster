@@ -11,7 +11,7 @@ spec:
     kind: GitRepository
     name: home-kubernetes
   dependsOn:
-    - name: cluster-apps-traefik
+    - name: cluster-apps-traefik-extras
       namespace: flux-system
   wait: false
   interval: 30m

@@ -33,4 +33,3 @@ spec:
     - kind: Secret
       name: gitlab-k8s-agent-secrets
       valuesKey: values.yaml
-      targetPath: config
