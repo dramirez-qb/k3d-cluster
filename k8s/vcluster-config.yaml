@@ -9,3 +9,7 @@ fallbackHostDns: true
 sync:
   ingresses:
     enabled: true
+coredns:
+  image: coredns/coredns:1.10.1
+telemetry:
+  disabled: "true"

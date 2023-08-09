@@ -5,10 +5,11 @@ resources:
   - ./bitnami.yaml
   - ./bjw-s.yaml
   - ./cilium.yaml
-  # - ./coredns.yaml
+  - ./coredns.yaml
   - ./csi-driver-nfs.yaml
   - ./external-dns.yaml
   - ./external-secrets.yaml
+  - ./flagger.yaml
   - ./gitea.yaml
   - ./grafana.yaml
   - ./hajimari.yaml
@@ -16,6 +17,7 @@ resources:
   - ./jetstack.yaml
   - ./k8s-gateway.yaml
   - ./kubernetes-dashboard.yaml
+  - ./loft-sh.yaml
   - ./metrics-server.yaml
   - ./prometheus-community.yaml
   - ./stakater.yaml
