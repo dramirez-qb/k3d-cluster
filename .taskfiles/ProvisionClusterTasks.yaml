@@ -320,7 +320,7 @@ tasks:
           envsubst < {{.KUBERNETES_DIR}}/vcluster-config.yaml | cat > {{.TASK_TEMP_DIR}}/vcluster-${VCLUSTER_NAME}-config.yaml
           (vcluster list | grep $VCLUSTER_NAME > /dev/null 2>&1) || vcluster create $VCLUSTER_NAME -n vcluster-$VCLUSTER_NAME --connect=false  -f {{.TASK_TEMP_DIR}}/vcluster-${VCLUSTER_NAME}-config.yaml
           envsubst < {{.KUBERNETES_DIR}}/vcluster-ingress.yaml | kubectl apply -f -
-          until kubectl -n vcluster-gitlab get secrets/vc-gitlab >/dev/null 2>&1; do
+          until kubectl -n vcluster-gitlab get secrets/vc-gitlab --template={{.data.config}} >/dev/null 2>&1; do
               echo "Waiting for secret"
               sleep 5
           done
