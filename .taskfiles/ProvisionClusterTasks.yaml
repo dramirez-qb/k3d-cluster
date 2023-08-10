@@ -324,11 +324,10 @@ tasks:
           # envsubst < {{.KUBERNETES_DIR}}/vcluster-ingress.yaml | kubectl apply -f -
           vcluster connect $VCLUSTER_NAME --namespace vcluster-$VCLUSTER_NAME
         silent: true
-    status:
-      - vcluster disconnect
     preconditions:
       - sh: "k3d cluster list --no-headers | grep ${CLUSTER_NAME} > /dev/null 2>&1"
       - test -f {{.USER_BIN_DIR}}/vcluster
+      - sh: "vcluster disconnect"
 
   old:
     desc: Gather old common resources in your cluster, useful when asking for support
