@@ -316,7 +316,7 @@ tasks:
           export VCLUSTER_NAME={{(split " " .CLI_ARGS)._0}}
           export SECRET_DOMAIN=$(sops --decrypt --extract '["stringData"]["SECRET_DOMAIN"]' {{.KUBERNETES_DIR}}/flux/vars/cluster-secrets.sops.yaml)
           envsubst < {{.KUBERNETES_DIR}}/vcluster-config.yaml | cat > {{.TASK_TEMP_DIR}}/vcluster-${VCLUSTER_NAME}-config.yaml
-          (vcluster list | grep $VCLUSTER_NAME > /dev/null 2>&1) || vcluster create $VCLUSTER_NAME -n vcluster-$VCLUSTER_NAME --connect=false -f {{.TASK_TEMP_DIR}}/vcluster-${VCLUSTER_NAME}-config.yaml
+          (vcluster list | grep $VCLUSTER_NAME > /dev/null 2>&1) || vcluster create $VCLUSTER_NAME -n vcluster-$VCLUSTER_NAME --connect=false --expose -f {{.TASK_TEMP_DIR}}/vcluster-${VCLUSTER_NAME}-config.yaml
           kubectl wait --for=condition=ready pod -l app=vcluster -l release=${VCLUSTER_NAME} -n vcluster-${VCLUSTER_NAME} --timeout=120s && \
           kubectl wait --for=condition=ready pod -l vcluster.loft.sh/managed-by=${VCLUSTER_NAME} -l vcluster.loft.sh/namespace=kube-system -n vcluster-${VCLUSTER_NAME} --timeout=120s && \
           echo "Waiting 5s" && sleep 5s && \
