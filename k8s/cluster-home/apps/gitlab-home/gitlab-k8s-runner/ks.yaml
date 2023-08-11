@@ -5,7 +5,7 @@ metadata:
   name: cluster-apps-gitlab-k8s-runner
   namespace: flux-system
 spec:
-  path: ./k8s/cluster-home/gitlab-home/gitlab-k8s-runner
+  path: ./k8s/cluster-home/apps/gitlab-home/gitlab-k8s-runner
   prune: true
   sourceRef:
     kind: GitRepository

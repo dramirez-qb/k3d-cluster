@@ -5,7 +5,7 @@ metadata:
   name: cluster-apps-k8s-gateway
   namespace: flux-system
 spec:
-  path: ./k8s/cluster-common/networking/k8s-gateway/app
+  path: ./k8s/cluster-common/apps/networking/k8s-gateway/app
   prune: true
   sourceRef:
     kind: GitRepository

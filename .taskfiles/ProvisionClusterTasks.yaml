@@ -377,13 +377,19 @@ tasks:
     desc: Deletes and creates a new cluster
     aliases: [fresh-start, ffs]
     cmds:
+      - git stash
+      - git pull
+      - git stash apply
       - task: destroy
       - task: create
+    preconditions:
+      - sh: test -f $(which git)
+        msg: |
+          We need git for this. Did you forget it?
 
   full-fresh-start-with-flux:
     desc: Deletes and creates a new cluster with Flux
     aliases: [fresh-flux, fff]
     cmds:
-      - task: destroy
-      - task: create
+      - task: fresh-start
       - task: install:flux
