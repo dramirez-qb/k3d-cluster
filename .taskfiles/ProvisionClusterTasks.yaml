@@ -289,8 +289,6 @@ tasks:
     cmds:
       - kubectl apply --kustomize {{.KUBERNETES_DIR}}/bootstrap
       - "kubectl -n metallb-system wait --for condition=available --timeout=120s deployment.apps/controller"
-      - "kubectl -n metallb-system wait --for=jsonpath='{.status.numberMisscheduled}'=0 --timeout=120s daemonset.apps/speaker"
-      - envsubst < {{.KUBERNETES_DIR}}/bootstrap/metallb_ipaddresspool.yaml | kubectl apply -f -
       - cat {{.SOPS_AGE_KEY_FILE}} | kubectl -n flux-system create secret generic sops-age --from-file=age.agekey=/dev/stdin || true
       - sops --decrypt {{.KUBERNETES_DIR}}/flux/vars/cluster-secrets.sops.yaml | kubectl apply -f -
       - envsubst < {{.KUBERNETES_DIR}}/flux/vars/cluster-settings.yaml | kubectl apply -f -
@@ -308,6 +306,7 @@ tasks:
       - "kubectl -n flux-system wait --for condition=available --timeout=90s deployment.apps/notification-controller"
       - "kubectl -n flux-system wait --for condition=available --timeout=90s deployment.apps/source-controller"
       - 'kubectl -n flux-system get gitrepositories home-kubernetes -o jsonpath="{.status.artifact.revision}" | grep master'
+      - 'kubectl -n flux-system get kustomizations cluster-common-apps -o jsonpath="{.status.artifact.revision}" | grep master'
 
   install:flux-home:
     desc: Install Flux files into your Home cluster
@@ -317,6 +316,7 @@ tasks:
       - kubectl apply --kustomize {{.KUBERNETES_DIR}}/cluster-home
     status:
       - 'kubectl -n flux-system get gitrepositories home-kubernetes -o jsonpath="{.status.artifact.revision}" | grep master'
+      - 'kubectl -n flux-system get kustomizations cluster-home-apps -o jsonpath="{.status.artifact.revision}" | grep master'
 
   create:vcluster:
     desc: Create a vcluster into your cluster
