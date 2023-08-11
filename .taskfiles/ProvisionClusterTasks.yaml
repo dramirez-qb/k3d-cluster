@@ -288,6 +288,7 @@ tasks:
     deps: [install:storage, install:monitoring]
     cmds:
       - kubectl apply --kustomize {{.KUBERNETES_DIR}}/bootstrap
+      - envsubst < {{.KUBERNETES_DIR}}/bootstrap/metallb_ipaddresspool.yaml | kubectl apply -f -
       - cat {{.SOPS_AGE_KEY_FILE}} | kubectl -n flux-system create secret generic sops-age --from-file=age.agekey=/dev/stdin || true
       - sops --decrypt {{.KUBERNETES_DIR}}/flux/vars/cluster-secrets.sops.yaml | kubectl apply -f -
       - envsubst < {{.KUBERNETES_DIR}}/flux/vars/cluster-settings.yaml | kubectl apply -f -
