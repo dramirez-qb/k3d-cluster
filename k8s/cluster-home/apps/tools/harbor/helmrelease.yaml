@@ -1,0 +1,67 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: harbor
+  namespace: tools
+spec:
+  interval: 5m
+  targetNamespace: tools
+  chart:
+    spec:
+      chart: harbor
+      version: 1.12.2
+      sourceRef:
+        kind: HelmRepository
+        name: harbor
+        namespace: flux-system
+      interval: 5m
+  # All values at https://gitea.com/gitea/helm-chart
+  values:
+    expose:
+      type: ingress
+      tls:
+        enabled: true
+        certSource: none
+        secret:
+          secretName: "harbor-secret-tls"
+      ingress:
+        hosts:
+          core: harbor.${SECRET_DOMAIN}
+        className: traefik
+        annotations:
+          ingress.kubernetes.io/ssl-redirect: "true"
+          ingress.kubernetes.io/proxy-body-size: "0"
+          kong.ingress.kubernetes.io/force-ssl-redirect: "true"
+          cert-manager.io/cluster-issuer: letsencrypt-http-production
+          kubernetes.io/tls-acme: 'true'
+          traefik.ingress.kubernetes.io/router.entrypoints: websecure
+          traefik.ingress.kubernetes.io/router.tls: 'true'
+    externalURL: https://harbor.${SECRET_DOMAIN}
+    persistence:
+      enabled: true
+      resourcePolicy: "keep"
+      persistentVolumeClaim:
+        registry:
+          existingClaim: "harbor-pvc"
+          subPath: "registry"
+        chartmuseum:
+          existingClaim: "harbor-pvc"
+          subPath: "chartmuseum"
+        jobservice:
+          existingClaim: "harbor-pvc"
+          subPath: "jobservice"
+        database:
+          existingClaim: "harbor-pvc"
+          subPath: "database"
+        redis:
+          existingClaim: "harbor-pvc"
+          subPath: "redis"
+        trivy:
+          existingClaim: "harbor-pvc"
+          subPath: "trivy"
+    caSecretName: ""
+  valuesFrom:
+    - kind: Secret
+      name: harbor-helm-values
+      valuesKey: values.yaml

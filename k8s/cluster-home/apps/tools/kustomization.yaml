@@ -4,3 +4,4 @@ kind: Kustomization
 resources:
   - ./namespace.yaml
   - ./gitea/ks.yaml
+  - ./harbor/ks.yaml
