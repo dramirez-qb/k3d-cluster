@@ -292,10 +292,26 @@ tasks:
       - sops --decrypt {{.KUBERNETES_DIR}}/flux/vars/cluster-secrets.sops.yaml | kubectl apply -f -
       - envsubst < {{.KUBERNETES_DIR}}/flux/vars/cluster-settings.yaml | kubectl apply -f -
       - kubectl apply --kustomize {{.KUBERNETES_DIR}}/flux/config
+      - kubectl apply --kustomize {{.KUBERNETES_DIR}}/cluster-common
     preconditions:
       - sh: test -f {{.SOPS_AGE_KEY_FILE}}
         msg: |
           Age key file is not found. Did you forget to create it?
+    status:
+      - "kubectl -n flux-system wait --for condition=available --timeout=90s deployment.apps/helm-controller"
+      - "kubectl -n flux-system wait --for condition=available --timeout=90s deployment.apps/image-automation-controller"
+      - "kubectl -n flux-system wait --for condition=available --timeout=90s deployment.apps/image-reflector-controller"
+      - "kubectl -n flux-system wait --for condition=available --timeout=90s deployment.apps/kustomize-controller"
+      - "kubectl -n flux-system wait --for condition=available --timeout=90s deployment.apps/notification-controller"
+      - "kubectl -n flux-system wait --for condition=available --timeout=90s deployment.apps/source-controller"
+      - 'kubectl -n flux-system get gitrepositories home-kubernetes -o jsonpath="{.status.artifact.revision}" | grep master'
+
+  install:flux-home:
+    desc: Install Flux files into your Home cluster
+    aliases: [flux-home]
+    deps: [install:flux]
+    cmds:
+      - kubectl apply --kustomize {{.KUBERNETES_DIR}}/cluster-home
     status:
       - "kubectl -n flux-system wait --for condition=available --timeout=90s deployment.apps/helm-controller"
       - "kubectl -n flux-system wait --for condition=available --timeout=90s deployment.apps/image-automation-controller"
@@ -325,7 +341,6 @@ tasks:
           vcluster connect $VCLUSTER_NAME --namespace vcluster-$VCLUSTER_NAME
         silent: true
     preconditions:
-      - sh: "k3d cluster list --no-headers | grep ${CLUSTER_NAME} > /dev/null 2>&1"
       - test -f {{.USER_BIN_DIR}}/vcluster
       - sh: "vcluster disconnect || true"
 
