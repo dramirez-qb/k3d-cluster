@@ -5,7 +5,7 @@ metadata:
   name: cluster-apps-services-home
   namespace: flux-system
 spec:
-  path: ./k8s/apps/networking/services-home/app
+  path: ./k8s/cluster-home/networking/services-home/app
   prune: true
   sourceRef:
     kind: GitRepository

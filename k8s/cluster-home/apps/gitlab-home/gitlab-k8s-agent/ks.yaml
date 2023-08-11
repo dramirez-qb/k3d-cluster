@@ -5,7 +5,7 @@ metadata:
   name: cluster-apps-gitlab-k8s-agent
   namespace: flux-system
 spec:
-  path: ./k8s/apps/gitlab-home/gitlab-k8s-agent
+  path: ./k8s/cluster-home/gitlab-home/gitlab-k8s-agent
   prune: true
   sourceRef:
     kind: GitRepository

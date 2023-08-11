@@ -5,7 +5,7 @@ metadata:
   name: cluster-apps-argocd
   namespace: flux-system
 spec:
-  path: ./k8s/apps/argocd/app
+  path: ./k8s/cluster-remote/argocd/app
   prune: true
   targetNamespace: argocd
   sourceRef:

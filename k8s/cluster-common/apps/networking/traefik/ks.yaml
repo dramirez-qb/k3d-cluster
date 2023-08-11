@@ -8,7 +8,7 @@ spec:
   dependsOn:
     - name: cluster-apps-external-dns
     - name: cluster-apps-cert-manager-issuers
-  path: ./k8s/apps/networking/traefik/certificates
+  path: ./k8s/cluster-common/networking/traefik/certificates
   prune: true
   sourceRef:
     kind: GitRepository
@@ -24,7 +24,7 @@ metadata:
   name: cluster-apps-traefik
   namespace: flux-system
 spec:
-  path: ./k8s/apps/networking/traefik/app
+  path: ./k8s/cluster-common/networking/traefik/app
   prune: true
   sourceRef:
     kind: GitRepository
@@ -43,7 +43,7 @@ spec:
   dependsOn:
     - name: cluster-apps-traefik
     - name: cluster-apps-traefik-certificates
-  path: ./k8s/apps/networking/traefik/extras
+  path: ./k8s/cluster-common/networking/traefik/extras
   prune: true
   sourceRef:
     kind: GitRepository

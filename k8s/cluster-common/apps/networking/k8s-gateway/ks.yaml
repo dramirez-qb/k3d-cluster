@@ -5,12 +5,12 @@ metadata:
   name: cluster-apps-k8s-gateway
   namespace: flux-system
 spec:
-  path: ./k8s/apps/networking/k8s-gateway/app
+  path: ./k8s/cluster-common/networking/k8s-gateway/app
   prune: true
   sourceRef:
     kind: GitRepository
     name: home-kubernetes
   wait: false # no flux ks dependents
   interval: 30m
-  retryInterval: 2m
-  timeout: 10m
+  retryInterval: 3m
+  timeout: 15m

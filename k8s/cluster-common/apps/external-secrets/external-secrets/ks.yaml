@@ -5,7 +5,7 @@ metadata:
   name: cluster-apps-external-secrets
   namespace: flux-system
 spec:
-  path: ./k8s/apps/external-secrets/external-secrets/app
+  path: ./k8s/cluster-common/external-secrets/external-secrets/app
   prune: true
   sourceRef:
     kind: GitRepository
