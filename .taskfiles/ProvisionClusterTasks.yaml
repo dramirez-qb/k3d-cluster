@@ -314,13 +314,8 @@ tasks:
     cmds:
       - kubectl apply --kustomize {{.KUBERNETES_DIR}}/cluster-home
     status:
-      - "kubectl -n flux-system wait --for condition=available --timeout=90s deployment.apps/helm-controller"
-      - "kubectl -n flux-system wait --for condition=available --timeout=90s deployment.apps/image-automation-controller"
-      - "kubectl -n flux-system wait --for condition=available --timeout=90s deployment.apps/image-reflector-controller"
-      - "kubectl -n flux-system wait --for condition=available --timeout=90s deployment.apps/kustomize-controller"
-      - "kubectl -n flux-system wait --for condition=available --timeout=90s deployment.apps/notification-controller"
-      - "kubectl -n flux-system wait --for condition=available --timeout=90s deployment.apps/source-controller"
-      - 'kubectl -n flux-system get gitrepositories home-kubernetes -o jsonpath="{.status.artifact.revision}" | grep master'
+      - "kubectl -n metallb-system wait --for condition=available --timeout=120s deployment.apps/controller"
+      - "kubectl -n metallb-system wait --for=jsonpath='{.status.numberMisscheduled}'=0 --timeout=120s daemonset.apps/speaker"
 
   create:vcluster:
     desc: Create a vcluster into your cluster
