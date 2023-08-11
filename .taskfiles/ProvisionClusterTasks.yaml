@@ -372,3 +372,18 @@ tasks:
           echo -e "\\033[1;32mCleanning cluster ${CLUSTER_NAME} events\\033[0;39m"
           kubectl delete events --all --all-namespaces
         silent: true
+
+  full-fresh-start:
+    desc: Deletes and creates a new cluster
+    aliases: [fresh-start, ffs]
+    cmds:
+      - task: destroy
+      - task: create
+
+  full-fresh-start-with-flux:
+    desc: Deletes and creates a new cluster with Flux
+    aliases: [fresh-flux, fff]
+    cmds:
+      - task: destroy
+      - task: create
+      - task: install:flux
