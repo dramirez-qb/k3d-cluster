@@ -284,8 +284,8 @@ tasks:
   install:flux:
     desc: Install Flux into your cluster
     aliases: [flux]
+    deps: [install:monitoring]
     cmds:
-      - kubectl apply -f {{.KUBERNETES_DIR}}/monitoring/00_metrics-server.yaml
       - kubectl apply --kustomize {{.KUBERNETES_DIR}}/bootstrap
       - "kubectl -n metallb-system wait --for condition=available --timeout=120s deployment.apps/controller"
       - cat {{.SOPS_AGE_KEY_FILE}} | kubectl -n flux-system create secret generic sops-age --from-file=age.agekey=/dev/stdin || true

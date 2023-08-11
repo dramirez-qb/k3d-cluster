@@ -67,7 +67,6 @@ metadata:
 spec:
   alertmanagerConfigNamespaceSelector: {}
   alertmanagerConfigSelector: {}
-  image: "quay.io/prometheus/alertmanager:v0.21.0"
   listenLocal: false
   logFormat: logfmt
   logLevel: info
@@ -93,7 +92,6 @@ spec:
         resources:
           requests:
             storage: 1Gi
-  version: v0.21.0
 ---
 apiVersion: v1
 kind: Service
@@ -130,7 +128,6 @@ spec:
         pathPrefix: /
         port: web
   enableAdminAPI: false
-  image: "quay.io/prometheus/prometheus:v2.26.1"
   listenLocal: false
   logFormat: logfmt
   logLevel: info
@@ -166,7 +163,6 @@ spec:
         resources:
           requests:
             storage: 20Gi
-  version: v2.26.1
 ---
 kind: Service
 apiVersion: v1
