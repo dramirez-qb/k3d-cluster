@@ -157,7 +157,6 @@ tasks:
   install:monitoring:
     desc: Install Prometheus, metrics-server and kube-state-metrics into your cluster
     aliases: [monitoring, mnt]
-    # deps: [install:storage]
     cmds:
       - cmd: |
           echo -e "\\033[1;32mInstalling Installing Prometheus, metrics-server and kube-state-metrics\\033[0;39m"
