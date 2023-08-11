@@ -20,12 +20,12 @@ spec:
   maxHistory: 2
   install:
     createNamespace: true
-    disableWait: true
+    disableWait: false
     remediation:
       retries: 3
   upgrade:
     cleanupOnFail: true
-    disableWait: true
+    disableWait: false
     remediation:
       retries: 3
   uninstall:
