@@ -21,6 +21,8 @@ spec:
         name: cluster-settings
       - kind: Secret
         name: cluster-secrets
+  dependsOn:
+    - name: flux
   patches:
     - patch: |-
         apiVersion: kustomize.toolkit.fluxcd.io/v1
