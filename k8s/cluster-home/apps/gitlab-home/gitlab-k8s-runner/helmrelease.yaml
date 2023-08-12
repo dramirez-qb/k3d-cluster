@@ -51,6 +51,15 @@ spec:
           verbs: ["list", "get", "create", "delete", "update"]
     runners:
       privileged: true
+      name: "{{.Release.Namespace}}"
+      # runner configuration: https://docs.gitlab.com/runner/configuration/advanced-configuration.html
+      config: |
+        [[runners]]
+          [runners.kubernetes]
+            namespace = "{{.Release.Namespace}}"
+            image = "node"
+            volumes = ["/cache", "/var/run/docker.sock:/var/run/docker.sock", "/run/containerd/containerd.sock:/run/containerd/containerd.sock"]
+
   valuesFrom:
     - kind: Secret
       name: gitlab-k8s-runner-secrets
