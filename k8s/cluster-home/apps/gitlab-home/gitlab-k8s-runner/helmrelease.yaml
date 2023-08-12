@@ -58,7 +58,6 @@ spec:
           [runners.kubernetes]
             namespace = "{{.Release.Namespace}}"
             image = "node"
-            volumes = ["/cache", "/var/run/docker.sock:/var/run/docker.sock", "/run/containerd/containerd.sock:/run/containerd/containerd.sock"]
 
   valuesFrom:
     - kind: Secret
