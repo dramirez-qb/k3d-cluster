@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: exampleapp
+  annotations:
+    traefik.ingress.kubernetes.io/service.sticky.cookie: "true"
+spec:
+  ports:
+    - name: "web"
+      port: 80
+      targetPort: web
+  selector:
+    app: gitops-k8s
+status:
+  loadBalancer: {}

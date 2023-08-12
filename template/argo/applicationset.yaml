@@ -1,0 +1,44 @@
+# https://about.gitlab.com/blog/2022/08/02/how-to-provision-reviewops/
+---
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: review-the-application
+  namespace: argocd
+spec:
+  generators:
+  - pullRequest:
+      gitlab:
+        project: '37389565'
+        api: https://gitlab.com/
+        tokenRef:
+          secretName: gitlab-token-reviews
+          key: token
+        pullRequestState: opened
+      requeueAfterSeconds: 60
+  template:
+    metadata:
+      name: 'review-the-application-{{number}}'
+    spec:
+      source:
+        repoURL: 'https://gitlab.com/madou-stories/dynamic-environments-with-argo-cd/the-application-configuration.git'
+        path: chart/
+        targetRevision: 'HEAD'
+        syncPolicy:
+          automated:
+            prune: true
+            selfHeal: true
+          syncOptions:
+            - CreateNamespace=true
+        helm:
+          parameters:
+          - name: "image.repository"
+            value: "registry.gitlab.com/madou-stories/dynamic-environments-with-argo-cd/the-application/{{branch}}"
+          - name: "image.tag"
+            value: "{{head_sha}}"
+          - name: "service.url"
+            value: "the-application-{{number}}.34.79.128.200.nip.io"
+      project: revireapps-project
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: dynamic-environments-with-argo-cd

@@ -1,0 +1,18 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - ./base-full-common-resources
+
+commonLabels:
+  app: gitops-k8s
+  owner: gitops
+
+generatorOptions:
+  annotations:
+    note: generated
+    argocd.argoproj.io/compare-options: IgnoreExtraneous
+  disableNameSuffixHash: false
+  labels:
+    team: DevOps
+    type: generated

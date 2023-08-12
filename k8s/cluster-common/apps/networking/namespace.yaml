@@ -5,3 +5,5 @@ metadata:
   name: networking
   labels:
     kustomize.toolkit.fluxcd.io/prune: disabled
+    custom.purpose: infrastructure
+    custom.role: networking

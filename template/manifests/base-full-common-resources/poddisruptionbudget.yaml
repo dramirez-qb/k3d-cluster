@@ -1,0 +1,10 @@
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: exampleapp-pdb
+spec:
+  maxUnavailable: 1
+  selector:
+    matchLabels:
+      app: gitops-k8s

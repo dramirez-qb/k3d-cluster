@@ -1,0 +1,132 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: exampleapp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gitops-k8s
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 2
+  template:
+    metadata:
+      labels:
+        app: gitops-k8s
+    spec:
+      # affinity:
+      #   podAntiAffinity:
+      #     requiredDuringSchedulingIgnoredDuringExecution:
+      #       - labelSelector:
+      #           matchExpressions:
+      #             - key: app
+      #               operator: In
+      #               values:
+      #                 - gitops-k8s
+      #         topologyKey: "kubernetes.io/hostname"
+      initContainers:
+        - name: pull-secrets
+          image: "busybox"
+          imagePullPolicy: IfNotPresent
+          command:
+            - "busybox"
+          args:
+            - "wget"
+            - "-O"
+            - "/secrets/ultrasecret.json"
+            - "http://httpbin.org/get?key=secret"
+          env:
+            - name: MY_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+          envFrom:
+            - configMapRef:
+                name: exampleapp-config
+          resources:
+            limits:
+              cpu: 5m
+              memory: 16Mi
+            requests:
+              cpu: 5m
+              memory: 16Mi
+          volumeMounts:
+            - mountPath: /secrets
+              name: secrets
+      containers:
+        - name: exampleapp
+          env:
+            - name: MY_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: USER
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: POD_IP
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: status.podIP
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: metadata.name
+          envFrom:
+            - configMapRef:
+                name: exampleapp-config
+            - secretRef:
+                name: exampleapp-secret
+          image: traefik/whoami:latest
+          ports:
+            - name: web
+              containerPort: 80
+              protocol: TCP
+          resources:
+            limits:
+              cpu: 25m
+              memory: 263M
+            requests:
+              cpu: 25m
+              memory: 263M
+          # https://blog.pipetail.io/posts/2020-05-04-most-common-mistakes-k8s/
+          readinessProbe:
+            httpGet:
+              path: /
+              port: web
+            initialDelaySeconds: 3
+            timeoutSeconds: 2
+            failureThreshold: 5
+          # lifecycle:
+          #   preStop:
+          #     exec:
+          #       command: ["sleep", "15"]
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+            - mountPath: /secrets
+              name: secrets
+            - mountPath: /cache
+              name: cache-volume
+      terminationGracePeriodSeconds: 30
+      dnsPolicy: ClusterFirst
+      securityContext:
+        fsGroup: 65534
+      serviceAccountName: k8s-exampleapp
+      # https://kubernetes.io/docs/concepts/containers/images/#referring-to-an-imagepullsecrets-on-a-pod
+      # imagePullSecrets:
+      #   - name: pull-registry
+      restartPolicy: Always
+      volumes:
+        - name: secrets
+          persistentVolumeClaim:
+            claimName: "exampleapp"
+        - name: cache-volume
+          emptyDir: {}
+status: {}

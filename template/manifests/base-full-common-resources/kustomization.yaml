@@ -1,0 +1,17 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - ./pvc.yaml
+  - ./configmap.yaml
+  - ./ingress.yaml
+  - ./deployment.yaml
+  - ./poddisruptionbudget.yaml
+  - ./service.yaml
+  - ./serviceaccount.yaml
+  - ./hpa.yaml
+  - ./secret.yaml
+  - ./networkpolicy.yaml
+
+transformers:
+  - labels.yaml
