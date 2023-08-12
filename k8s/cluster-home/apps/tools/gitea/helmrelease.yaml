@@ -73,7 +73,7 @@ spec:
       admin:
         username: gitea_admin
         password: ${GITEA_SECRET_PASSWORD}
-        email: "${SECRET_ACME_EMAIL}"
+        email: "admin@${SECRET_DOMAIN}"
       # See https://docs.gitea.io/en-us/config-cheat-sheet/
       config:
         APP_NAME: "Gitea for ${SECRET_DOMAIN}: Git with a cup of tea"
