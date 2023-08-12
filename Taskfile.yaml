@@ -6,10 +6,10 @@ vars:
   KUBERNETES_DIR: "{{.ROOT_DIR}}/k8s"
 
 env:
-  PATH: "{{.ROOT_DIR}}/.venv/bin:$PATH"
   VIRTUAL_ENV: "{{.ROOT_DIR}}/.venv"
   TASK_TEMP_DIR: "{{.HOME}}/.task-temp"
   USER_BIN_DIR: "{{.HOME}}/.local/bin"
+  PATH: "{{.ROOT_DIR}}/.venv/bin:{{.USER_BIN_DIR}}:$PATH"
 
 includes:
   cluster:

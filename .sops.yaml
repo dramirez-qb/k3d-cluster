@@ -5,3 +5,7 @@ creation_rules:
     # Personal
     age: >-
       age17nr093c37k5732q9ksxf2p785wd9fxjej7axzcn66lm6muys0eks9kmzts
+  - path_regex: .*\.sops\.zone
+    # Personal
+    age: >-
+      age17nr093c37k5732q9ksxf2p785wd9fxjej7axzcn66lm6muys0eks9kmzts
