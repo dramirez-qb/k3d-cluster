@@ -32,12 +32,18 @@ You will need it on your computer
 Here you should document any install steps required to use this module. You should consider documenting any pre-requisites in this section too.
 
 ```console
-TASK_VERSION=$(curl -sL https://api.github.com/repos/go-task/task/releases/latest | jq -r ".tag_name")
-wget https://github.com/go-task/task/releases/download/${TASK_VERSION}/task_linux_amd64.tar.gz
+# Normal user
+wget https://github.com/go-task/task/releases/download/latest/task_linux_amd64.tar.gz
 tar xf task_linux_amd64.tar.gz
-install -m 0755 task ~/.local/bin/task
-~/.local/bin/task init
-sudo ~/.local/bin/task install-docker
+install -m 0755 task /usr/local/bin/task
+
+# or YOLO mode
+sudo sh -c "$(curl --location https://taskfile.dev/install.sh)" -- -d -b /usr/local/bin
+
+#After that you can run
+
+task init
+sudo task install:docker
 task # or task all
 ```
 
