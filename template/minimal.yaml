@@ -1,0 +1,72 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  labels:
+    challenge.app: examples-app
+  name: examples-app
+spec:
+  ports:
+    - name: "web"
+      port: 80
+      targetPort: web # line 49
+  selector:
+    challenge.app: examples-app
+status:
+  loadBalancer: {}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    challenge.app: examples-app
+  name: examples-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      challenge.app: examples-app
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 2
+  template:
+    metadata:
+      labels:
+        challenge.app: examples-app
+        team: DevOps
+    spec:
+      containers:
+        - name: examples-app
+          envFrom:
+            - configMapRef:
+                name: examples-app-config
+          image: dxas90/examples-app:cgi # original imagen just in case that someone needs it
+          ports:
+            - name: web
+              containerPort: 5000 # line 11
+              protocol: TCP
+          resources:
+            limits:
+              cpu: 10m
+              memory: 56Mi
+            requests:
+              cpu: 10m
+              memory: 56Mi
+      restartPolicy: Always
+status: {}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: examples-app-config # line 45
+data:
+  APP_ENV: prod
+  INTERVAL: "30"
+  MAILER_URL: "smtp://mail-server:1025"
+  MONGODB_URL: "mongodb://mongodb:27017"
+  REDIS_DSN: "redis://redis:6379?timeout=0.5"
+---

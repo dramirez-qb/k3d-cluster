@@ -15,7 +15,7 @@ gitops:
       # Read all .yaml files from team1/app1 directory.
       # See https://github.com/bmatcuk/doublestar#about and
       # https://pkg.go.dev/github.com/bmatcuk/doublestar/v2#Match for globbing rules.
-    - glob: '/template/manifests/**/*.yaml'
+    - glob: '/template/minimal.yaml'
     # Reconcile timeout defines whether the applier should wait
     # until all applied resources have been reconciled, and if so,
     # how long to wait.
