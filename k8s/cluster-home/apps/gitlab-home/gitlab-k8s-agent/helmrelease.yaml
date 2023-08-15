@@ -27,6 +27,7 @@ spec:
   uninstall:
     keepHistory: false
   values: # https://gitlab.com/gitlab-org/charts/gitlab-agent/-/blob/main/values.yaml?ref_type=heads
+    replicas: 1
     image:
       tag: v16.1.3
   valuesFrom:
