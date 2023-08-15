@@ -2,7 +2,7 @@
 apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
-  name: gitlab-agent
+  name: k3s-agent
   namespace: gitlab-home
 spec:
   interval: 30m

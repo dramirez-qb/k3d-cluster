@@ -1,0 +1,8 @@
+deploy:
+  image:
+    name: bitnami/kubectl:latest
+    entrypoint: ['']
+  script:
+    - kubectl config get-contexts
+    - kubectl config use-context dxas90/k3d-cluster:k3s-home-agent
+    - kubectl get pods

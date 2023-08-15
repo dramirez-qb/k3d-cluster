@@ -1,3 +1,6 @@
+ci_access:
+  projects:
+    - id: dxas90/*
 gitops:
   # Manifest projects are watched by the agent. Whenever a project changes,
   # GitLab deploys the changes using the agent.
