@@ -1,4 +1,5 @@
 ---
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
 version: "3"
 
 vars:
@@ -69,15 +70,15 @@ tasks:
     desc: Install nerdctl
     aliases: [nerdctl]
     dir: "{{.TASK_TEMP_DIR}}"
-    prompt: This is will add the nerdctl to your system... Do you want to continue?
     cmds:
       - |
         NERDCTL_VERSION=$(curl -sL https://api.github.com/repos/containerd/nerdctl/releases/latest | {{.USER_BIN_DIR}}/jq -r ".tag_name")
         curl -sSLO https://github.com/containerd/nerdctl/releases/download/${NERDCTL_VERSION}/nerdctl-full-${NERDCTL_VERSION/v/}-linux-amd64.tar.gz
-        tar Cxzvvf {{.USER_BIN_DIR}} nerdctl-full-${NERDCTL_VERSION/v/}-linux-amd64.tar.gz && rm -f nerdctl-full-${NERDCTL_VERSION/v/}-linux-amd64.tar.gz
+        tar Cxzvvf {{.HOME}}/.local nerdctl-full-${NERDCTL_VERSION/v/}-linux-amd64.tar.gz && rm -f nerdctl-full-${NERDCTL_VERSION/v/}*
     status:
       - test -f {{.USER_BIN_DIR}}/nerdctl
       - test -f {{.USER_BIN_DIR}}/containerd
+      - test -f {{.USER_BIN_DIR}}/docker
 
   install:direnv:
     desc: Install direnv binary

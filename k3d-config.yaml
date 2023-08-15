@@ -1,5 +1,6 @@
-# https://k3d.io/usage/configfile/
 ---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/k3d-io/k3d/main/pkg/config/v1alpha5/schema.json
+# https://k3d.io/usage/configfile/
 kind: Simple
 apiVersion: k3d.io/v1alpha5
 metadata:
@@ -61,12 +62,19 @@ options:
     - arg: --tls-san=dxas90.duckdns.org
       nodeFilters:
       - server:*
+    nodeLabels:
+      - label: nerdctl/bypass4netns=true
+        nodeFilters:
+        - all
   kubeconfig:
     updateDefaultKubeconfig: true
     switchCurrentContext: true
   runtime:
     labels:
     - label: my.k3s.cluster=true
+      nodeFilters:
+      - all
+    - label: nerdctl/bypass4netns=true
       nodeFilters:
       - all
 env:
