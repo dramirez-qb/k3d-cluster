@@ -44,7 +44,7 @@ spec:
           envFrom:
             - configMapRef:
                 name: examples-app-config
-          image: dxas90/examples-app:cgi # original imagen just in case that someone needs it
+          image: dxas90/network-stats:cgi # original imagen just in case that someone needs it
           ports:
             - name: web
               containerPort: 5000 # line 11
