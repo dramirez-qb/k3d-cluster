@@ -36,7 +36,7 @@ spec:
       ingress:
         enabled: true
         pathType: Prefix
-        ingressClassName: internal
+        ingressClassName: internal-nginx
         hosts:
           - &host alert-manager.${SECRET_DOMAIN}
         tls:

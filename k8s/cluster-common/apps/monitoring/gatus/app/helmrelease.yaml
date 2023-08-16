@@ -72,7 +72,7 @@ spec:
     ingress:
       main:
         enabled: true
-        ingressClassName: external
+        ingressClassName: external-nginx
         annotations:
           gethomepage.dev/enabled: "true"
           gethomepage.dev/icon: gatus.png

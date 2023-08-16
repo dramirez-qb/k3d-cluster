@@ -3,6 +3,6 @@ kind: ConfigMap
 metadata:
   name: argocd-cmd-params-cm
 data:
-  server.insecure: "true"
-  server.repo.server.strict.tls: "false"
-  server.repo.server.plaintext: "true"
+  server.insecure: "false"
+  # server.repo.server.strict.tls: "false"
+  # server.repo.server.plaintext: "true"

@@ -53,7 +53,7 @@ spec:
     ingress:
       main:
         enabled: true
-        ingressClassName: internal
+        ingressClassName: internal-nginx
         annotations:
           gethomepage.dev/enabled: "true"
           gethomepage.dev/icon: bazarr.png
