@@ -16,8 +16,17 @@ spec:
         - CREATE EXTENSION fuzzystrmatch;
         - CREATE EXTENSION postgis_tiger_geocoder;
   storage:
-    size: 2Gi
+    size: 1Gi
     storageClass: local-path
+    pvcTemplate:
+      accessModes:
+        - ReadWriteOnce
+      resources:
+        requests:
+          storage: 1Gi
+      storageClassName: local-path
+      volumeMode: Filesystem
+
   superuserSecret:
     name: cloudnative-pg-secret
   enableSuperuserAccess: true
