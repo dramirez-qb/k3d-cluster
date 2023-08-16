@@ -285,7 +285,6 @@ tasks:
   install:flux:
     desc: Install Flux into your cluster
     aliases: [flux]
-    deps: [install:monitoring]
     cmds:
       - kubectl apply --kustomize {{.KUBERNETES_DIR}}/bootstrap
       - "kubectl -n metallb-system wait --for condition=available --timeout=120s deployment.apps/controller"
