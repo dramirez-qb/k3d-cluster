@@ -6,15 +6,24 @@ metadata:
   namespace: database
 spec:
   instances: 3
-  imageName: ghcr.io/cloudnative-pg/postgresql:14.8-6
+  imageName: ghcr.io/cloudnative-pg/postgis:14.8-6
   primaryUpdateStrategy: unsupervised
+  bootstrap:
+    initdb:
+      postInitTemplateSQL:
+        - CREATE EXTENSION postgis;
+        - CREATE EXTENSION postgis_topology;
+        - CREATE EXTENSION fuzzystrmatch;
+        - CREATE EXTENSION postgis_tiger_geocoder;
   storage:
     size: 2Gi
     storageClass: local-path
   superuserSecret:
     name: cloudnative-pg-secret
+  enableSuperuserAccess: true
   postgresql:
     parameters:
+      timezone: ${TIMEZONE}
       max_connections: "600"
       shared_buffers: 512MB
   monitoring:
