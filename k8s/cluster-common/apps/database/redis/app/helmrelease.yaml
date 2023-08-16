@@ -17,8 +17,8 @@ spec:
         name: bitnami
         namespace: flux-system
   dependsOn:
-    - name: cluster-apps-local-path-provisioner
-      namespace: flux-system
+    - name: local-path-provisioner
+      namespace: kube-system
   maxHistory: 2
   install:
     remediation:
