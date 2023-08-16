@@ -25,8 +25,8 @@ spec:
   uninstall:
     keepHistory: false
   dependsOn:
-    - name: cluster-apps-local-path-provisioner
-      namespace: flux-system
-  values:  # https://github.com/cloudnative-pg/charts/blob/main/charts/cloudnative-pg/values.yaml
+    - name: local-path-provisioner
+      namespace: kube-system
+  values: # https://github.com/cloudnative-pg/charts/blob/main/charts/cloudnative-pg/values.yaml
     crds:
       create: true
