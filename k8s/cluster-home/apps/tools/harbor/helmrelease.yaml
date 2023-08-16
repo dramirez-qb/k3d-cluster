@@ -30,10 +30,6 @@ spec:
           core: harbor.${SECRET_DOMAIN}
         className: traefik
         annotations:
-          hajimari.io/enable: "true"
-          hajimari.io/icon: simple-icons:gitea
-          hajimari.io/info: Home Source Repository
-          hajimari.io/group: tools
           external-dns.alpha.kubernetes.io/target: "ingress.${SECRET_DOMAIN}"
           ingress.kubernetes.io/ssl-redirect: "true"
           ingress.kubernetes.io/proxy-body-size: "0"

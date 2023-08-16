@@ -37,6 +37,9 @@ spec:
     podDisruptionBudget:
       enabled: true
       maxUnavailable: 1
+    ingressClass:
+      enabled: true
+      isDefaultClass: false
     providers:
       kubernetesCRD:
         # -- Load Kubernetes IngressRoute provider
@@ -92,6 +95,9 @@ spec:
         gateway:
           # -- Enable traefik regular kubernetes gateway
           enabled: true
+      plugins:
+        # -- Enable traefik experimental plugins
+        enabled: true
     ports:
       traefik:
         port: 9000

@@ -26,10 +26,6 @@ spec:
     ingress:
       enabled: true
       annotations:
-        hajimari.io/enable: "true"
-        hajimari.io/icon: simple-icons:gitea
-        hajimari.io/info: Home Source Repository
-        hajimari.io/group: tools
         external-dns.alpha.kubernetes.io/target: "ingress.${SECRET_DOMAIN}"
         traefik.ingress.kubernetes.io/router.entrypoints: web,websecure
       labels:
