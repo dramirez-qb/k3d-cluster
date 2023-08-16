@@ -4,6 +4,7 @@ shared
 external-secret-*.yaml
 external-secret-*.yml
 home*
+tesing-*.yaml
 
 # Trash
 .DS_Store

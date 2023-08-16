@@ -3,6 +3,8 @@ kind: Namespace
 metadata:
   name: monitoring
   labels:
+    goldilocks.fairwinds.com/enabled: "true"
+    kustomize.toolkit.fluxcd.io/prune: disabled
     purpose: infrastructure
     app.kubernetes.io/component: controller
     app.kubernetes.io/name: prometheus-operator
