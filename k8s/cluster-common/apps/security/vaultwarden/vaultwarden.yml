@@ -104,10 +104,6 @@ metadata:
     nginx.ingress.kubernetes.io/proxy-read-timeout: "1800"
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
 spec:
-  tls:
-    - hosts:
-        - *host
-      secretName: vaultwarden-tls
   ingressClassName: internal-nginx
   rules:
     - host: &host bitwarden.${SECRET_DOMAIN}
@@ -127,3 +123,7 @@ spec:
                 name: vaultwarden
                 port:
                   number: 8089
+  tls:
+    - hosts:
+        - *host
+      secretName: vaultwarden-tls
