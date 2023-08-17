@@ -5,3 +5,6 @@ kind: Kustomization
 namespace: kube-system
 resources:
   - ./fake
+  # - ./bitwarden
+transformers:
+  - labels.yaml

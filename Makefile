@@ -77,8 +77,10 @@ install/kube-vip: create/cluster
 	@$(eval export GLOBAL_CIDR_RANGE := $(shell $(DOCKER) network inspect k3d-${CLUSTER_NAME} | jq '.[0].IPAM.Config[0].Subnet'| tr -d '"'))
 	@$(eval export START_RANGE := $(shell echo ${GLOBAL_CIDR_RANGE} |sed 's/0\/.*/200/g'))
 	@$(eval export END_RANGE := $(shell echo ${GLOBAL_CIDR_RANGE}  |sed 's/0\/.*/254/g'))
+	@$(KUBECTL) get configmap --namespace kube-system kubevip > /dev/null 2>&1 || kubectl create configmap --namespace kube-system kubevip --from-literal range-global=${START_RANGE}-${END_RANGE}
+	@$(KUBECTL) apply -f https://kube-vip.io/manifests/rbac.yaml
 	@$(KUBECTL) apply -f https://raw.githubusercontent.com/kube-vip/kube-vip-cloud-provider/main/manifest/kube-vip-cloud-controller.yaml
-	@$(KUBECTL) create configmap --namespace kube-system kubevip --from-literal range-global=${START_RANGE}-${END_RANGE}
+	@$(KUBECTL) apply -f k8s/kube-vip-daemonset.yaml
 
 install/metallb: create/cluster
 	$(call assert-set,KUBECTL)

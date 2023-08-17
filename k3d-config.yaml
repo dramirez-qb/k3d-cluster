@@ -62,6 +62,12 @@ options:
     - arg: --tls-san=dxas90.duckdns.org
       nodeFilters:
       - server:*
+    - arg: --kubelet-arg=eviction-hard=imagefs.available<1%,nodefs.available<1%
+      nodeFilters:
+      - agent:*
+    - arg: --kubelet-arg=eviction-minimum-reclaim=imagefs.available=1%,nodefs.available=1%
+      nodeFilters:
+      - agent:*
     nodeLabels:
       - label: nerdctl/bypass4netns=true
         nodeFilters:

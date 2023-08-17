@@ -2,15 +2,17 @@
 apiVersion: v1
 kind: Service
 metadata:
+  name: examples-app
   creationTimestamp: null
   labels:
     challenge.app: examples-app
-  name: examples-app
 spec:
+  type: ClusterIP
   ports:
     - name: "web"
       port: 80
       targetPort: web # line 49
+      nodePort: 30080
   selector:
     challenge.app: examples-app
 status:

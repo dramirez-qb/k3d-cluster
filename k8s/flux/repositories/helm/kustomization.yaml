@@ -24,6 +24,7 @@ resources:
   - ./kubernetes-sigs-nfd.yaml
   - ./loft-sh.yaml
   - ./metrics-server.yaml
+  - ./oauth2-proxy.yaml
   - ./prometheus-community.yaml
   - ./stakater.yaml
   - ./traefik.yaml
