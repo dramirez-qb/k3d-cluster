@@ -1,0 +1,118 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: &app vaultwarden
+  namespace: security
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: app-template
+      version: 1.5.1
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+  maxHistory: 2
+  install:
+    createNamespace: true
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  uninstall:
+    keepHistory: false
+  values:
+    controller:
+      replicas: 1
+      strategy: RollingUpdate
+      hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
+    image:
+      repository: docker.io/vaultwarden/server
+      tag: 1.27.0
+    env:
+      - name: DOMAIN
+        value: "https://bitwarden.${SECRET_DOMAIN}"
+      - name: ROCKET_PORT
+        value: &httpport "8088"
+      - name: WEBSOCKET_ENABLED
+        value: "true"
+      - name: WEBSOCKET_PORT
+        value: &websocketport "8089"
+      - name: SHOW_PASSWORD_HINT
+        value: "false"
+      - name: SIGNUPS_ALLOWED
+        value: "false"
+      - name: INVITATIONS_ALLOWED
+        value: "false"
+    persistence:
+      data:
+        enabled: true
+        type: hostPath
+        hostPath: /mnt/shared/vaultwarden/
+        mountPath: /data
+    resources:
+      requests:
+        cpu: 10m
+        memory: 50Mi
+      limits:
+        memory: 100Mi
+    service:
+      main:
+        enabled: true
+        type: ClusterIP
+        ports:
+          http:
+            port: *httpport
+          websocket:
+            port: *websocketport
+    ingress:
+      main:
+        enabled: true
+        ingressClassName: internal-nginx
+        annotations:
+          nginx.ingress.kubernetes.io/server-snippet: |
+            sendfile on;
+            tcp_nodelay on;
+            tcp_nopush on;
+            location /notifications/hub {
+              proxy_set_header Upgrade $http_upgrade;
+              proxy_set_header Connection "upgrade";
+            }
+          nginx.ingress.kubernetes.io/configuration-snippet: |
+            more_set_headers "Request-Id: $req_id";
+          nginx.ingress.kubernetes.io/connection-proxy-header: "keep-alive"
+          nginx.ingress.kubernetes.io/enable-cors: "true"
+          nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+          nginx.ingress.kubernetes.io/limit-connections: "25"
+          nginx.ingress.kubernetes.io/limit-rps: "15"
+          nginx.ingress.kubernetes.io/proxy-body-size: 1024m
+          nginx.ingress.kubernetes.io/proxy-connect-timeout: "10"
+          nginx.ingress.kubernetes.io/proxy-send-timeout: "1800"
+          nginx.ingress.kubernetes.io/proxy-read-timeout: "1800"
+          nginx.ingress.kubernetes.io/ssl-redirect: "true"
+        hosts:
+          - host: &host "bitwarden.${SECRET_DOMAIN}"
+            paths:
+              - path: /
+                pathType: ImplementationSpecific
+                backend:
+                  service:
+                    name: vaultwarden
+                    port:
+                      number: 8088
+              - path: /notifications/hub
+                pathType: Exact
+                backend:
+                  service:
+                    name: vaultwarden
+                    port:
+                      number: 8089
+        tls:
+          - hosts:
+              - *host
+            secretName: vaultwarden-tls

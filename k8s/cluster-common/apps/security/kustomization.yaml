@@ -4,6 +4,7 @@ kind: Kustomization
 resources:
   # Pre Flux-Kustomizations
   - ./namespace.yaml
-  - ./vaultwarden/vaultwarden.yml
+  # - ./vaultwarden/vaultwarden.yml
+  - ./vaultwarden/helmrelease.yaml
   # Flux-Kustomizations
   # - ./authentik/ks.yaml
