@@ -10,7 +10,7 @@ metrics: true
 debug: false
 ui:
   title: Health Status
-  header: Health Status
+  header: Cluster Health Status
 alerting:
 connectivity:
   checker:
@@ -25,3 +25,11 @@ endpoints:
       dns-resolver: tcp://1.1.1.1:53
     conditions:
       - "[STATUS] == 200"
+  - name: status-dns-query
+    url: "8.8.8.8" # Address of the DNS server to use
+    dns:
+      query-name: "status.${SECRET_DOMAIN}"
+      query-type: "CNAME"
+    conditions:
+      - "[BODY] == ingress.${SECRET_DOMAIN}"
+      - "[DNS_RCODE] == NOERROR"

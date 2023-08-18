@@ -1,0 +1,24 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cloudflared-gatus-ep
+  namespace: networking
+  labels:
+    gatus.io/enabled: "true"
+data:
+  config.yaml: |
+    endpoints:
+      - name: cloudflared
+        url: "8.8.8.8" # Address of the DNS server to use
+        group: external
+        interval: 1m
+        dns:
+          query-name: "ingress.${SECRET_DOMAIN}"
+          query-type: "CNAME"
+        conditions:
+          - "[BODY] == ${SECRET_CLOUDFLARE_TUNNEL_ID}.cfargotunnel.com"
+          - "[DNS_RCODE] == NOERROR"
+        ui:
+          hide-url: true
+          hide-hostname: true

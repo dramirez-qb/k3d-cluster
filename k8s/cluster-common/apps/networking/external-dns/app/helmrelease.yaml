@@ -97,10 +97,10 @@ spec:
       - --registry=noop
       - --policy=upsert-only
       - --provider=pihole
-      - --pihole-server=http://${CURRENT_IP}:${PIHOLE_PORT}
+      - --pihole-server="http://${CURRENT_IP}:${PIHOLE_PORT}"
       - --crd-source-apiversion=externaldns.k8s.io/v1alpha1
       - --crd-source-kind=DNSEndpoint
-      - --pihole-tls-skip-verify=true
+      - --pihole-tls-skip-verify="true"
     policy: sync
     sources: ["crd", "ingress", "service"]
     serviceMonitor:
