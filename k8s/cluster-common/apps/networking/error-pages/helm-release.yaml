@@ -8,10 +8,11 @@ spec:
   interval: 5m
   chart:
     spec:
-      chart: /charts/kah-common/
+      chart: app-template
+      version: 1.5.1
       sourceRef:
-        kind: GitRepository
-        name: flux-system
+        kind: HelmRepository
+        name: bjw-s
         namespace: flux-system
       interval: 5m
   dependsOn:
@@ -20,7 +21,7 @@ spec:
   values:
     image:
       repository: ghcr.io/tarampampam/error-pages
-      tag: 2.20.0
+      tag: 2.24.0
     controller:
       replicas: 1
     nameOverride: error-pages
