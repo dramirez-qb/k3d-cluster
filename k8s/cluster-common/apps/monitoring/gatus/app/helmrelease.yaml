@@ -65,7 +65,7 @@ spec:
     ingress:
       main:
         enabled: true
-        ingressClassName: external-nginx
+        ingressClassName: traefik
         annotations:
           gethomepage.dev/enabled: "true"
           gethomepage.dev/icon: gatus.png
