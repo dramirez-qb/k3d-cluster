@@ -54,7 +54,9 @@ spec:
       TZ: ${TIMEZONE}
       GATUS_CONFIG_PATH: /config
       CUSTOM_WEB_PORT: &port 80
-    envFrom: *envFrom
+    envFrom:
+      - secretRef:
+        name: gatus-secret
     service:
       main:
         ports:
@@ -106,6 +108,11 @@ spec:
         mountPath: /config/config.yaml
         subPath: config.yaml
         readOnly: true
+      data:
+        enabled: true
+        type: hostPath
+        hostPath: /mnt/shared/gatus/
+        mountPath: /data
     resources:
       requests:
         cpu: 100m
