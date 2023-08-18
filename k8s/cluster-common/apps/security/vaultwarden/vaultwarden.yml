@@ -25,7 +25,7 @@ spec:
           image: docker.io/vaultwarden/server:1.27.0
           env:
             - name: DOMAIN
-              value: "https://bitwarden.erebe.eu"
+              value: "https://bitwarden.${SECRET_DOMAIN}"
             - name: ROCKET_PORT
               value: "8088"
             - name: WEBSOCKET_ENABLED
