@@ -5,7 +5,7 @@ metadata:
   name: pihole-internal
   namespace: networking
   annotations:
-    external-dns.alpha.kubernetes.io/local-target: "internal.${SECRET_DOMAIN}"
+    external-dns.alpha.kubernetes.io/local-target: ${CURRENT_IP}
 spec:
   endpoints:
     - dnsName: "internal.${SECRET_DOMAIN}"

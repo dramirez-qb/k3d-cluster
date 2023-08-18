@@ -103,7 +103,7 @@ metadata:
     nginx.ingress.kubernetes.io/proxy-send-timeout: "1800"
     nginx.ingress.kubernetes.io/proxy-read-timeout: "1800"
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
-    external-dns.alpha.kubernetes.io/local-target: internal.${SECRET_DOMAIN}
+    external-dns.alpha.kubernetes.io/local-target: ${CURRENT_IP}
 spec:
   ingressClassName: internal-nginx
   rules:
