@@ -43,7 +43,7 @@ spec:
           gethomepage.dev/icon: etcd.png
           gethomepage.dev/name: Goldilocks
           gethomepage.dev/group: Monitoring
-          external-dns.alpha.kubernetes.io/target: internal.${SECRET_DOMAIN}
+          external-dns.alpha.kubernetes.io/local-target: internal.${SECRET_DOMAIN}
         hosts:
           - host: &host goldilocks.${SECRET_DOMAIN}
             paths:

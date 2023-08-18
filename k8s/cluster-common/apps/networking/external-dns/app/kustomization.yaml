@@ -6,3 +6,4 @@ resources:
   - ./dnsendpoint-crd.yaml
   - ./secret.sops.yaml
   - ./helmrelease.yaml
+  - ./pi-hole.yaml

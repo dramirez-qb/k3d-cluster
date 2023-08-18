@@ -11,17 +11,3 @@ spec:
     - dnsName: "ingress.${SECRET_DOMAIN}"
       recordType: CNAME
       targets: ["${SECRET_CLOUDFLARE_TUNNEL_ID}.cfargotunnel.com"]
----
-apiVersion: externaldns.k8s.io/v1alpha1
-kind: DNSEndpoint
-metadata:
-  name: cloudflared-internal
-  namespace: networking
-  annotations:
-    external-dns.alpha.kubernetes.io/target: "internal.${SECRET_DOMAIN}"
-spec:
-  endpoints:
-    - dnsName: "internal.${SECRET_DOMAIN}"
-      recordType: A
-      targets:
-        - ${CURRENT_IP}
