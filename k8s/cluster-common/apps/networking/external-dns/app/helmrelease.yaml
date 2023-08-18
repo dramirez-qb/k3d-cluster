@@ -96,7 +96,6 @@ spec:
       - --annotation-filter=external-dns.alpha.kubernetes.io/local-target
       - --registry=noop
       - --policy=upsert-only
-      - --provider=pihole
       - --pihole-server="http://${CURRENT_IP}:${PIHOLE_PORT}"
       - --crd-source-apiversion=externaldns.k8s.io/v1alpha1
       - --crd-source-kind=DNSEndpoint
