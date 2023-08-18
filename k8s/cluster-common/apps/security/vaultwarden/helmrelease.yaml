@@ -96,6 +96,7 @@ spec:
           nginx.ingress.kubernetes.io/proxy-read-timeout: "1800"
           nginx.ingress.kubernetes.io/ssl-redirect: "true"
           external-dns.alpha.kubernetes.io/local-target: internal.${SECRET_DOMAIN}
+          external-dns.alpha.kubernetes.io/ingress-hostname-source: annotation-only
         hosts:
           - host: &host "bitwarden.${SECRET_DOMAIN}"
             paths:

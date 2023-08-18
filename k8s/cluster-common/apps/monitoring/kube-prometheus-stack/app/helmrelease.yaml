@@ -39,6 +39,7 @@ spec:
         ingressClassName: traefik
         annotations:
           external-dns.alpha.kubernetes.io/local-target: internal.${SECRET_DOMAIN}
+          external-dns.alpha.kubernetes.io/ingress-hostname-source: annotation-only
         hosts:
           - &host alert-manager.${SECRET_DOMAIN}
         tls:
@@ -95,6 +96,7 @@ spec:
         ingressClassName: traefik
         annotations:
           external-dns.alpha.kubernetes.io/local-target: internal.${SECRET_DOMAIN}
+          external-dns.alpha.kubernetes.io/ingress-hostname-source: annotation-only
           hajimari.io/icon: mdi:code-json
         pathType: Prefix
         hosts:
