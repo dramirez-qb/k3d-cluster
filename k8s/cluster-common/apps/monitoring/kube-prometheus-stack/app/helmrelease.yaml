@@ -36,7 +36,9 @@ spec:
       ingress:
         enabled: true
         pathType: Prefix
-        ingressClassName: internal-nginx
+        ingressClassName: traefik
+        annotations:
+          external-dns.alpha.kubernetes.io/target: "internal.${SECRET_DOMAIN}"
         hosts:
           - &host alert-manager.${SECRET_DOMAIN}
         tls:
@@ -90,7 +92,10 @@ spec:
     prometheus:
       ingress:
         enabled: true
-        ingressClassName: internal
+        ingressClassName: traefik
+        annotations:
+          external-dns.alpha.kubernetes.io/target: "internal.${SECRET_DOMAIN}"
+          hajimari.io/icon: mdi:code-json
         pathType: Prefix
         hosts:
           - &host prometheus.${SECRET_DOMAIN}

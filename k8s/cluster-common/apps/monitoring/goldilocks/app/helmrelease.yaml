@@ -37,13 +37,13 @@ spec:
       replicaCount: 1
       ingress:
         enabled: true
-        ingressClassName: internal-nginx
+        ingressClassName: traefik
         annotations:
           gethomepage.dev/enabled: "true"
           gethomepage.dev/icon: etcd.png
           gethomepage.dev/name: Goldilocks
           gethomepage.dev/group: Monitoring
-          external-dns.alpha.kubernetes.io/target: ingress.${SECRET_DOMAIN}
+          external-dns.alpha.kubernetes.io/target: internal.${SECRET_DOMAIN}
         hosts:
           - host: &host goldilocks.${SECRET_DOMAIN}
             paths:
