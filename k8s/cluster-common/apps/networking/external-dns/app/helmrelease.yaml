@@ -100,7 +100,7 @@ spec:
       - --crd-source-apiversion=externaldns.k8s.io/v1alpha1
       - --crd-source-kind=DNSEndpoint
       - --pihole-tls-skip-verify
-    sources: ["crd", "ingress", "service"]
+    sources: ["crd", "ingress"]
     serviceMonitor:
       enabled: true
     podAnnotations:
