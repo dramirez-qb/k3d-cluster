@@ -42,7 +42,7 @@ spec:
         enabled: true
         ingressClassName: traefik
         annotations:
-          external-dns.alpha.kubernetes.io/local-target: ${CURRENT_IP}
+          external-dns.alpha.kubernetes.io/local-target: internal.${SECRET_DOMAIN}
           hajimari.io/icon: mdi:code-json
         hosts:
           - host: &host "{{ .Release.Name }}.${SECRET_DOMAIN}"

@@ -9,6 +9,6 @@ metadata:
 spec:
   endpoints:
     - dnsName: "internal.${SECRET_DOMAIN}"
-      recordType: CNAME
+      recordType: A
       targets:
         - ${CURRENT_IP}

@@ -38,7 +38,7 @@ spec:
         pathType: Prefix
         ingressClassName: traefik
         annotations:
-          external-dns.alpha.kubernetes.io/local-target: ${CURRENT_IP}
+          external-dns.alpha.kubernetes.io/local-target: internal.${SECRET_DOMAIN}
         hosts:
           - &host alert-manager.${SECRET_DOMAIN}
         tls:
@@ -94,7 +94,7 @@ spec:
         enabled: true
         ingressClassName: traefik
         annotations:
-          external-dns.alpha.kubernetes.io/local-target: ${CURRENT_IP}
+          external-dns.alpha.kubernetes.io/local-target: internal.${SECRET_DOMAIN}
           hajimari.io/icon: mdi:code-json
         pathType: Prefix
         hosts:
