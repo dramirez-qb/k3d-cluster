@@ -51,6 +51,12 @@ spec:
             value: ${CURRENT_IP}
           - name: "TZ"
             value: ${TIMEZONE}
+          - name: "DNS_KEEP_NAMESERVER"
+            value: "on"
+          # - name: "HTTPPROXY"
+          #   value: "on"
+          # - name: "SHADOWSOCKS"
+          #   value: "on"
         envFrom:
           - secretRef:
               name: downloads-gateway-vpnconfig
