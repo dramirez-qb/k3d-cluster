@@ -117,4 +117,4 @@ spec:
         tls:
           - hosts:
               - *host
-            secretName: vaultwarden-tls
+            secretName: "${SECRET_DOMAIN/./-}-staging-tls"
