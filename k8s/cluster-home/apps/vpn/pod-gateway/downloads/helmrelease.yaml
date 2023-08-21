@@ -41,6 +41,12 @@ spec:
             value: "off"
           - name: DOT
             value: "off"
+          - name: "VPN_ENDPOINT_PORT"
+            value: "51820"
+          - name: "OPENVPN_PORT"
+            value: "51820"
+          - name: "PORT"
+            value: "51820"
         envFrom:
           - secretRef:
               name: downloads-gateway-vpnconfig
