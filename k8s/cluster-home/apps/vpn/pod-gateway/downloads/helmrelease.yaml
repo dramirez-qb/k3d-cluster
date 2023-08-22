@@ -15,6 +15,9 @@ spec:
         kind: HelmRepository
         name: angelnu
         namespace: flux-system
+  dependsOn:
+    - name: external-secrets
+      namespace: external-secrets
   values: # https://github.com/angelnu/helm-charts/blob/main/charts/apps/pod-gateway/values.yaml
     image:
       repository: ghcr.io/angelnu/pod-gateway
