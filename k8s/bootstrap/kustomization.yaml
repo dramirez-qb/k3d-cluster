@@ -2,7 +2,8 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-  - github.com/metallb/metallb/config/native?ref=v0.13.10
+  # - github.com/metallb/metallb/config/native?ref=v0.13.10
+  - ./kube-vip-resources.yaml
   - github.com/fluxcd/flux2/manifests/install?ref=v2.0.1
 patches:
   - patch: |-
@@ -14,4 +15,4 @@ patches:
     target:
       group: networking.k8s.io
       kind: NetworkPolicy
-  - path: ./namespace.yaml
+  # - path: ./namespace.yaml
