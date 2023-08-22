@@ -288,6 +288,7 @@ tasks:
     desc: Install Flux into your cluster
     aliases: [flux]
     cmds:
+      - kubectl apply -f https://github.com/prometheus-operator/prometheus-operator/releases/download/v0.67.1/stripped-down-crds.yaml
       - kubectl apply --kustomize {{.KUBERNETES_DIR}}/bootstrap
       # - "kubectl -n metallb-system wait --for condition=available --timeout=120s deployment.apps/controller"
       - cat {{.SOPS_AGE_KEY_FILE}} | kubectl -n flux-system create secret generic sops-age --from-file=age.agekey=/dev/stdin || true

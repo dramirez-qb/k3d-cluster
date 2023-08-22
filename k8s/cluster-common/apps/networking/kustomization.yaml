@@ -8,5 +8,5 @@ resources:
   - ./external-dns/ks.yaml
   - ./k8s-gateway/ks.yaml
   - ./cloudflared/ks.yaml
-  - ./error-pages/ks.yaml
-  - ./flagger/ks.yaml
+  # - ./error-pages/ks.yaml
+  # - ./flagger/ks.yaml
