@@ -289,7 +289,7 @@ tasks:
     aliases: [flux]
     cmds:
       - kubectl apply --kustomize {{.KUBERNETES_DIR}}/bootstrap
-      - "kubectl -n metallb-system wait --for condition=available --timeout=120s deployment.apps/controller"
+      # - "kubectl -n metallb-system wait --for condition=available --timeout=120s deployment.apps/controller"
       - cat {{.SOPS_AGE_KEY_FILE}} | kubectl -n flux-system create secret generic sops-age --from-file=age.agekey=/dev/stdin || true
       - sops --decrypt {{.KUBERNETES_DIR}}/flux/vars/cluster-secrets.sops.yaml | kubectl apply -f -
       - envsubst < {{.KUBERNETES_DIR}}/flux/vars/cluster-settings.yaml | kubectl apply -f -
