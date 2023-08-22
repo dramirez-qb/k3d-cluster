@@ -6,6 +6,8 @@ metadata:
   name: cluster-apps-redis
   namespace: flux-system
 spec:
+  dependsOn:
+    - name: cluster-apps-kube-prometheus-stack
   path: ./k8s/cluster-common/apps/database/redis/app
   prune: true
   sourceRef:

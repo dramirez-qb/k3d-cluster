@@ -7,6 +7,7 @@ metadata:
 spec:
   dependsOn:
     - name: cluster-apps-traefik
+    - name: cluster-apps-kube-prometheus-stack
   path: ./k8s/cluster-common/apps/networking/error-pages/app
   prune: true
   sourceRef:
