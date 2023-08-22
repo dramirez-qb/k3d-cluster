@@ -8,4 +8,4 @@ resources:
   - ./external-dns/ks.yaml
   - ./k8s-gateway/ks.yaml
   - ./cloudflared/ks.yaml
-  - ./error-pages
+  - ./error-pages/ks.yaml

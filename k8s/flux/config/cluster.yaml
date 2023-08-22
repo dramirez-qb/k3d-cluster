@@ -1,4 +1,6 @@
 ---
+# yaml-language-server: $schema=https://kubernetes-schemas.dxas90.work/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+---
 apiVersion: source.toolkit.fluxcd.io/v1
 kind: GitRepository
 metadata:
@@ -14,22 +16,22 @@ spec:
     /*
     # include kubernetes directory
     !/k8s
----
-apiVersion: source.toolkit.fluxcd.io/v1
-kind: GitRepository
-metadata:
-  name: home-kubernetes-replica
-  namespace: flux-system
-spec:
-  interval: 5m
-  ref:
-    branch: master
-  url: "https://gitlab.dxas90.xyz/dxas90/k3d-cluster.git"
-  ignore: |
-    # exclude all
-    /*
-    # include kubernetes directory
-    !/k8s
+# ---
+# apiVersion: source.toolkit.fluxcd.io/v1
+# kind: GitRepository
+# metadata:
+#   name: home-kubernetes-replica
+#   namespace: flux-system
+# spec:
+#   interval: 5m
+#   ref:
+#     branch: master
+#   url: "https://gitlab.dxas90.xyz/dxas90/k3d-cluster.git"
+#   ignore: |
+#     # exclude all
+#     /*
+#     # include kubernetes directory
+#     !/k8s
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
