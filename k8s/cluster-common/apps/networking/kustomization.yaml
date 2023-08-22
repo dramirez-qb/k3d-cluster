@@ -9,3 +9,4 @@ resources:
   - ./k8s-gateway/ks.yaml
   - ./cloudflared/ks.yaml
   - ./error-pages/ks.yaml
+  - ./flagger/ks.yaml
