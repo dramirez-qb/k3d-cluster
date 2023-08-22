@@ -34,6 +34,10 @@ spec:
     tag: "2"
     deployment:
       replicas: 2
+      podAnnotations:
+        prometheus.io/port: "9100"
+        prometheus.io/scrape: "true"
+        prometheus.io/path: "/metrics"
     podDisruptionBudget:
       enabled: true
       maxUnavailable: 1
