@@ -5,6 +5,8 @@ metadata:
   name: cluster-apps-cert-manager
   namespace: flux-system
 spec:
+  dependsOn:
+    - name: cluster-apps-kube-prometheus-stack
   path: ./k8s/cluster-common/apps/cert-manager/cert-manager/app
   prune: true
   sourceRef:
