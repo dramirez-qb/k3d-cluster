@@ -31,10 +31,6 @@ spec:
     tag: "2"
     deployment:
       replicas: 2
-      podAnnotations:
-        prometheus.io/port: "9100"
-        prometheus.io/scrape: "true"
-        prometheus.io/path: "/metrics"
     podDisruptionBudget:
       enabled: true
       maxUnavailable: 1
@@ -112,7 +108,7 @@ spec:
         # containerPort: 8000
         expose: true
         exposedPort: 80
-        nodePort: 30080
+        nodePort: 32680
         ## -- Different target traefik port on the cluster, useful for IP type LB
         # targetPort: 80
         # The port protocol (TCP/UDP)
@@ -150,7 +146,7 @@ spec:
         # targetPort: 80
         ## -- The port protocol (TCP/UDP)
         protocol: TCP
-        nodePort: 30443
+        nodePort: 32643
 
         # advertisedPort: 4443
         #
