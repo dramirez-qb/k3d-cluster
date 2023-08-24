@@ -40,7 +40,6 @@ create/cluster:
 	$(call assert-set,CURRENT_IP)
 	$(call assert-set,SHARED_PATH)
 	@echo -e "\\033[1;32mCreating cluster ${CLUSTER_NAME} with ${SHARED_PATH} as a shared path\\033[0;39m"
-	env|sort
 	@$(MKDIR) -p ${SHARED_PATH}
 	@$(ENVSUBST) < k3d-config.yaml | cat > /tmp/k3d-config.yaml
 	@$(K3D) cluster list --no-headers | grep ${CLUSTER_NAME} > /dev/null 2>&1 || $(K3D) cluster create -c /tmp/k3d-config.yaml
