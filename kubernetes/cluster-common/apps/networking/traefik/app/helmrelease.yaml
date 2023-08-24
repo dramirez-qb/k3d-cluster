@@ -27,13 +27,15 @@ spec:
       retries: 3
   uninstall:
     keepHistory: false
-  values:
+  values: # https://github.com/traefik/traefik-helm-chart/blob/master/traefik/values.yaml
     tag: "2"
     deployment:
       replicas: 2
     podDisruptionBudget:
       enabled: true
       maxUnavailable: 1
+    rbac:
+      enabled: false
     ingressClass:
       enabled: true
       isDefaultClass: false
