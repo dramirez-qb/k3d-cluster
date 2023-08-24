@@ -35,14 +35,18 @@ tasks:
     desc: Install Flux into your cluster
     aliases: [flux]
     cmds:
-      - kubectl apply -f https://github.com/prometheus-operator/prometheus-operator/releases/download/v0.67.1/stripped-down-crds.yaml
-      - kubectl apply --kustomize {{.KUBERNETES_DIR}}/bootstrap
-      # - "kubectl -n metallb-system wait --for condition=available --timeout=120s deployment.apps/controller"
-      - cat {{.SOPS_AGE_KEY_FILE}} | kubectl -n flux-system create secret generic sops-age --from-file=age.agekey=/dev/stdin || true
-      - sops --decrypt {{.KUBERNETES_DIR}}/flux/vars/cluster-secrets.sops.yaml | kubectl apply -f -
-      - envsubst < {{.KUBERNETES_DIR}}/flux/vars/cluster-settings.yaml | kubectl apply -f -
-      - kubectl apply --kustomize {{.KUBERNETES_DIR}}/flux/config
-      - kubectl apply --kustomize {{.KUBERNETES_DIR}}/cluster-common
+      - cmd: |
+          export GLOBAL_CIDR_RANGE=`docker network inspect k3d-${CLUSTER_NAME} | jq '.[0].IPAM.Config[0].Subnet'| tr -d '"'`
+          export START_RANGE=`echo ${GLOBAL_CIDR_RANGE} |sed 's/0\/.*/200/g'`
+          export END_RANGE=`echo ${GLOBAL_CIDR_RANGE}  |sed 's/0\/.*/254/g'`
+          kubectl get configmap --namespace kube-system kubevip > /dev/null 2>&1 || kubectl create configmap --namespace kube-system kubevip --from-literal range-global=${START_RANGE}-${END_RANGE}
+          kubectl apply -f https://github.com/prometheus-operator/prometheus-operator/releases/download/v0.67.1/stripped-down-crds.yaml
+          kubectl apply --kustomize {{.KUBERNETES_DIR}}/bootstrap
+          cat {{.SOPS_AGE_KEY_FILE}} | kubectl -n flux-system create secret generic sops-age --from-file=age.agekey=/dev/stdin || true
+          sops --decrypt {{.KUBERNETES_DIR}}/flux/vars/cluster-secrets.sops.yaml | kubectl apply -f -
+          envsubst < {{.KUBERNETES_DIR}}/flux/vars/cluster-settings.yaml | kubectl apply -f -
+          kubectl apply --kustomize {{.KUBERNETES_DIR}}/flux/config
+          kubectl apply --kustomize {{.KUBERNETES_DIR}}/cluster-common
     preconditions:
       - sh: test -f {{.SOPS_AGE_KEY_FILE}}
         msg: |

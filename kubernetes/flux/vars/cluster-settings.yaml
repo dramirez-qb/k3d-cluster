@@ -19,22 +19,4 @@ metadata:
   name: kubevip
   namespace: kube-system
 data:
-  range-global: ${START_RANGE}-${END_RANGE}
-# ---
-# apiVersion: metallb.io/v1beta1
-# kind: IPAddressPool
-# metadata:
-#   name: first-pool
-#   namespace: metallb-system
-# spec:
-#   addresses:
-#   - ${START_RANGE}-${END_RANGE}
-# ---
-# apiVersion: metallb.io/v1beta1
-# kind: L2Advertisement
-# metadata:
-#   name: local-cluster
-#   namespace: metallb-system
-# spec:
-#   ipAddressPools:
-#   - first-pool
+  range-extra: ${START_RANGE}-${END_RANGE}
