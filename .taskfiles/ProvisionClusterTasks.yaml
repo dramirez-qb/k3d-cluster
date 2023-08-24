@@ -11,7 +11,7 @@ tasks:
         silent: true
       - cmd: mkdir -p ${SHARED_PATH}/default-local-pv
         silent: true
-      - cmd: envsubst < k3d-config.yaml | cat > {{.TASK_TEMP_DIR}}/k3d-config.yaml
+      - cmd: envsubst < {{.ROOT_DIR}}/k3d-config.yaml | cat > {{.TASK_TEMP_DIR}}/k3d-config.yaml
         silent: true
       - cmd: k3d cluster create -c {{.TASK_TEMP_DIR}}/k3d-config.yaml
         silent: true
@@ -86,23 +86,6 @@ tasks:
     preconditions:
       - test -f {{.USER_BIN_DIR}}/vcluster
       - sh: "vcluster disconnect || true"
-
-  resources:
-    desc: Gather common resources in your cluster, useful when asking for support
-    aliases: [r, all]
-    deps: [create]
-    cmds:
-      # - flux check --pre
-      # - task: install:flux
-      - task: install:storage
-      - task: install:monitoring
-      # - task: install:loadbalancer-fix
-      # - task: install:kube-vip
-      # - task: install:metallb-ip-ranges
-      - cmd: |
-          echo -e "\\033[1;32mCleanning cluster ${CLUSTER_NAME} events\\033[0;39m"
-          kubectl delete events --all --all-namespaces
-        silent: true
 
   full-fresh-start:
     desc: Deletes and creates a new cluster

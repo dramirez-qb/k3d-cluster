@@ -2,6 +2,9 @@
 # yaml-language-server: $schema=https://taskfile.dev/schema.json
 version: "3"
 
+vars:
+  KUBERNETES_DIR: "{{.ROOT_DIR}}/k8s"
+
 tasks:
 
   install:storage:
@@ -140,6 +143,7 @@ tasks:
       - cmd: |
           echo -e "\\033[1;32mInstalling Installing Prometheus, metrics-server and kube-state-metrics\\033[0;39m"
           kubectl apply -f {{.KUBERNETES_DIR}}/monitoring/00_metrics-server.yaml
+          kubectl apply -f https://github.com/prometheus-operator/prometheus-operator/releases/download/v0.67.1/stripped-down-crds.yaml
           kubectl apply -f {{.KUBERNETES_DIR}}/monitoring/01_monitoring.yaml
           kubectl apply -Rf {{.KUBERNETES_DIR}}/monitoring/02_kube-state-metrics
           kubectl apply -f {{.KUBERNETES_DIR}}/monitoring/02_monitoring_prometheus_alertmanager.yaml
@@ -269,6 +273,23 @@ tasks:
       - task: install:loadbalancer-fix
       - task: install:cert-manager
       - task: install:metallb-ip-ranges
+      - cmd: |
+          echo -e "\\033[1;32mCleanning cluster ${CLUSTER_NAME} events\\033[0;39m"
+          kubectl delete events --all --all-namespaces
+        silent: true
+
+  resources:
+    desc: Gather common resources in your cluster, useful when asking for support
+    aliases: [r, all]
+    deps: [create]
+    cmds:
+      # - flux check --pre
+      # - task: install:flux
+      - task: install:storage
+      - task: install:monitoring
+      # - task: install:loadbalancer-fix
+      # - task: install:kube-vip
+      # - task: install:metallb-ip-ranges
       - cmd: |
           echo -e "\\033[1;32mCleanning cluster ${CLUSTER_NAME} events\\033[0;39m"
           kubectl delete events --all --all-namespaces

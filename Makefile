@@ -10,9 +10,12 @@ RAND := $(shell date +%s | sha256sum | base64 | head -c 32 ; echo)
 
 export CLUSTER_NAME ?= k3s
 export ISSUER_EMAIL ?= yourname@gmail.com
-export CURRENT_IP := $(shell hostname -I|cut -d" " -f 1)
+export DEFAULT_IFACE := $(shell ip route | grep "default" | head -n 1 | cut -d ' ' -f 5)
+export CURRENT_IP := $(shell ip addr show ${DEFAULT_IFACE}  | grep "inet " | cut -d '/' -f 1 | cut -d 't' -f 2 | tr -d ' ' | head -n 1)
 export CURRENT_EXTERNAL_IP := $(shell curl -sS ipinfo.io | jq ".ip" | tr -d '\"')
 export SHARED_PATH := ${HOME}/projects
+export LATEST_K3S_VERSION := $(shell curl -sL https://api.github.com/repos/k3s-io/k3s/releases/latest | jq -r ".tag_name")
+export K3S_VERSION ?= $(shell echo ${LATEST_K3S_VERSION/+/-})
 
 define assert-set
 	@[ -n "$($1)" ] || (echo "$(1) not defined in $(@)"; exit 1)
@@ -37,6 +40,7 @@ create/cluster:
 	$(call assert-set,CURRENT_IP)
 	$(call assert-set,SHARED_PATH)
 	@echo -e "\\033[1;32mCreating cluster ${CLUSTER_NAME} with ${SHARED_PATH} as a shared path\\033[0;39m"
+	env|sort
 	@$(MKDIR) -p ${SHARED_PATH}
 	@$(ENVSUBST) < k3d-config.yaml | cat > /tmp/k3d-config.yaml
 	@$(K3D) cluster list --no-headers | grep ${CLUSTER_NAME} > /dev/null 2>&1 || $(K3D) cluster create -c /tmp/k3d-config.yaml
@@ -98,6 +102,7 @@ install/monitoring: install/storage
 	$(call assert-set,KUBECTL)
 	@echo -e "\\033[1;32mInstalling Prometheus, metrics-server and kube-state-metrics\\033[0;39m"
 	@$(KUBECTL) apply -f k8s/monitoring/00_metrics-server.yaml
+	@$(KUBECTL) apply -f https://github.com/prometheus-operator/prometheus-operator/releases/download/v0.67.1/stripped-down-crds.yaml
 	@$(KUBECTL) apply -f k8s/monitoring/01_monitoring.yaml
 	@$(KUBECTL) apply -Rf k8s/monitoring/02_kube-state-metrics
 	@$(KUBECTL) apply -f k8s/monitoring/02_monitoring_prometheus_alertmanager.yaml
