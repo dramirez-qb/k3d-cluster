@@ -25,25 +25,10 @@ spec:
       app.kubernetes.io/name: traefik
       app.kubernetes.io/instance: traefik
 ---
-# Source: traefik/templates/rbac/serviceaccount.yaml
-kind: ServiceAccount
-apiVersion: v1
-metadata:
-  name: traefik
-  namespace: infrastructure
-  labels:
-    app.kubernetes.io/name: traefik
-    app.kubernetes.io/instance: traefik
-  annotations: {}
----
-# Source: traefik/templates/rbac/clusterrole.yaml
-kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
 metadata:
-  name: traefik
-  labels:
-    app.kubernetes.io/name: traefik
-    app.kubernetes.io/instance: traefik
+  name: traefik-ingress-controller
 rules:
   - apiGroups:
       - ""
@@ -73,91 +58,35 @@ rules:
     verbs:
       - update
   - apiGroups:
+      - traefik.io
       - traefik.containo.us
     resources:
-      - ingressroutes
-      - ingressroutetcps
-      - ingressrouteudps
       - middlewares
       - middlewaretcps
+      - ingressroutes
+      - traefikservices
+      - ingressroutetcps
+      - ingressrouteudps
       - tlsoptions
       - tlsstores
-      - traefikservices
       - serverstransports
     verbs:
       - get
       - list
       - watch
----
-# Source: traefik/templates/rbac/clusterrolebinding.yaml
-kind: ClusterRoleBinding
-apiVersion: rbac.authorization.k8s.io/v1
-metadata:
-  name: traefik
-  labels:
-    app.kubernetes.io/name: traefik
-    app.kubernetes.io/instance: traefik
-roleRef:
-  apiGroup: rbac.authorization.k8s.io
-  kind: ClusterRole
-  name: traefik
-subjects:
-  - kind: ServiceAccount
-    name: traefik
-    namespace: infrastructure
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRole
-metadata:
-  name: gateway-role
-  labels:
-    app.kubernetes.io/name: traefik
-    app.kubernetes.io/instance: traefik
-rules:
-  - apiGroups:
-      - ""
-    resources:
-      - services
-      - endpoints
-      - secrets
-    verbs:
-      - get
-      - list
-      - watch
-  - apiGroups:
-      - networking.x-k8s.io
-    resources:
-      - gatewayclasses
-      - gateways
-      - httproutes
-    verbs:
-      - get
-      - list
-      - watch
-  - apiGroups:
-      - networking.x-k8s.io
-    resources:
-      - gatewayclasses/status
-      - gateways/status
-      - httproutes/status
-    verbs:
-      - update
 
 ---
-kind: ClusterRoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
 metadata:
-  name: gateway-controller
-  labels:
-    app.kubernetes.io/name: traefik
-    app.kubernetes.io/instance: traefik
+  name: traefik-ingress-controller
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: gateway-role
+  name: traefik-ingress-controller
 subjects:
   - kind: ServiceAccount
-    name: traefik
+    name: traefik-ingress-controller
     namespace: infrastructure
 ---
 # Source: traefik/templates/deployment.yaml
@@ -188,7 +117,7 @@ spec:
         app.kubernetes.io/name: traefik
         app.kubernetes.io/instance: traefik
     spec:
-      serviceAccountName: traefik
+      serviceAccountName: traefik-ingress-controller
       terminationGracePeriodSeconds: 60
       hostNetwork: false
       containers:
