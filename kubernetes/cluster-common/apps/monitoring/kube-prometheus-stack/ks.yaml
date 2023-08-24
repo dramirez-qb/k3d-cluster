@@ -5,8 +5,8 @@ metadata:
   name: cluster-apps-kube-prometheus-stack
   namespace: flux-system
 spec:
-  dependsOn:
-    - name: cluster-apps-local-path-provisioner
+  # dependsOn:
+  #   - name: cluster-apps-local-path-provisioner
   path: ./kubernetes/cluster-common/apps/monitoring/kube-prometheus-stack/app
   prune: true
   sourceRef:
