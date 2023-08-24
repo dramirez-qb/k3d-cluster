@@ -1,0 +1,9 @@
+apiVersion: builtin
+kind: LabelTransformer
+metadata:
+  name: labels
+labels:
+  app.kubernetes.io/ipd-plane: security-plane
+fieldSpecs:
+  - path: metadata/labels
+    create: true

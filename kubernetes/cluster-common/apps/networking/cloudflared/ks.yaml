@@ -1,0 +1,19 @@
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: cluster-apps-cloudflared
+  namespace: flux-system
+spec:
+  dependsOn:
+    - name: cluster-apps-external-dns
+    - name: cluster-apps-traefik
+      namespace: flux-system
+  path: ./kubernetes/cluster-common/apps/networking/cloudflared/app
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: home-kubernetes
+  interval: 30m
+  retryInterval: 1m
+  timeout: 5m

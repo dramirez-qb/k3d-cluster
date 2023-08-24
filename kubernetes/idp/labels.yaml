@@ -1,0 +1,9 @@
+apiVersion: builtin
+kind: LabelTransformer
+metadata:
+  name: labels
+labels:
+  app.kubernetes.io/resource: idp
+fieldSpecs:
+  - path: metadata/labels
+    create: true

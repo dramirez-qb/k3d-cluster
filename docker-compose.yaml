@@ -1,43 +1,56 @@
 # to run define K3S_TOKEN, K3S_VERSION is optional, eg:
 #   K3S_TOKEN=${RANDOM}${RANDOM}${RANDOM} docker-compose up
 
-version: '3'
+version: "2"
+
 services:
 
   server:
     image: "rancher/k3s:${K3S_VERSION:-v1.27.4-k3s1}"
-    command: server
+    command:
+      - "server"
+      - "--disable=traefik,servicelb,local-storage,metrics-server"
+      - "--tls-san=${CURRENT_IP}"
+      - "--tls-san=${CURRENT_EXTERNAL_IP}"
+      - "--tls-san=0.0.0.0"
     tmpfs:
-    - /run
-    - /var/run
+      - /run
+      - /var/run
     ulimits:
       nproc: 65535
       nofile:
         soft: 65535
         hard: 65535
     privileged: true
+    oom_kill_disable: true
     networks:
       - k3s-cluster
     restart: always
     environment:
-    - K3S_EXEC="server"
-    - K3S_TOKEN=${K3S_TOKEN:?err}
-    - K3S_KUBECONFIG_OUTPUT=/output/kubeconfig.yaml
-    - K3S_KUBECONFIG_MODE=666
+      - "K3S_EXEC=server --disable=traefik,servicelb,local-storage,metrics-server --tls-san=${CURRENT_IP} --tls-san=${CURRENT_EXTERNAL_IP} --tls-san=0.0.0.0 --kubelet-arg=eviction-hard=imagefs.available<1%,nodefs.available<1% --kubelet-arg=eviction-minimum-reclaim=imagefs.available=1%,nodefs.available=1%"
+      - "K3S_TOKEN=${K3S_TOKEN:?err}"
+      - "K3S_KUBECONFIG_OUTPUT=/output/kubeconfig.yaml"
+      - "K3S_KUBECONFIG_MODE=666"
+      - "SHARED_PATH=${SHARED_PATH}"
+      - "CURRENT_IP=${CURRENT_IP}"
+      - "CURRENT_EXTERNAL_IP=${CURRENT_EXTERNAL_IP}"
     volumes:
-    - k3s-server:/var/lib/rancher/k3s
-    # This is just so that we get the kubeconfig file out
-    - .:/output
+      - ${SHARED_PATH}/cluster-data/k3s-server:/var/lib/rancher/k3s
+      - ${SHARED_PATH}:/mnt/shared
+      - ${SHARED_PATH}/default-local-pv:/opt/local-path-provisioner
+      # This is just so that we get the kubeconfig file out
+      - .:/output
     ports:
-    - 6443:6443  # Kubernetes API Server
-    - 8080:80      # Ingress controller port 80
-    - 8443:443    # Ingress controller port 443
+      - 6443:6443 # Kubernetes API Server
+      - 8080:80   # Ingress controller port 80
+      - 8443:443  # Ingress controller port 443
+      - ${CURRENT_IP}:32600-32767:32600-32767
 
-  agent:
-    image: "rancher/k3s:${K3S_VERSION:-latest}"
+  agent-1:
+    image: "rancher/k3s:${K3S_VERSION:-v1.27.4-k3s1}"
     tmpfs:
-    - /run
-    - /var/run
+      - /run
+      - /var/run
     ulimits:
       nproc: 65535
       nofile:
@@ -47,13 +60,17 @@ services:
     networks:
       - k3s-cluster
     restart: always
+    oom_kill_disable: true
     environment:
-    - K3S_URL=https://server:6443
-    - K3S_TOKEN=${K3S_TOKEN:?err}
+      - "K3S_EXEC=agent --kubelet-arg=eviction-hard=imagefs.available<1%,nodefs.available<1% --kubelet-arg=eviction-minimum-reclaim=imagefs.available=1%,nodefs.available=1%"
+      - "K3S_URL=https://server:6443"
+      - "K3S_TOKEN=${K3S_TOKEN:?err}"
+      - "SHARED_PATH=${SHARED_PATH}"
+    volumes:
+      - ${SHARED_PATH}/cluster-data/k3s-agent-1:/var/lib/rancher/k3s
+      - ${SHARED_PATH}:/mnt/shared
+      - ${SHARED_PATH}/default-local-pv:/opt/local-path-provisioner
 
 networks:
   k3s-cluster:
     external: true
-
-volumes:
-  k3s-server: {}

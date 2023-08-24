@@ -4,7 +4,7 @@ version: "3"
 
 vars:
   PYTHON_BIN: python3
-  KUBERNETES_DIR: "{{.ROOT_DIR}}/k8s"
+  KUBERNETES_DIR: "{{.ROOT_DIR}}/kubernetes"
 
 env:
   VIRTUAL_ENV: "{{.ROOT_DIR}}/.venv"
@@ -19,6 +19,9 @@ includes:
   provision:
     taskfile: .taskfiles/ProvisionClusterTasks.yaml
     aliases: [p]
+  old:
+    taskfile: .taskfiles/OldProvisionClusterTasks.yaml
+    aliases: [o]
 
 tasks:
   default: task -l
@@ -245,4 +248,4 @@ tasks:
     desc: Install everything
     cmds:
       - task: install:tools
-      - task: provision:all
+      - task: provision:create

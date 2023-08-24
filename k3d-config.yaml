@@ -10,7 +10,7 @@ agents: 3
 kubeAPI:
   hostIP: 0.0.0.0
   hostPort: "6443"
-image: rancher/k3s:v1.27.4-k3s1
+image: "rancher/k3s:${K3S_VERSION:-v1.27.4-k3s1}"
 subnet: "172.28.0.0/16"
 volumes:
 - volume: ${SHARED_PATH}:/mnt/shared
