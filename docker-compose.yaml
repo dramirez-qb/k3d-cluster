@@ -74,3 +74,15 @@ services:
 networks:
   k3s-cluster:
     external: true
+  # lan:
+  #   name: lan
+  #   driver: macvlan
+  #   driver_opts:
+  #     parent: br0
+  #   ipam:
+  #     config:
+  #       - subnet: 192.168.1.0/24
+  #         gateway: 192.168.1.1
+  #         ip_range: 192.168.1.152/29
+  #         aux_addresses:
+  #            host: 192.168.1.152
