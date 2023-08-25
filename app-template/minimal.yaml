@@ -12,7 +12,6 @@ spec:
     - name: "web"
       port: 80
       targetPort: web # line 49
-      nodePort: 30080
   selector:
     challenge.app: examples-app
 status:
@@ -71,4 +70,23 @@ data:
   MAILER_URL: "smtp://mail-server:1025"
   MONGODB_URL: "mongodb://mongodb:27017"
   REDIS_DSN: "redis://redis:6379?timeout=0.5"
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: examples-app-ingress
+  namespace: default
+spec:
+  ingressClassName: external # fix this
+  rules:
+    - host: examples.app.com
+      http:
+        paths:
+          - path: /
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: examples-app
+                port:
+                  number: 80
 ---
