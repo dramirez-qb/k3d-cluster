@@ -8,7 +8,7 @@ spec:
   dependsOn:
     - name: cluster-apps-traefik
     - name: cluster-apps-kube-prometheus-stack
-  path: ./kubernetes/cluster-common/apps/networking/error-pages/app
+  path: ./kubernetes/cluster-common/apps/networking/error-pages/app  # FIXME
   prune: true
   sourceRef:
     kind: GitRepository

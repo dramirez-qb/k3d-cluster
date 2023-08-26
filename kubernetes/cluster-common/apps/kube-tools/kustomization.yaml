@@ -4,5 +4,4 @@ kind: Kustomization
 resources:
   - ./namespace.yaml
   # - ./kyverno/ks.yaml
-  - ./kubernetes-schemas/ks.yaml
   - ./node-feature-discovery/ks.yaml

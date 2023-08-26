@@ -16,9 +16,9 @@ spec:
         kind: HelmRepository
         name: bitnami
         namespace: flux-system
-  dependsOn:
-    - name: local-path-provisioner
-      namespace: kube-system
+  # dependsOn:
+  #   - name: local-path-provisioner
+  #     namespace: kube-system
   maxHistory: 2
   install:
     remediation:

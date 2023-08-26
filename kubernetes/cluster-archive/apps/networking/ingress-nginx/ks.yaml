@@ -8,7 +8,7 @@ spec:
   dependsOn:
     - name: cluster-apps-cloudflared
   interval: 10m
-  path: "./kubernetes/cluster-common/apps/networking/ingress-nginx/internal"
+  path: "./kubernetes/cluster-common/apps/networking/ingress-nginx/internal" # FIXME
   prune: true
   sourceRef:
     kind: GitRepository
@@ -26,7 +26,7 @@ spec:
   dependsOn:
     - name: cluster-apps-cloudflared
   interval: 10m
-  path: "./kubernetes/cluster-common/apps/networking/ingress-nginx/external"
+  path: "./kubernetes/cluster-common/apps/networking/ingress-nginx/external" # FIXME
   prune: true
   sourceRef:
     kind: GitRepository
