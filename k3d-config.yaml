@@ -8,11 +8,11 @@ metadata:
 servers: 1
 agents: 2
 kubeAPI:
-  host: ${CLUSTER_NAME}
+  host: ${HOSTNAME}
   hostIP: 0.0.0.0
   hostPort: "6443"
 image: rancher/k3s:${K3S_VERSION}
-# subnet: "10.200.0.0/16"
+subnet: "10.200.0.0/16"
 volumes:
   - volume: ${SHARED_PATH}:/mnt/shared
     nodeFilters:
