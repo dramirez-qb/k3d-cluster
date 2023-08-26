@@ -8,7 +8,7 @@ metadata:
 servers: 1
 agents: 2
 kubeAPI:
-  host: ${HOSTNAME}
+  host: ${CURRENT_IP}
   hostIP: 0.0.0.0
   hostPort: "6443"
 image: rancher/k3s:${K3S_VERSION}

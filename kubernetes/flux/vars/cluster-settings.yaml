@@ -19,4 +19,5 @@ metadata:
   name: kubevip
   namespace: kube-system
 data:
-  range-extra: ${START_RANGE}-${END_RANGE}
+  range-global: ${START_RANGE}-${END_RANGE}
+  cidr-extra: ${START_RANGE}/30

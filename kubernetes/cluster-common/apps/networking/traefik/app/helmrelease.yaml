@@ -35,7 +35,9 @@ spec:
       enabled: true
       maxUnavailable: 1
     rbac:
-      enabled: false
+      enabled: true
+      namespaced: false
+    namespaceOverride: networking
     ingressClass:
       enabled: true
       isDefaultClass: false
