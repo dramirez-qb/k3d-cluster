@@ -28,7 +28,7 @@ spec:
   uninstall:
     keepHistory: false
   values: # https://github.com/traefik/traefik-helm-chart/blob/master/traefik/values.yaml
-    tag: "v3"
+    tag: "v2.10.4"
     deployment:
       replicas: 2
     podDisruptionBudget:

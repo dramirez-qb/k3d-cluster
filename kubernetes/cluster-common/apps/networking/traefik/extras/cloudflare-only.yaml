@@ -6,7 +6,7 @@ metadata:
   namespace: networking
 spec:
   # https://www.cloudflare.com/ips/
-  IPAllowList:
+  ipWhiteList: # IPAllowList:
     sourceRange:
       - 173.245.48.0/20
       - 103.21.244.0/22

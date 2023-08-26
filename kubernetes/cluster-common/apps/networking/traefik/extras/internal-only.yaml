@@ -5,7 +5,7 @@ metadata:
   name: internal-ips
   namespace: networking
 spec:
-  IPAllowList:
+  ipWhiteList: # IPAllowList:
     sourceRange:
       - 10.0.0.0/8
       - 172.16.0.0/12
