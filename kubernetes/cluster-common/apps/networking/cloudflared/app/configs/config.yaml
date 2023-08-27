@@ -8,11 +8,11 @@ ingress:
   - hostname: "${SECRET_DOMAIN}"
     service: https://traefik.networking.svc.cluster.local:443
     originRequest:
-      httpHostHeader: "${SECRET_DOMAIN}"
+      originServerName: "ingress.${SECRET_DOMAIN}"
   - hostname: "*.${SECRET_DOMAIN}"
     service: https://traefik.networking.svc.cluster.local:443
     originRequest:
-      httpHostHeader: "*.${SECRET_DOMAIN}"
+      originServerName: "ingress.${SECRET_DOMAIN}"
   # - service: http://traefik.networking.svc.cluster.local:80
   #   originRequest:
   #     connectTimeout: 10s
