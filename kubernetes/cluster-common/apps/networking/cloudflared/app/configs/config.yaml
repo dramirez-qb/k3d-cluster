@@ -13,6 +13,8 @@ ingress:
     service: https://traefik.networking.svc.cluster.local:443
     originRequest:
       originServerName: "ingress.${SECRET_DOMAIN}"
+  - hostname: "home.dxas90.xyz"
+    service: http://home-service.networking.svc.cluster.local:8123
   # - service: http://traefik.networking.svc.cluster.local:80
   #   originRequest:
   #     connectTimeout: 10s

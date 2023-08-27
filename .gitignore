@@ -20,3 +20,4 @@ kubeconfig
 # Ansible
 .venv*
 .env
+.vscode
