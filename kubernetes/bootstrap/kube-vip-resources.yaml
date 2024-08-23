@@ -94,7 +94,7 @@ spec:
       - command:
         - /kube-vip-cloud-provider
         - --leader-elect-resource-name=kube-vip-cloud-controller
-        image: ghcr.io/kube-vip/kube-vip-cloud-provider:v0.0.7
+        image: ghcr.io/kube-vip/kube-vip-cloud-provider:v0.0.10
         name: kube-vip-cloud-provider
         imagePullPolicy: Always
         resources:
@@ -145,11 +145,11 @@ spec:
       creationTimestamp: null
       labels:
         app.kubernetes.io/name: kube-vip-ds
-        app.kubernetes.io/version: v0.6.1
+        app.kubernetes.io/version: v0.8.2
     spec:
       containers:
       - name: kube-vip
-        image: ghcr.io/kube-vip/kube-vip:v0.6.1
+        image: ghcr.io/kube-vip/kube-vip:v0.8.2
         imagePullPolicy: Always
         args:
         - manager

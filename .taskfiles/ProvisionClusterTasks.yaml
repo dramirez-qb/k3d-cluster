@@ -14,6 +14,8 @@ tasks:
         silent: true
       - cmd: mkdir -p ${SHARED_PATH}/default-local-pv
         silent: true
+      - cmd: docker network inspect k3d-${CLUSTER_NAME} > /dev/null 2>&1 || docker network create -d ipvlan --subnet=10.1.221.0/24 --gateway=10.1.221.1 -o ipvlan_mode=l3 -o parent=${DEFAULT_IFACE} k3d-${CLUSTER_NAME} > /dev/null 2>&1
+        silent: true
       - cmd: envsubst < {{.ROOT_DIR}}/k3d-config.yaml | cat > {{.TASK_TEMP_DIR}}/k3d-config.yaml
         silent: true
       - cmd: k3d cluster create -c {{.TASK_TEMP_DIR}}/k3d-config.yaml

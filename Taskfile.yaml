@@ -125,6 +125,20 @@ tasks:
     status:
       - test -f {{.USER_BIN_DIR}}/k3d
 
+  install:autok3s:
+    desc: Install autok3s binary
+    aliases: [autok3s]
+    dir: "{{.TASK_TEMP_DIR}}"
+    cmds:
+      - |
+        K3D_VERSION=$(curl -sL https://api.github.com/repos/cnrancher/autok3s/releases/latest | jq -r ".tag_name")
+        curl -sSLO https://github.com/cnrancher/autok3s/releases/download/${K3D_VERSION}/autok3s_linux_amd64
+        install -m 0755 autok3s_linux_amd64 {{.USER_BIN_DIR}}/autok3s && rm -f autok3s_linux_amd64
+    preconditions:
+      - test -d {{.USER_BIN_DIR}}/
+    status:
+      - test -f {{.USER_BIN_DIR}}/autok3s
+
   install:flux:
     desc: Install flux binary
     aliases: [flux]
