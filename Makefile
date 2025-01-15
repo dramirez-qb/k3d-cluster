@@ -1,4 +1,4 @@
-SHELL=/bin/bash -o pipefail
+SHELL=/usr/bin/env bash -o pipefail
 export SELF ?= $(MAKE)
 DOCKER := $(shell which docker)
 ENVSUBST := $(shell which envsubst)
@@ -13,7 +13,7 @@ export ISSUER_EMAIL ?= yourname@gmail.com
 export DEFAULT_IFACE := $(shell ip route | grep "default" | head -n 1 | cut -d ' ' -f 5)
 export CURRENT_IP := $(shell ip addr show ${DEFAULT_IFACE}  | grep "inet " | cut -d '/' -f 1 | cut -d 't' -f 2 | tr -d ' ' | head -n 1)
 export CURRENT_EXTERNAL_IP := $(shell curl -sS ipinfo.io | jq ".ip" | tr -d '\"')
-export SHARED_PATH := ${HOME}/projects
+export SHARED_PATH ?= ${HOME}/projects
 export LATEST_K3S_VERSION := $(shell curl -sL https://api.github.com/repos/k3s-io/k3s/releases/latest | jq -r ".tag_name")
 export K3S_VERSION ?= $(shell echo ${LATEST_K3S_VERSION/+/-})
 
@@ -40,7 +40,7 @@ create/cluster:
 	$(call assert-set,CURRENT_IP)
 	$(call assert-set,SHARED_PATH)
 	@echo -e "\\033[1;32mCreating cluster ${CLUSTER_NAME} with ${SHARED_PATH} as a shared path\\033[0;39m"
-	@$(MKDIR) -p ${SHARED_PATH}
+	@$(MKDIR) -p ${SHARED_PATH}/default-local-pv
 	@$(ENVSUBST) < k3d-config.yaml | cat > /tmp/k3d-config.yaml
 	@$(K3D) cluster list --no-headers | grep ${CLUSTER_NAME} > /dev/null 2>&1 || $(K3D) cluster create -c /tmp/k3d-config.yaml
 

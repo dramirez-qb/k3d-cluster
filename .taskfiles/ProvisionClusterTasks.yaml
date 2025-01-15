@@ -14,12 +14,16 @@ tasks:
         silent: true
       - cmd: mkdir -p ${SHARED_PATH}/default-local-pv
         silent: true
-      - cmd: docker network inspect k3d-${CLUSTER_NAME} > /dev/null 2>&1 || docker network create -d ipvlan --subnet=10.1.221.0/24 --gateway=10.1.221.1 -o ipvlan_mode=l3 -o parent=${DEFAULT_IFACE} k3d-${CLUSTER_NAME} > /dev/null 2>&1
+      - cmd: docker network inspect k3d-${CLUSTER_NAME} > /dev/null 2>&1 || docker network create --subnet=10.1.221.0/24 --gateway=10.1.221.1 k3d-${CLUSTER_NAME} > /dev/null 2>&1
         silent: true
       - cmd: envsubst < {{.ROOT_DIR}}/k3d-config.yaml | cat > {{.TASK_TEMP_DIR}}/k3d-config.yaml
         silent: true
       - cmd: k3d cluster create -c {{.TASK_TEMP_DIR}}/k3d-config.yaml
         silent: true
+    preconditions:
+      - sh: mkdir -p {{.USER_BIN_DIR}} {{.TASK_TEMP_DIR}}
+        msg: |
+          Failed to create required folders
     status:
       - "k3d cluster list --no-headers | grep ${CLUSTER_NAME} > /dev/null 2>&1"
 
@@ -32,7 +36,9 @@ tasks:
       - cmd: echo -e "\\033[1;32mDeleting cluster ${CLUSTER_NAME}\\033[0;39m"
         silent: true
       - k3d cluster delete ${CLUSTER_NAME}
-
+      - cmd: docker network rm k3d-${CLUSTER_NAME} > /dev/null 2>&1
+        silent: true
+ 
   install:flux:
     desc: Install Flux into your cluster
     aliases: [flux]

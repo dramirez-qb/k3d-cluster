@@ -5,6 +5,7 @@ external-secret-*.yaml
 external-secret-*.yml
 home*
 tesing-*.yaml
+.task/**/*
 
 # Trash
 .DS_Store
