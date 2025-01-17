@@ -9,7 +9,7 @@ spec:
   interval: 5m
   ref:
     branch: master
-  url: "https://github.com/dramirez-qb/k3d-cluster.git"
+  url: "https://github.com/dxas90/k3d-cluster.git"
   ignore: |
     # exclude all
     /*
